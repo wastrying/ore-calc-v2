@@ -140,8 +140,6 @@
       background: rgba(255,255,255,0.06);
     }
 
-    /* Active sidebar states */
-    #r-coreinputs:checked ~ .frame .sidebar label[for="r-coreinputs"],
     #r-upgrades:checked ~ .frame .sidebar label[for="r-upgrades"],
     #r-ore:checked ~ .frame .sidebar label[for="r-ore"],
     #r-pickaxe:checked ~ .frame .sidebar label[for="r-pickaxe"],
@@ -172,7 +170,6 @@
 
     .page{ display:none; }
 
-    #r-coreinputs:checked ~ .frame #page-coreinputs,
     #r-upgrades:checked ~ .frame #page-upgrades,
     #r-ore:checked ~ .frame #page-ore,
     #r-pickaxe:checked ~ .frame #page-pickaxe,
@@ -355,7 +352,6 @@
     }
 
     .field input[type="text"],
-    .field input[type="number"],
     .field select{
       width: 100%;
       border: 1px solid rgba(0,0,0,0.1);
@@ -475,35 +471,6 @@
       border-color: rgba(255,255,255,0.12);
     }
 
-    /* Time Warp calc box */
-    .calc-box{
-      border: 1px dashed var(--border-soft);
-      border-radius: var(--radius-md);
-      padding: 12px 12px 10px;
-      margin: 10px 0 14px;
-      background: rgba(0,0,0,0.02);
-    }
-    html[data-theme="dark"] .calc-box{
-      background: rgba(255,255,255,0.03);
-    }
-    .calc-title{
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .calc-row{
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 6px 2px;
-      font-size: 12px;
-      border-bottom: 1px solid var(--border-soft);
-    }
-    .calc-row:last-child{ border-bottom: none; }
-
     @media (max-width: 900px){
       :root{ --sidebar-w: 190px; }
       table{ min-width: 560px; }
@@ -532,8 +499,6 @@
 </head>
 
 <body>
-  <!-- ROUTES -->
-  <input class="route" type="radio" name="route" id="r-coreinputs" />
   <input class="route" type="radio" name="route" id="r-upgrades" checked />
   <input class="route" type="radio" name="route" id="r-ore" />
   <input class="route" type="radio" name="route" id="r-pickaxe" />
@@ -547,7 +512,6 @@
     <aside class="sidebar" aria-label="Sections">
       <div class="sidebar-title">Core</div>
       <nav class="nav">
-        <label class="nav-btn" for="r-coreinputs"><span>Core Inputs</span><span class="nav-mini">CI</span></label>
         <label class="nav-btn" for="r-upgrades"><span>Upgrades</span><span class="nav-mini">U</span></label>
         <label class="nav-btn" for="r-ore"><span>Ore Mastery</span><span class="nav-mini">OM</span></label>
         <label class="nav-btn" for="r-pickaxe"><span>Pickaxe</span><span class="nav-mini">P</span></label>
@@ -566,62 +530,7 @@
       <main class="main">
         <div class="main-inner">
 
-          <!-- CORE INPUTS PAGE -->
-          <section class="page" id="page-coreinputs">
-            <div class="section-head">
-              <div>
-                <div class="section-title">Core Inputs</div>
-                <div class="section-sub">Enter your current run stats. Time Warp will read these.</div>
-              </div>
-              <span class="pill">Player Stats</span>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label>Current Ore</label>
-                <input type="number" id="coreCurrentOre" min="0" step="1" placeholder="0" />
-                <div class="section-sub" style="margin-top:8px;">Optional: used for future expansions.</div>
-              </div>
-
-              <div class="field">
-                <label>Ore Per Second</label>
-                <input type="number" id="coreOrePerSec" min="0" step="any" placeholder="1.5" />
-                <div class="section-sub" style="margin-top:8px;">Used by Minute Skip calculation.</div>
-              </div>
-
-              <div class="field">
-                <label>Last Upgrade Bonus %</label>
-                <input type="number" id="coreLastUpgradePct" min="0" step="any" placeholder="10" />
-                <div class="section-sub" style="margin-top:8px;">Used by Echo Loop (50% repeat).</div>
-              </div>
-
-              <div class="field">
-                <label>Current ELvl</label>
-                <input type="number" id="coreELvl" min="1" step="1" placeholder="1" />
-              </div>
-
-              <div class="field">
-                <label>Time Shards</label>
-                <input type="number" id="coreTimeShards" min="0" step="1" placeholder="0" />
-              </div>
-
-              <div class="field">
-                <label>Quick Preview</label>
-                <div class="demo-box" style="margin-top:0;">
-                  <div class="demo-row"><span class="demo-k">Ore/sec</span><span class="demo-v" data-core-preview="orePerSec"></span></div>
-                  <div class="demo-row"><span class="demo-k">Minute Skip (60s)</span><span class="demo-v" data-core-preview="minuteSkipGain"></span></div>
-                  <div class="demo-row"><span class="demo-k">Echo Loop repeat</span><span class="demo-v" data-core-preview="echoLoopPct"></span></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button class="btn" type="button" id="saveCoreInputs">Save Core Inputs</button>
-              <button class="btn secondary" type="button" id="resetCoreInputs">Reset Core Inputs</button>
-            </div>
-          </section>
-
-          <!-- UPGRADES PAGE -->
+          <!-- UPGRADES -->
           <section class="page" id="page-upgrades">
             <input class="dest-route" type="radio" name="dest" id="d-point" checked />
             <input class="dest-route" type="radio" name="dest" id="d-blackhole" />
@@ -862,7 +771,7 @@
             </div>
           </section>
 
-          <!-- ORE -->
+          <!-- ORE MASTERY (NO PROMPTS YET) -->
           <section class="page" id="page-ore">
             <div class="section-head">
               <div>
@@ -883,7 +792,7 @@
             </div>
           </section>
 
-          <!-- PICKAXE -->
+          <!-- PICKAXE (6 PROMPTS) -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
@@ -892,6 +801,35 @@
               </div>
               <span class="pill">Pickaxe</span>
             </div>
+
+            <!-- 6 prompts for Pickaxe -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="field">
+                <label>Pickaxe Prompt 1</label>
+                <input type="text" id="pickaxePrompt1" placeholder="Type here..." />
+              </div>
+              <div class="field">
+                <label>Pickaxe Prompt 2</label>
+                <input type="text" id="pickaxePrompt2" placeholder="Type here..." />
+              </div>
+              <div class="field">
+                <label>Pickaxe Prompt 3</label>
+                <input type="text" id="pickaxePrompt3" placeholder="Type here..." />
+              </div>
+              <div class="field">
+                <label>Pickaxe Prompt 4</label>
+                <input type="text" id="pickaxePrompt4" placeholder="Type here..." />
+              </div>
+              <div class="field">
+                <label>Pickaxe Prompt 5</label>
+                <input type="text" id="pickaxePrompt5" placeholder="Type here..." />
+              </div>
+              <div class="field">
+                <label>Pickaxe Prompt 6</label>
+                <input type="text" id="pickaxePrompt6" placeholder="Type here..." />
+              </div>
+            </div>
+
             <div class="table-wrap">
               <table>
                 <thead><tr><th>Model</th><th>Tier</th><th>Power</th><th>Speed</th><th>Special</th><th class="muted">Notes</th></tr></thead>
@@ -904,7 +842,7 @@
             </div>
           </section>
 
-          <!-- ELVL -->
+          <!-- ELVL (1 PROMPT) -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -913,6 +851,15 @@
               </div>
               <span class="pill">ELvl</span>
             </div>
+
+            <!-- 1 prompt for ELvl -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="field">
+                <label>ELvl Prompt</label>
+                <input type="text" id="elvlPrompt1" placeholder="Type here..." />
+              </div>
+            </div>
+
             <div class="table-wrap">
               <table>
                 <thead><tr><th>Level</th><th>XP Needed</th><th>Reward</th><th>Unlock</th><th>Multiplier</th><th class="muted">Notes</th></tr></thead>
@@ -925,7 +872,7 @@
             </div>
           </section>
 
-          <!-- CARDS -->
+          <!-- CARDS (NO PROMPTS YET) -->
           <section class="page" id="page-cards">
             <div class="section-head">
               <div>
@@ -955,16 +902,6 @@
               </div>
               <span class="pill">Meta</span>
             </div>
-
-            <!-- Calculator that reads Core Inputs -->
-            <div class="calc-box">
-              <div class="calc-title">Time Warp Calculator</div>
-              <div class="calc-row"><span class="demo-k">Ore/sec (from Core Inputs)</span><span data-tw="orePerSec"></span></div>
-              <div class="calc-row"><span class="demo-k">Minute Skip gain (60s)</span><span data-tw="minuteSkipGain"></span></div>
-              <div class="calc-row"><span class="demo-k">Echo Loop repeat (50% of last)</span><span data-tw="echoLoopPct"></span></div>
-              <div class="calc-row"><span class="demo-k">Time Shards</span><span data-tw="timeShards"></span></div>
-            </div>
-
             <div class="table-wrap">
               <table>
                 <thead><tr><th>Warp Name</th><th>Type</th><th>Cost</th><th>Duration</th><th>Effect</th><th class="muted">Cooldown</th></tr></thead>
@@ -1000,7 +937,6 @@
               <div class="field">
                 <label>Default Section</label>
                 <select id="defaultSection">
-                  <option value="r-coreinputs">Core Inputs</option>
                   <option value="r-upgrades">Upgrades</option>
                   <option value="r-ore">Ore Mastery</option>
                   <option value="r-pickaxe">Pickaxe</option>
@@ -1067,6 +1003,16 @@
   <script>
     const STORAGE_KEY = "remblyx_mini_settings_v1";
 
+    const DEFAULT_PROMPTS = {
+      elvl1: "",
+      pickaxe1: "",
+      pickaxe2: "",
+      pickaxe3: "",
+      pickaxe4: "",
+      pickaxe5: "",
+      pickaxe6: "",
+    };
+
     const DEFAULTS = {
       theme: "system",
       notation: "suffix",
@@ -1075,32 +1021,27 @@
       uiScale: "comfortable",
       showHints: true,
       hardcore: false,
-      core: {
-        currentOre: 0,
-        orePerSec: 1.5,
-        lastUpgradePct: 10,
-        elvl: 1,
-        timeShards: 0,
-      }
+      prompts: { ...DEFAULT_PROMPTS }
     };
 
     function loadSettings(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return structuredClone(DEFAULTS);
+        if(!raw){
+          return { ...DEFAULTS, prompts: { ...DEFAULT_PROMPTS } };
+        }
         const parsed = JSON.parse(raw);
 
-        // shallow merge + safe deep merge for core
         return {
           ...DEFAULTS,
           ...parsed,
-          core: {
-            ...DEFAULTS.core,
-            ...(parsed.core || {})
+          prompts: {
+            ...DEFAULT_PROMPTS,
+            ...(parsed.prompts || {})
           }
         };
       }catch{
-        return structuredClone(DEFAULTS);
+        return { ...DEFAULTS, prompts: { ...DEFAULT_PROMPTS } };
       }
     }
 
@@ -1180,11 +1121,6 @@
       return { text: formatSuffix(n), html: null };
     }
 
-    function formatForInline(n, mode){
-      const out = formatNumber(n, mode);
-      return out.html ? out.html : (out.text ?? String(n));
-    }
-
     function updateNumberDisplays(mode){
       document.querySelectorAll("[data-num]").forEach(node => {
         const n = Number(node.getAttribute("data-num"));
@@ -1202,51 +1138,6 @@
     function setRouteById(id){
       const input = document.getElementById(id);
       if(input && input.classList.contains("route")) input.checked = true;
-    }
-
-    // --- Core calculations ---
-    function computeMinuteSkipGain(core){
-      const orePerSec = Number(core.orePerSec) || 0;
-      return orePerSec * 60;
-    }
-
-    function computeEchoLoopPct(core){
-      const last = Number(core.lastUpgradePct) || 0;
-      return last * 0.5;
-    }
-
-    function updateTimeWarpCalc(state){
-      const core = state.core || DEFAULTS.core;
-      const mode = state.notation || "suffix";
-
-      const minuteGain = computeMinuteSkipGain(core);
-      const echoPct = computeEchoLoopPct(core);
-
-      // Time Warp calculator boxes
-      document.querySelectorAll("[data-tw]").forEach(node => {
-        const key = node.getAttribute("data-tw");
-        if(key === "orePerSec"){
-          node.innerHTML = formatForInline(core.orePerSec, mode) + " Ore/s";
-        }else if(key === "minuteSkipGain"){
-          node.innerHTML = formatForInline(minuteGain, mode) + " Ore";
-        }else if(key === "echoLoopPct"){
-          node.textContent = tidyFixed(echoPct, 2) + "%";
-        }else if(key === "timeShards"){
-          node.innerHTML = formatForInline(core.timeShards, mode);
-        }
-      });
-
-      // Core Inputs quick preview
-      document.querySelectorAll("[data-core-preview]").forEach(node => {
-        const key = node.getAttribute("data-core-preview");
-        if(key === "orePerSec"){
-          node.innerHTML = formatForInline(core.orePerSec, mode) + " Ore/s";
-        }else if(key === "minuteSkipGain"){
-          node.innerHTML = formatForInline(minuteGain, mode) + " Ore";
-        }else if(key === "echoLoopPct"){
-          node.textContent = tidyFixed(echoPct, 2) + "%";
-        }
-      });
     }
 
     const state = loadSettings();
@@ -1273,44 +1164,7 @@
 
     updateNumberDisplays(state.notation);
 
-    // CORE INPUT refs
-    const coreCurrentOre = document.getElementById("coreCurrentOre");
-    const coreOrePerSec = document.getElementById("coreOrePerSec");
-    const coreLastUpgradePct = document.getElementById("coreLastUpgradePct");
-    const coreELvl = document.getElementById("coreELvl");
-    const coreTimeShards = document.getElementById("coreTimeShards");
-
-    function loadCoreToUI(){
-      const c = state.core || DEFAULTS.core;
-      if(coreCurrentOre) coreCurrentOre.value = c.currentOre ?? 0;
-      if(coreOrePerSec) coreOrePerSec.value = c.orePerSec ?? 0;
-      if(coreLastUpgradePct) coreLastUpgradePct.value = c.lastUpgradePct ?? 0;
-      if(coreELvl) coreELvl.value = c.elvl ?? 1;
-      if(coreTimeShards) coreTimeShards.value = c.timeShards ?? 0;
-    }
-
-    function collectCoreFromUI(){
-      state.core.currentOre = Number(coreCurrentOre?.value ?? 0);
-      state.core.orePerSec = Number(coreOrePerSec?.value ?? 0);
-      state.core.lastUpgradePct = Number(coreLastUpgradePct?.value ?? 0);
-      state.core.elvl = Math.max(1, Math.floor(Number(coreELvl?.value ?? 1)));
-      state.core.timeShards = Math.max(0, Math.floor(Number(coreTimeShards?.value ?? 0)));
-    }
-
-    loadCoreToUI();
-
-    // live-ish preview inside Core Inputs
-    [coreCurrentOre, coreOrePerSec, coreLastUpgradePct, coreELvl, coreTimeShards]
-      .filter(Boolean)
-      .forEach(el => {
-        el.addEventListener("input", () => {
-          // update state in-memory only for preview
-          collectCoreFromUI();
-          updateTimeWarpCalc(state);
-        });
-      });
-
-    // THEME
+    // THEME listeners
     document.querySelectorAll('input[name="theme"]').forEach(r => {
       r.addEventListener("change", () => {
         state.theme = r.value;
@@ -1318,12 +1172,11 @@
       });
     });
 
-    // NOTATION
+    // NOTATION listeners
     document.querySelectorAll('input[name="notation"]').forEach(r => {
       r.addEventListener("change", () => {
         state.notation = r.value;
         updateNumberDisplays(state.notation);
-        updateTimeWarpCalc(state);
       });
     });
 
@@ -1336,6 +1189,7 @@
       state.uiScale = uiScale?.value ?? "comfortable";
       state.showHints = showHints?.checked ?? true;
       state.hardcore = hardcore?.checked ?? false;
+
       const themeSel = document.querySelector('input[name="theme"]:checked');
       const notationSel = document.querySelector('input[name="notation"]:checked');
       state.theme = themeSel?.value ?? "system";
@@ -1348,7 +1202,6 @@
         saveSettingsObj(state);
         applyTheme(state.theme);
         updateNumberDisplays(state.notation);
-        updateTimeWarpCalc(state);
         saveBtn.textContent = "Saved";
         window.setTimeout(() => saveBtn.textContent = "Save Settings", 700);
       });
@@ -1356,10 +1209,15 @@
 
     if(resetBtn){
       resetBtn.addEventListener("click", () => {
-        // reset system settings but keep core defaults too
-        const coreKeep = structuredClone(DEFAULTS.core);
-        Object.assign(state, structuredClone(DEFAULTS));
-        state.core = coreKeep;
+        // Reset everything cleanly (avoid sharing object refs)
+        state.theme = DEFAULTS.theme;
+        state.notation = DEFAULTS.notation;
+        state.profileName = DEFAULTS.profileName;
+        state.defaultSection = DEFAULTS.defaultSection;
+        state.uiScale = DEFAULTS.uiScale;
+        state.showHints = DEFAULTS.showHints;
+        state.hardcore = DEFAULTS.hardcore;
+        state.prompts = { ...DEFAULT_PROMPTS };
 
         saveSettingsObj(state);
         applyTheme(state.theme);
@@ -1374,42 +1232,67 @@
         document.querySelectorAll('input[name="theme"]').forEach(r => { r.checked = (r.value === DEFAULTS.theme); });
         document.querySelectorAll('input[name="notation"]').forEach(r => { r.checked = (r.value === DEFAULTS.notation); });
 
-        loadCoreToUI();
         updateNumberDisplays(state.notation);
-        updateTimeWarpCalc(state);
+        loadPromptsToUI();
 
         resetBtn.textContent = "Reset";
         window.setTimeout(() => resetBtn.textContent = "Reset Defaults", 700);
       });
     }
 
-    // CORE INPUT buttons
-    const saveCoreBtn = document.getElementById("saveCoreInputs");
-    const resetCoreBtn = document.getElementById("resetCoreInputs");
+    // --- PROMPTS (ELvl + Pickaxe) ---
+    const elvlPrompt1 = document.getElementById("elvlPrompt1");
 
-    if(saveCoreBtn){
-      saveCoreBtn.addEventListener("click", () => {
-        collectCoreFromUI();
-        saveSettingsObj(state);
-        updateTimeWarpCalc(state);
-        saveCoreBtn.textContent = "Saved";
-        window.setTimeout(() => saveCoreBtn.textContent = "Save Core Inputs", 700);
+    const pickaxePrompt1 = document.getElementById("pickaxePrompt1");
+    const pickaxePrompt2 = document.getElementById("pickaxePrompt2");
+    const pickaxePrompt3 = document.getElementById("pickaxePrompt3");
+    const pickaxePrompt4 = document.getElementById("pickaxePrompt4");
+    const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
+    const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
+
+    function loadPromptsToUI(){
+      const p = state.prompts || DEFAULT_PROMPTS;
+
+      if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
+
+      if(pickaxePrompt1) pickaxePrompt1.value = p.pickaxe1 ?? "";
+      if(pickaxePrompt2) pickaxePrompt2.value = p.pickaxe2 ?? "";
+      if(pickaxePrompt3) pickaxePrompt3.value = p.pickaxe3 ?? "";
+      if(pickaxePrompt4) pickaxePrompt4.value = p.pickaxe4 ?? "";
+      if(pickaxePrompt5) pickaxePrompt5.value = p.pickaxe5 ?? "";
+      if(pickaxePrompt6) pickaxePrompt6.value = p.pickaxe6 ?? "";
+    }
+
+    function collectPromptsFromUI(){
+      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
+
+      state.prompts.elvl1 = elvlPrompt1?.value ?? "";
+
+      state.prompts.pickaxe1 = pickaxePrompt1?.value ?? "";
+      state.prompts.pickaxe2 = pickaxePrompt2?.value ?? "";
+      state.prompts.pickaxe3 = pickaxePrompt3?.value ?? "";
+      state.prompts.pickaxe4 = pickaxePrompt4?.value ?? "";
+      state.prompts.pickaxe5 = pickaxePrompt5?.value ?? "";
+      state.prompts.pickaxe6 = pickaxePrompt6?.value ?? "";
+    }
+
+    function wirePromptAutosave(){
+      const inputs = [
+        elvlPrompt1,
+        pickaxePrompt1, pickaxePrompt2, pickaxePrompt3,
+        pickaxePrompt4, pickaxePrompt5, pickaxePrompt6
+      ].filter(Boolean);
+
+      inputs.forEach(inp => {
+        inp.addEventListener("input", () => {
+          collectPromptsFromUI();
+          saveSettingsObj(state);
+        });
       });
     }
 
-    if(resetCoreBtn){
-      resetCoreBtn.addEventListener("click", () => {
-        state.core = structuredClone(DEFAULTS.core);
-        loadCoreToUI();
-        saveSettingsObj(state);
-        updateTimeWarpCalc(state);
-        resetCoreBtn.textContent = "Reset";
-        window.setTimeout(() => resetCoreBtn.textContent = "Reset Core Inputs", 700);
-      });
-    }
-
-    // initial calc paint
-    updateTimeWarpCalc(state);
+    loadPromptsToUI();
+    wirePromptAutosave();
   </script>
 </body>
 </html>
