@@ -806,8 +806,17 @@
             <div class="form-grid" style="margin-bottom: 14px;">
               <div class="field">
                 <label>Pickaxe Prompt 1</label>
-                <input type="text" id="pickaxePrompt1" placeholder="Type here..." />
-              </div>
+                  <select id="pickaxePrompt1">
+                  <option value="" disabled>Select an option</option>
+                  <option value="A">Option A</option>
+                  <option value="B">Option B</option>
+                  <option value="C">Option C</option>
+                  <option value="D">Option D</option>
+                  <option value="E">Option E</option>
+                </select>
+              <div class="section-sub" style="margin-top:8px;">Choose A–E.</div>
+            </div>
+
               <div class="field">
                 <label>Pickaxe Prompt 2</label>
                 <input type="text" id="pickaxePrompt2" placeholder="Type here..." />
@@ -1277,19 +1286,23 @@
     }
 
     function wirePromptAutosave(){
-      const inputs = [
-        elvlPrompt1,
-        pickaxePrompt1, pickaxePrompt2, pickaxePrompt3,
-        pickaxePrompt4, pickaxePrompt5, pickaxePrompt6
-      ].filter(Boolean);
+  const inputs = [
+    elvlPrompt1,
+    pickaxePrompt1, pickaxePrompt2, pickaxePrompt3,
+    pickaxePrompt4, pickaxePrompt5, pickaxePrompt6
+  ].filter(Boolean);
 
-      inputs.forEach(inp => {
-        inp.addEventListener("input", () => {
-          collectPromptsFromUI();
-          saveSettingsObj(state);
-        });
-      });
-    }
+  const handler = () => {
+    collectPromptsFromUI();
+    saveSettingsObj(state);
+  };
+
+  inputs.forEach(el => {
+    el.addEventListener("input", handler);
+    el.addEventListener("change", handler); // important for select
+  });
+}
+
 
     loadPromptsToUI();
     wirePromptAutosave();
