@@ -374,6 +374,105 @@
       box-shadow: 0 0 0 4px rgba(47,143,107,0.12);
     }
 
+    /* --- Pickaxe chooser UI --- */
+    .pickaxe-chooser{
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background:
+        linear-gradient(180deg, rgba(47,143,107,0.05), transparent 40%);
+    }
+
+    .pickaxe-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .pickaxe-card{
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      background: var(--panel);
+      padding: 10px;
+      cursor: pointer;
+      transition: box-shadow .15s, transform .08s, border-color .15s, filter .15s;
+      position: relative;
+      outline: none;
+    }
+    .pickaxe-card:hover{
+      box-shadow: var(--shadow-sm);
+      filter: saturate(1.05);
+    }
+    .pickaxe-card:active{ transform: translateY(1px); }
+    .pickaxe-card:focus-visible{
+      box-shadow: 0 0 0 4px rgba(47,143,107,0.14);
+      border-color: rgba(47,143,107,0.45);
+    }
+
+    .pickaxe-card.selected{
+      border-color: rgba(47,143,107,0.55);
+      box-shadow:
+        0 0 0 1px rgba(47,143,107,0.12),
+        var(--shadow-sm);
+      background:
+        linear-gradient(180deg, var(--mint-200), transparent 48%),
+        var(--panel);
+    }
+
+    .pickaxe-badge{
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 3px 6px;
+      border-radius: 999px;
+      background: rgba(47,143,107,0.14);
+      border: 1px solid rgba(47,143,107,0.25);
+      color: var(--accent-dark);
+      display: none;
+    }
+    .pickaxe-card.selected .pickaxe-badge{
+      display: inline-flex;
+    }
+
+    .pickaxe-img{
+      width: 100%;
+      aspect-ratio: 1.2 / 1;
+      object-fit: contain;
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.02), transparent 60%);
+      border: 1px dashed var(--border-soft);
+    }
+    html[data-theme="dark"] .pickaxe-img{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), transparent 60%);
+    }
+
+    .pickaxe-name{
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .pickaxe-sub{
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    @media (max-width: 980px){
+      .pickaxe-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 560px){
+      .pickaxe-grid{ grid-template-columns: 1fr; }
+    }
+
+    /* --- Settings + misc --- */
     .toggle{
       display:flex;
       align-items:center;
@@ -557,6 +656,7 @@
             </div>
 
             <div class="dest-content">
+
               <div class="dest-panel" id="panel-point">
                 <div class="section-head">
                   <div>
@@ -766,6 +866,7 @@
                   </table>
                 </div>
               </div>
+
             </div>
           </section>
 
@@ -790,64 +891,30 @@
             </div>
           </section>
 
-          <!-- PICKAXE (2 dropdowns + 4 text prompts) -->
+          <!-- PICKAXE (1 image picker prompt) -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
                 <div class="section-title">Pickaxe</div>
-                <div class="section-sub">Manage pickaxe tiers, stats, and modules.</div>
+                <div class="section-sub">Choose your pickaxe visually. Your selection saves automatically.</div>
               </div>
               <span class="pill">Pickaxe</span>
             </div>
 
-            <div class="form-grid" style="margin-bottom: 14px;">
-
-              <div class="field">
-                <label>Pickaxe Prompt 1</label>
-                <select id="pickaxePrompt1">
-                  <option value="" disabled selected>Select an option</option>
-                  <option value="A">Option A</option>
-                  <option value="B">Option B</option>
-                  <option value="C">Option C</option>
-                  <option value="D">Option D</option>
-                  <option value="E">Option E</option>
-                </select>
-                <div class="section-sub" style="margin-top:8px;">Choose A–E.</div>
+            <div class="pickaxe-chooser">
+              <div class="section-head" style="margin-bottom:10px;">
+                <div>
+                  <div class="section-title" style="font-size:16px;">Choose your pickaxe</div>
+                  <div class="section-sub">Images load from <span class="muted">images/pickaxe/</span>. Update the list in JS.</div>
+                </div>
+                <span class="pill">Selection</span>
               </div>
 
-              <div class="field">
-                <label>Pickaxe Prompt 2</label>
-                <select id="pickaxePrompt2">
-                  <option value="" disabled selected>Select an option</option>
-                  <option value="A">Option A</option>
-                  <option value="B">Option B</option>
-                  <option value="C">Option C</option>
-                  <option value="D">Option D</option>
-                  <option value="E">Option E</option>
-                </select>
-                <div class="section-sub" style="margin-top:8px;">Choose A–E.</div>
-              </div>
-
-              <div class="field">
-                <label>Pickaxe Prompt 3</label>
-                <input type="text" id="pickaxePrompt3" placeholder="Type here..." />
-              </div>
-
-              <div class="field">
-                <label>Pickaxe Prompt 4</label>
-                <input type="text" id="pickaxePrompt4" placeholder="Type here..." />
-              </div>
-
-              <div class="field">
-                <label>Pickaxe Prompt 5</label>
-                <input type="text" id="pickaxePrompt5" placeholder="Type here..." />
-              </div>
-
-              <div class="field">
-                <label>Pickaxe Prompt 6</label>
-                <input type="text" id="pickaxePrompt6" placeholder="Type here..." />
-              </div>
+              <!-- JS will render cards here -->
+              <div id="pickaxeChooserGrid" class="pickaxe-grid" role="listbox" aria-label="Pickaxe choices"></div>
             </div>
+
+            <div class="section-sub" id="pickaxeSelectedText" style="margin:10px 2px 14px;"></div>
 
             <div class="table-wrap">
               <table>
@@ -1021,14 +1088,10 @@
   <script>
     const STORAGE_KEY = "remblyx_mini_settings_v1";
 
+    // Only the prompts you actually want right now.
     const DEFAULT_PROMPTS = {
       elvl1: "",
-      pickaxe1: "",
-      pickaxe2: "",
-      pickaxe3: "",
-      pickaxe4: "",
-      pickaxe5: "",
-      pickaxe6: "",
+      pickaxeChoice: "" // stores the pickaxe id
     };
 
     const DEFAULTS = {
@@ -1041,6 +1104,17 @@
       hardcore: false,
       prompts: { ...DEFAULT_PROMPTS }
     };
+
+    // Update this list to match your real filenames in images/pickaxe/
+    const PICKAXE_OPTIONS = [
+      { id: "normalp", name: "Normal Pickaxe", sub: "Baseline", img: "images/pickaxe/normal_pickaxe.png" },
+      { id: "goldp", name: "Gold Pickaxe", sub: "Mid-tier", img: "images/pickaxe/gold_pickaxe.png" },
+      { id: "diamondp", name: "Diamond Pickaxe", sub: "Late-game", img: "images/pickaxe/diamond_pickaxe.png" },
+      { id: "dragonstonep", name: "Dragonstone Pickaxe", sub: "Baseline", img: "images/pickaxe/dragonstone_pickaxe.png" },
+      { id: "starglassp", name: "Starglass Pickaxe", sub: "Mid-tier", img: "images/pickaxe/starglass_pickaxe.png" },
+      // Add more:
+      // { id: "my_pick", name: "My Pickaxe", sub: "Custom", img: "images/pickaxe/my_pick.png" },
+    ];
 
     function loadSettings(){
       try{
@@ -1148,7 +1222,7 @@
 
       document.querySelectorAll("[data-demo]").forEach(node => {
         const n = Number(node.getAttribute("data-demo"));
-      const out = formatNumber(n, mode);
+        const out = formatNumber(n, mode);
         if(out.html) node.innerHTML = out.html; else node.textContent = out.text ?? String(n);
       });
     }
@@ -1225,48 +1299,75 @@
       });
     }
 
-    // --- PROMPTS (ELvl + Pickaxe) ---
+    // --- PROMPTS (ELvl + Pickaxe Choice) ---
     const elvlPrompt1 = document.getElementById("elvlPrompt1");
-
-    const pickaxePrompt1 = document.getElementById("pickaxePrompt1");
-    const pickaxePrompt2 = document.getElementById("pickaxePrompt2");
-    const pickaxePrompt3 = document.getElementById("pickaxePrompt3");
-    const pickaxePrompt4 = document.getElementById("pickaxePrompt4");
-    const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
-    const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
+    const pickaxeGrid = document.getElementById("pickaxeChooserGrid");
+    const pickaxeSelectedText = document.getElementById("pickaxeSelectedText");
 
     function loadPromptsToUI(){
       const p = state.prompts || DEFAULT_PROMPTS;
-
       if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
-
-      if(pickaxePrompt1) pickaxePrompt1.value = p.pickaxe1 ?? "";
-      if(pickaxePrompt2) pickaxePrompt2.value = p.pickaxe2 ?? "";
-      if(pickaxePrompt3) pickaxePrompt3.value = p.pickaxe3 ?? "";
-      if(pickaxePrompt4) pickaxePrompt4.value = p.pickaxe4 ?? "";
-      if(pickaxePrompt5) pickaxePrompt5.value = p.pickaxe5 ?? "";
-      if(pickaxePrompt6) pickaxePrompt6.value = p.pickaxe6 ?? "";
+      renderPickaxeChooser(p.pickaxeChoice ?? "");
     }
 
     function collectPromptsFromUI(){
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
-
       state.prompts.elvl1 = elvlPrompt1?.value ?? "";
+      // pickaxeChoice is updated by setPickaxeChoice()
+    }
 
-      state.prompts.pickaxe1 = pickaxePrompt1?.value ?? "";
-      state.prompts.pickaxe2 = pickaxePrompt2?.value ?? "";
-      state.prompts.pickaxe3 = pickaxePrompt3?.value ?? "";
-      state.prompts.pickaxe4 = pickaxePrompt4?.value ?? "";
-      state.prompts.pickaxe5 = pickaxePrompt5?.value ?? "";
-      state.prompts.pickaxe6 = pickaxePrompt6?.value ?? "";
+    function setPickaxeChoice(id){
+      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
+      state.prompts.pickaxeChoice = id;
+      saveSettingsObj(state);
+      renderPickaxeChooser(id);
+    }
+
+    function renderPickaxeChooser(selectedId){
+      if(!pickaxeGrid) return;
+
+      pickaxeGrid.innerHTML = "";
+
+      const selectedObj = PICKAXE_OPTIONS.find(p => p.id === selectedId);
+
+      PICKAXE_OPTIONS.forEach(opt => {
+        const card = document.createElement("div");
+        card.className = "pickaxe-card" + (opt.id === selectedId ? " selected" : "");
+        card.setAttribute("role", "option");
+        card.setAttribute("aria-selected", opt.id === selectedId ? "true" : "false");
+        card.tabIndex = 0;
+        card.dataset.pickaxeId = opt.id;
+
+        card.innerHTML = `
+          <span class="pickaxe-badge">Selected</span>
+          <img class="pickaxe-img" src="${opt.img}" alt="${opt.name}" loading="lazy"
+               onerror="this.style.opacity=0.35; this.alt='Missing image';" />
+          <div class="pickaxe-name">${opt.name}</div>
+          <div class="pickaxe-sub">${opt.sub ?? ""}</div>
+        `;
+
+        const activate = () => setPickaxeChoice(opt.id);
+
+        card.addEventListener("click", activate);
+        card.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            activate();
+          }
+        });
+
+        pickaxeGrid.appendChild(card);
+      });
+
+      if(pickaxeSelectedText){
+        pickaxeSelectedText.textContent = selectedObj
+          ? `Selected pickaxe: ${selectedObj.name}`
+          : "No pickaxe selected yet.";
+      }
     }
 
     function wirePromptAutosave(){
-      const inputs = [
-        elvlPrompt1,
-        pickaxePrompt1, pickaxePrompt2, pickaxePrompt3,
-        pickaxePrompt4, pickaxePrompt5, pickaxePrompt6
-      ].filter(Boolean);
+      const inputs = [ elvlPrompt1 ].filter(Boolean);
 
       const handler = () => {
         collectPromptsFromUI();
@@ -1284,7 +1385,6 @@
 
     if(resetBtn){
       resetBtn.addEventListener("click", () => {
-        // Reset everything cleanly
         state.theme = DEFAULTS.theme;
         state.notation = DEFAULTS.notation;
         state.profileName = DEFAULTS.profileName;
