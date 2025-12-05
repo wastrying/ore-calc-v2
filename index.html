@@ -19,7 +19,7 @@
       --radius-md: 10px;
       --shadow-sm: 0 2px 10px rgba(0,0,0,0.06);
       --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
-      --sidebar-w: 210px;
+      --sidebar-w: 220px;
     }
 
     *{box-sizing:border-box;}
@@ -35,13 +35,99 @@
       min-height:100vh;
     }
 
-    .app{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 26px 18px 60px;
+    /* Hide radio inputs for CSS-only routing */
+    .route{
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    /* ---------- Header band (Destination + current section label) ---------- */
+    /* ---------- Full-width frame ---------- */
+    .frame{
+      display:grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar (flush left) ---------- */
+    .sidebar{
+      background: var(--panel);
+      border-right: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 6px 0 24px rgba(0,0,0,0.05);
+      padding: 14px 10px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      /* Rounded only on the inner/right side so it sits cleanly on the edge */
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
+    .sidebar-title{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px 6px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 6px;
+    }
+
+    .nav-btn{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--muted);
+      transition: background .15s, color .15s, box-shadow .15s, transform .08s;
+      user-select:none;
+    }
+    .nav-btn:hover{
+      background: #f3f7f5;
+      color: var(--text);
+    }
+    .nav-btn:active{ transform: translateY(1px); }
+
+    .nav-mini{
+      font-size: 10px;
+      color: rgba(0,0,0,0.35);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* Active sidebar states */
+    #r-upgrades:checked ~ .frame .sidebar label[for="r-upgrades"],
+    #r-ore:checked ~ .frame .sidebar label[for="r-ore"],
+    #r-pickaxe:checked ~ .frame .sidebar label[for="r-pickaxe"],
+    #r-elvl:checked ~ .frame .sidebar label[for="r-elvl"],
+    #r-cards:checked ~ .frame .sidebar label[for="r-cards"]{
+      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+      color: var(--accent-dark);
+      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
+    }
+
+    /* ---------- Content area ---------- */
+    .content{
+      padding: 26px 22px 60px;
+    }
+
+    /* Header band (Destination + current section label) */
     .header-band{
       background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
       border: 1px solid rgba(0,0,0,0.05);
@@ -99,91 +185,6 @@
       text-transform: uppercase;
     }
 
-    /* ---------- Layout ---------- */
-    .shell{
-      display:grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
-      gap: 14px;
-      align-items: start;
-    }
-
-    /* Hide radio inputs for CSS-only routing */
-    .route{
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* ---------- Sidebar ---------- */
-    .sidebar{
-      position: sticky;
-      top: 18px;
-      background: var(--panel);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-      border: 1px solid rgba(0,0,0,0.05);
-      padding: 10px;
-    }
-
-    .sidebar-title{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      padding: 10px 10px 6px;
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .nav{
-      display:flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 6px;
-    }
-
-    .nav-btn{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 10px;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 650;
-      color: var(--muted);
-      transition: background .15s, color .15s, box-shadow .15s, transform .08s;
-      user-select:none;
-    }
-    .nav-btn:hover{
-      background: #f3f7f5;
-      color: var(--text);
-    }
-    .nav-btn:active{ transform: translateY(1px); }
-
-    .nav-mini{
-      font-size: 10px;
-      color: rgba(0,0,0,0.35);
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.04);
-    }
-
-    /* Active sidebar states */
-    #r-upgrades:checked ~ .app .sidebar label[for="r-upgrades"],
-    #r-ore:checked ~ .app .sidebar label[for="r-ore"],
-    #r-pickaxe:checked ~ .app .sidebar label[for="r-pickaxe"],
-    #r-elvl:checked ~ .app .sidebar label[for="r-elvl"],
-    #r-cards:checked ~ .app .sidebar label[for="r-cards"]{
-      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
-      color: var(--accent-dark);
-      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
-    }
-
     /* ---------- Main panel ---------- */
     .main{
       background: var(--panel);
@@ -197,15 +198,13 @@
       padding: 18px 18px 24px;
     }
 
-    .page{
-      display:none;
-    }
+    .page{ display:none; }
 
-    #r-upgrades:checked ~ .app #page-upgrades,
-    #r-ore:checked ~ .app #page-ore,
-    #r-pickaxe:checked ~ .app #page-pickaxe,
-    #r-elvl:checked ~ .app #page-elvl,
-    #r-cards:checked ~ .app #page-cards{
+    #r-upgrades:checked ~ .frame #page-upgrades,
+    #r-ore:checked ~ .frame #page-ore,
+    #r-pickaxe:checked ~ .frame #page-pickaxe,
+    #r-elvl:checked ~ .frame #page-elvl,
+    #r-cards:checked ~ .frame #page-cards{
       display:block;
     }
 
@@ -283,100 +282,85 @@
     tbody tr:nth-child(odd){ background: #fcfdfc; }
     tbody tr:hover{ background: #f4fbf7; }
 
-    /* ---------- Simple card grid for non-table pages (optional) ---------- */
-    .cards-grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .mini-card{
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: var(--radius-md);
-      padding: 12px 12px 10px;
-      background: linear-gradient(180deg, #ffffff, #fbfbfb);
-    }
-    .mini-card h4{
-      margin:0 0 6px 0;
-      font-size: 14px;
-    }
-    .mini-card p{
-      margin:0;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
     /* ---------- Responsive ---------- */
-    @media (max-width: 980px){
-      .shell{ grid-template-columns: 180px 1fr; }
-      :root{ --sidebar-w: 180px; }
-      .cards-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 900px){
+      :root{ --sidebar-w: 190px; }
+      table{ min-width: 560px; }
     }
 
     @media (max-width: 720px){
-      .shell{ grid-template-columns: 1fr; }
-      .sidebar{ position: static; }
+      .frame{ grid-template-columns: 1fr; }
+      .sidebar{
+        position: static;
+        height: auto;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border-right: none;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+      }
       .nav{ flex-direction: row; flex-wrap: wrap; }
       .nav-btn{ flex: 1 1 auto; justify-content:center; }
-      table{ min-width: 540px; }
-      .cards-grid{ grid-template-columns: 1fr; }
+      .content{ padding: 18px 14px 50px; }
+      table{ min-width: 520px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Routes live outside .app so the sibling selectors work cleanly -->
+  <!-- Routes for CSS-only navigation -->
   <input class="route" type="radio" name="route" id="r-upgrades" checked />
   <input class="route" type="radio" name="route" id="r-ore" />
   <input class="route" type="radio" name="route" id="r-pickaxe" />
   <input class="route" type="radio" name="route" id="r-elvl" />
   <input class="route" type="radio" name="route" id="r-cards" />
 
-  <div class="app">
+  <div class="frame">
 
-    <!-- Header matching your sheet vibe -->
-    <div class="header-band">
-      <div class="destination-row">
-        <div class="destination-label">Destination</div>
-        <select class="destination-select" aria-label="Destination">
-          <option>Point_Basement</option>
-          <option>Blackhole_Basement</option>
-          <option>Mining_Baseplate</option>
-          <option>Transcend_Baseplate</option>
-          <option>Star_Tree</option>
-          <option>Sacrifice_Baseplate</option>
-        </select>
-        <span class="section-pill">Dashboard</span>
+    <!-- Sidebar flush to left edge -->
+    <aside class="sidebar" aria-label="Sections">
+      <div class="sidebar-title">Sections</div>
+      <nav class="nav">
+        <label class="nav-btn" for="r-upgrades">
+          <span>Upgrades</span>
+          <span class="nav-mini">U</span>
+        </label>
+        <label class="nav-btn" for="r-ore">
+          <span>Ore Mastery</span>
+          <span class="nav-mini">OM</span>
+        </label>
+        <label class="nav-btn" for="r-pickaxe">
+          <span>Pickaxe</span>
+          <span class="nav-mini">P</span>
+        </label>
+        <label class="nav-btn" for="r-elvl">
+          <span>ELvl</span>
+          <span class="nav-mini">E</span>
+        </label>
+        <label class="nav-btn" for="r-cards">
+          <span>Cards</span>
+          <span class="nav-mini">C</span>
+        </label>
+      </nav>
+    </aside>
+
+    <!-- Right content column -->
+    <div class="content">
+
+      <!-- Header matching your sheet vibe -->
+      <div class="header-band">
+        <div class="destination-row">
+          <div class="destination-label">Destination</div>
+          <select class="destination-select" aria-label="Destination">
+            <option>Point_Basement</option>
+            <option>Blackhole_Basement</option>
+            <option>Mining_Baseplate</option>
+            <option>Transcend_Baseplate</option>
+            <option>Star_Tree</option>
+            <option>Sacrifice_Baseplate</option>
+          </select>
+          <span class="section-pill">Dashboard</span>
+        </div>
       </div>
-    </div>
-
-    <div class="shell">
-      <!-- Sidebar tabs -->
-      <aside class="sidebar" aria-label="Sections">
-        <div class="sidebar-title">Sections</div>
-        <nav class="nav">
-          <label class="nav-btn" for="r-upgrades">
-            <span>Upgrades</span>
-            <span class="nav-mini">U</span>
-          </label>
-          <label class="nav-btn" for="r-ore">
-            <span>Ore Mastery</span>
-            <span class="nav-mini">OM</span>
-          </label>
-          <label class="nav-btn" for="r-pickaxe">
-            <span>Pickaxe</span>
-            <span class="nav-mini">P</span>
-          </label>
-          <label class="nav-btn" for="r-elvl">
-            <span>ELvl</span>
-            <span class="nav-mini">E</span>
-          </label>
-          <label class="nav-btn" for="r-cards">
-            <span>Cards</span>
-            <span class="nav-mini">C</span>
-          </label>
-        </nav>
-      </aside>
 
       <!-- Main content panel -->
       <main class="main">
