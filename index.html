@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upgrades & Cards</title>
+  <style>
+    :root{
+      --bg: #f6f8f7;
+      --panel: #ffffff;
+      --mint-100: #e9f6f0;
+      --mint-200: #d8f0e6;
+      --mint-300: #bfe6d7;
+      --accent: #2f8f6b;
+      --accent-dark:#236b50;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --shadow-sm: 0 2px 10px rgba(0,0,0,0.06);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 80% -10%, var(--mint-100), transparent 60%),
+                  radial-gradient(900px 500px at -10% 30%, var(--mint-200), transparent 55%),
+                  var(--bg);
+      min-height:100vh;
+      padding: 32px 18px 60px;
+    }
+
+    .app{
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* Header block mimicking your sheet band */
+    .header-band{
+      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .destination-row{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      align-items:center;
+      justify-items:center;
+      text-align:center;
+    }
+
+    .destination-label{
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .destination-select{
+      width: min(520px, 100%);
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .destination-select:focus{
+      border-color: rgba(47,143,107,0.5);
+      box-shadow: 0 0 0 4px rgba(47,143,107,0.12);
+    }
+
+    .title-pill{
+      margin-top: 10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--mint-300);
+      color: #0f3d2d;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* Tabs */
+    .tabs{
+      margin-top: 18px;
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    /* Hide radio inputs */
+    .tabs input[type="radio"]{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .tab-bar{
+      display:flex;
+      gap: 6px;
+      padding: 10px;
+      background: linear-gradient(180deg, #ffffff, #fbfbfb);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .tab-btn{
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--muted);
+      transition: background .15s, color .15s, transform .08s, box-shadow .15s;
+      user-select:none;
+    }
+    .tab-btn:hover{
+      background: #f3f7f5;
+      color: var(--text);
+    }
+    .tab-btn:active{
+      transform: translateY(1px);
+    }
+
+    /* Active tab styling via :checked */
+    #tab-upgrades:checked ~ .tab-bar label[for="tab-upgrades"],
+    #tab-cards:checked ~ .tab-bar label[for="tab-cards"]{
+      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+      color: var(--accent-dark);
+      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
+    }
+
+    .tab-content{
+      display:none;
+      padding: 18px 18px 22px;
+    }
+
+    #tab-upgrades:checked ~ .content-wrap #content-upgrades{ display:block; }
+    #tab-cards:checked ~ .content-wrap #content-cards{ display:block; }
+
+    /* Table styling */
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .section-title{
+      font-size: 18px;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+    }
+    .section-sub{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .table-wrap{
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius-md);
+      overflow: auto;
+      background: #fff;
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+    }
+
+    thead th{
+      position: sticky;
+      top: 0;
+      background: #fbfffd;
+      text-align:left;
+      font-size: 12px;
+      color: #0f3d2d;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    tbody td{
+      padding: 11px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      color: #111827;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(odd){ background: #fcfdfc; }
+    tbody tr:hover{ background: #f4fbf7; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(47,143,107,0.10);
+      color: var(--accent-dark);
+      border: 1px solid rgba(47,143,107,0.18);
+      white-space: nowrap;
+    }
+
+    .muted{ color: var(--muted); }
+
+    /* Responsive tweaks */
+    @media (max-width: 640px){
+      body{ padding-top: 22px; }
+      .section-head{ flex-direction: column; align-items:flex-start; }
+      .tab-bar{ flex-wrap: wrap; }
+      table{ min-width: 520px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <div class="header-band">
+      <div class="destination-row">
+        <div class="destination-label">Destination</div>
+        <select class="destination-select" aria-label="Destination">
+          <option>Point_Basement</option>
+          <option>Blackhole_Basement</option>
+          <option>Mining_Baseplate</option>
+          <option>Transcend_Baseplate</option>
+          <option>Star_Tree</option>
+          <option>Sacrifice_Baseplate</option>
+        </select>
+        <span class="title-pill">Upgrades</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <!-- CSS-only tab state -->
+      <input type="radio" name="tab" id="tab-upgrades" checked />
+      <input type="radio" name="tab" id="tab-cards" />
+
+      <div class="tab-bar">
+        <label class="tab-btn" for="tab-upgrades">Upgrades</label>
+        <label class="tab-btn" for="tab-cards">Cards</label>
+      </div>
+
+      <div class="content-wrap">
+        <!-- UPGRADES TAB -->
+        <section class="tab-content" id="content-upgrades">
+          <div class="section-head">
+            <div>
+              <div class="section-title">Destination Upgrades</div>
+              <div class="section-sub">Replace these rows with your real upgrade data.</div>
+            </div>
+            <span class="pill">Active Tab</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Upgrade</th>
+                  <th>Type</th>
+                  <th>Cost</th>
+                  <th>Requirement</th>
+                  <th>Effect</th>
+                  <th class="muted">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Reinforced Walls I</td>
+                  <td><span class="pill">Defense</span></td>
+                  <td>250 Ore</td>
+                  <td>Base Level 1</td>
+                  <td>+10% HP to structures</td>
+                  <td class="muted">Starter upgrade</td>
+                </tr>
+                <tr>
+                  <td>Auto Miner Array</td>
+                  <td><span class="pill">Economy</span></td>
+                  <td>1,200 Ore</td>
+                  <td>Pickaxe Mk.2</td>
+                  <td>+2 Ore/sec passive</td>
+                  <td class="muted">Stacks with boosts</td>
+                </tr>
+                <tr>
+                  <td>Warp Relay Node</td>
+                  <td><span class="pill">Utility</span></td>
+                  <td>3 Star Shards</td>
+                  <td>Complete 3 quests</td>
+                  <td>Unlock fast travel</td>
+                  <td class="muted">Destination-specific</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- CARDS TAB -->
+        <section class="tab-content" id="content-cards">
+          <div class="section-head">
+            <div>
+              <div class="section-title">Cards Library</div>
+              <div class="section-sub">This is a separate table layout for your cards.</div>
+            </div>
+            <span class="pill">Active Tab</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Card Name</th>
+                  <th>Rarity</th>
+                  <th>Energy</th>
+                  <th>Ability</th>
+                  <th>Synergy</th>
+                  <th class="muted">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Gravity Seed</td>
+                  <td><span class="pill">Rare</span></td>
+                  <td>2</td>
+                  <td>Pull enemies 1 tile</td>
+                  <td>Blackhole set</td>
+                  <td class="muted">Great for combos</td>
+                </tr>
+                <tr>
+                  <td>Ore Bloom</td>
+                  <td><span class="pill">Common</span></td>
+                  <td>1</td>
+                  <td>Gain +100 Ore</td>
+                  <td>Mining builds</td>
+                  <td class="muted">Fast economy spike</td>
+                </tr>
+                <tr>
+                  <td>Transcend Echo</td>
+                  <td><span class="pill">Epic</span></td>
+                  <td>4</td>
+                  <td>Duplicate last effect</td>
+                  <td>Combo decks</td>
+                  <td class="muted">High skill ceiling</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
