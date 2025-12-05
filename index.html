@@ -957,6 +957,43 @@
                   </select>
                 </div>
               </div>
+              <!-- STEP 3: FOLLOW-UP PROMPTS (appear after Specials is chosen) -->
+<div id="pickaxeFollowups" class="pickaxe-step hidden">
+  <div class="section-head" style="margin-top:12px;">
+    <div>
+      <div class="section-title" style="font-size:16px;">Additional Prompts</div>
+      <div class="section-sub">Normal pickaxe shows 3 prompts, others show 5.</div>
+    </div>
+    <span class="pill">Step 3</span>
+  </div>
+
+  <div class="form-grid">
+    <div class="field" data-extra-idx="1">
+      <label>Pickaxe Prompt 2</label>
+      <input type="text" id="pickaxePrompt2" placeholder="Type here..." />
+    </div>
+
+    <div class="field" data-extra-idx="2">
+      <label>Pickaxe Prompt 3</label>
+      <input type="text" id="pickaxePrompt3" placeholder="Type here..." />
+    </div>
+
+    <div class="field" data-extra-idx="3">
+      <label>Pickaxe Prompt 4</label>
+      <input type="text" id="pickaxePrompt4" placeholder="Type here..." />
+    </div>
+
+    <div class="field" data-extra-idx="4">
+      <label>Pickaxe Prompt 5</label>
+      <input type="text" id="pickaxePrompt5" placeholder="Type here..." />
+    </div>
+
+    <div class="field" data-extra-idx="5">
+      <label>Pickaxe Prompt 6</label>
+      <input type="text" id="pickaxePrompt6" placeholder="Type here..." />
+    </div>
+  </div>
+</div>
 
               <div class="btn-row">
                 <button class="btn secondary" type="button" id="pickaxeChangeBtn">Change Pickaxe</button>
@@ -1136,10 +1173,18 @@
     const STORAGE_KEY = "remblyx_mini_settings_v1";
 
     const DEFAULT_PROMPTS = {
-      elvl1: "",
-      pickaxeChoice: "",      // stores pickaxe id
-      pickaxeDropdown1: ""    // stores dropdown value
-    };
+  elvl1: "",
+  pickaxeChoice: "",       // stores pickaxe id
+  pickaxeDropdown1: "",    // stores first dropdown value
+
+  // follow-up prompts after dropdown #1
+  pickaxePrompt2: "",
+  pickaxePrompt3: "",
+  pickaxePrompt4: "",
+  pickaxePrompt5: "",
+  pickaxePrompt6: ""
+};
+
 
     const DEFAULTS = {
       theme: "system",
@@ -1210,6 +1255,30 @@
       const fixed = n.toFixed(decimals);
       return String(Number(fixed));
     }
+  function getAllowedPickaxeFollowups(){
+  return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
+}
+
+function updatePickaxeFollowupsUI(){
+  if(!pickaxeFollowups) return;
+
+  const firstAnswered = !!(state.prompts.pickaxeDropdown1);
+
+  // Only show the follow-ups AFTER dropdown #1 has a value
+  if(!firstAnswered){
+    pickaxeFollowups.classList.add("hidden");
+    return;
+  }
+
+  pickaxeFollowups.classList.remove("hidden");
+
+  const allowed = getAllowedPickaxeFollowups();
+
+  pickaxeFollowups.querySelectorAll("[data-extra-idx]").forEach(field => {
+    const idx = Number(field.getAttribute("data-extra-idx"));
+    field.classList.toggle("hidden", idx > allowed);
+  });
+}
 
     function formatSuffix(n){
       const abs = Math.abs(n);
@@ -1354,6 +1423,13 @@
     const pickaxeSelectedName = document.getElementById("pickaxeSelectedName");
     const pickaxeDropdown1 = document.getElementById("pickaxeDropdown1");
     const pickaxeChangeBtn = document.getElementById("pickaxeChangeBtn");
+    const pickaxeFollowups = document.getElementById("pickaxeFollowups");
+    const pickaxePrompt2 = document.getElementById("pickaxePrompt2");
+    const pickaxePrompt3 = document.getElementById("pickaxePrompt3");
+    const pickaxePrompt4 = document.getElementById("pickaxePrompt4");
+    const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
+    const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
+
 
     function ensurePrompts(){
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
@@ -1362,6 +1438,7 @@
     function showPickaxeStep(step){
       // step: "choose" | "dropdown"
       if(!pickaxeStepChoose || !pickaxeStepDropdown) return;
+      
 
       if(step === "dropdown"){
         pickaxeStepChoose.classList.add("hidden");
@@ -1388,6 +1465,7 @@
       renderPickaxeChooser(id);
       syncPickaxeSelectedName();
       showPickaxeStep("dropdown");
+      updatePickaxeFollowupsUI();
     }
 
     function renderPickaxeChooser(selectedId){
@@ -1434,6 +1512,11 @@
       // Pickaxe
       renderPickaxeChooser(p.pickaxeChoice ?? "");
       if(pickaxeDropdown1) pickaxeDropdown1.value = p.pickaxeDropdown1 ?? "";
+      if(pickaxePrompt2) pickaxePrompt2.value = p.pickaxePrompt2 ?? "";
+      if(pickaxePrompt3) pickaxePrompt3.value = p.pickaxePrompt3 ?? "";
+      if(pickaxePrompt4) pickaxePrompt4.value = p.pickaxePrompt4 ?? "";
+      if(pickaxePrompt5) pickaxePrompt5.value = p.pickaxePrompt5 ?? "";
+      if(pickaxePrompt6) pickaxePrompt6.value = p.pickaxePrompt6 ?? "";
 
       syncPickaxeSelectedName();
 
@@ -1443,21 +1526,37 @@
       }else{
         showPickaxeStep("choose");
       }
+      updatePickaxeFollowupsUI();
     }
 
     function collectPromptsFromUI(){
       ensurePrompts();
       state.prompts.elvl1 = elvlPrompt1?.value ?? "";
       state.prompts.pickaxeDropdown1 = pickaxeDropdown1?.value ?? "";
+      state.prompts.pickaxePrompt2 = pickaxePrompt2?.value ?? "";
+      state.prompts.pickaxePrompt3 = pickaxePrompt3?.value ?? "";
+      state.prompts.pickaxePrompt4 = pickaxePrompt4?.value ?? "";
+      state.prompts.pickaxePrompt5 = pickaxePrompt5?.value ?? "";
+      state.prompts.pickaxePrompt6 = pickaxePrompt6?.value ?? "";
     }
 
     function wirePromptAutosave(){
-      const inputs = [ elvlPrompt1, pickaxeDropdown1 ].filter(Boolean);
+      const inputs = [
+          elvlPrompt1,
+          pickaxeDropdown1,
+          pickaxePrompt2,
+          pickaxePrompt3,
+          pickaxePrompt4,
+          pickaxePrompt5,
+          pickaxePrompt6
+      ].filter(Boolean);
+
 
       const handler = () => {
         collectPromptsFromUI();
         saveSettingsObj(state);
         syncPickaxeSelectedName();
+        updatePickaxeFollowupsUI();
       };
 
       inputs.forEach(el => {
