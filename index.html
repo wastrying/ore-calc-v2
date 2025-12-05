@@ -530,7 +530,7 @@
       <main class="main">
         <div class="main-inner">
 
-          <!-- UPGRADES -->
+          <!-- UPGRADES (no prompts yet) -->
           <section class="page" id="page-upgrades">
             <input class="dest-route" type="radio" name="dest" id="d-point" checked />
             <input class="dest-route" type="radio" name="dest" id="d-blackhole" />
@@ -557,7 +557,6 @@
             </div>
 
             <div class="dest-content">
-
               <div class="dest-panel" id="panel-point">
                 <div class="section-head">
                   <div>
@@ -767,11 +766,10 @@
                   </table>
                 </div>
               </div>
-
             </div>
           </section>
 
-          <!-- ORE MASTERY (NO PROMPTS YET) -->
+          <!-- ORE MASTERY (no prompts yet) -->
           <section class="page" id="page-ore">
             <div class="section-head">
               <div>
@@ -792,7 +790,7 @@
             </div>
           </section>
 
-          <!-- PICKAXE (6 PROMPTS) -->
+          <!-- PICKAXE (2 dropdowns + 4 text prompts) -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
@@ -802,37 +800,49 @@
               <span class="pill">Pickaxe</span>
             </div>
 
-            <!-- 6 prompts for Pickaxe -->
             <div class="form-grid" style="margin-bottom: 14px;">
+
               <div class="field">
-                <label>Pickaxe</label>
-                  <select id="pickaxePrompt1">
-                  <option value="" disabled>Select an option</option>
+                <label>Pickaxe Prompt 1</label>
+                <select id="pickaxePrompt1">
+                  <option value="" disabled selected>Select an option</option>
                   <option value="A">Option A</option>
                   <option value="B">Option B</option>
                   <option value="C">Option C</option>
                   <option value="D">Option D</option>
                   <option value="E">Option E</option>
                 </select>
-              <div class="section-sub" style="margin-top:8px;">Choose A–E.</div>
-            </div>
+                <div class="section-sub" style="margin-top:8px;">Choose A–E.</div>
+              </div>
 
               <div class="field">
                 <label>Pickaxe Prompt 2</label>
-                <input type="text" id="pickaxePrompt2" placeholder="Type here..." />
+                <select id="pickaxePrompt2">
+                  <option value="" disabled selected>Select an option</option>
+                  <option value="A">Option A</option>
+                  <option value="B">Option B</option>
+                  <option value="C">Option C</option>
+                  <option value="D">Option D</option>
+                  <option value="E">Option E</option>
+                </select>
+                <div class="section-sub" style="margin-top:8px;">Choose A–E.</div>
               </div>
+
               <div class="field">
                 <label>Pickaxe Prompt 3</label>
                 <input type="text" id="pickaxePrompt3" placeholder="Type here..." />
               </div>
+
               <div class="field">
                 <label>Pickaxe Prompt 4</label>
                 <input type="text" id="pickaxePrompt4" placeholder="Type here..." />
               </div>
+
               <div class="field">
                 <label>Pickaxe Prompt 5</label>
                 <input type="text" id="pickaxePrompt5" placeholder="Type here..." />
               </div>
+
               <div class="field">
                 <label>Pickaxe Prompt 6</label>
                 <input type="text" id="pickaxePrompt6" placeholder="Type here..." />
@@ -851,7 +861,7 @@
             </div>
           </section>
 
-          <!-- ELVL (1 PROMPT) -->
+          <!-- ELVL (1 text prompt) -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -861,7 +871,6 @@
               <span class="pill">ELvl</span>
             </div>
 
-            <!-- 1 prompt for ELvl -->
             <div class="form-grid" style="margin-bottom: 14px;">
               <div class="field">
                 <label>ELvl Prompt</label>
@@ -881,7 +890,7 @@
             </div>
           </section>
 
-          <!-- CARDS (NO PROMPTS YET) -->
+          <!-- CARDS (no prompts yet) -->
           <section class="page" id="page-cards">
             <div class="section-head">
               <div>
@@ -1139,7 +1148,7 @@
 
       document.querySelectorAll("[data-demo]").forEach(node => {
         const n = Number(node.getAttribute("data-demo"));
-        const out = formatNumber(n, mode);
+      const out = formatNumber(n, mode);
         if(out.html) node.innerHTML = out.html; else node.textContent = out.text ?? String(n);
       });
     }
@@ -1216,39 +1225,6 @@
       });
     }
 
-    if(resetBtn){
-      resetBtn.addEventListener("click", () => {
-        // Reset everything cleanly (avoid sharing object refs)
-        state.theme = DEFAULTS.theme;
-        state.notation = DEFAULTS.notation;
-        state.profileName = DEFAULTS.profileName;
-        state.defaultSection = DEFAULTS.defaultSection;
-        state.uiScale = DEFAULTS.uiScale;
-        state.showHints = DEFAULTS.showHints;
-        state.hardcore = DEFAULTS.hardcore;
-        state.prompts = { ...DEFAULT_PROMPTS };
-
-        saveSettingsObj(state);
-        applyTheme(state.theme);
-        setRouteById(state.defaultSection);
-
-        if(profileName) profileName.value = "";
-        if(defaultSection) defaultSection.value = DEFAULTS.defaultSection;
-        if(uiScale) uiScale.value = DEFAULTS.uiScale;
-        if(showHints) showHints.checked = DEFAULTS.showHints;
-        if(hardcore) hardcore.checked = DEFAULTS.hardcore;
-
-        document.querySelectorAll('input[name="theme"]').forEach(r => { r.checked = (r.value === DEFAULTS.theme); });
-        document.querySelectorAll('input[name="notation"]').forEach(r => { r.checked = (r.value === DEFAULTS.notation); });
-
-        updateNumberDisplays(state.notation);
-        loadPromptsToUI();
-
-        resetBtn.textContent = "Reset";
-        window.setTimeout(() => resetBtn.textContent = "Reset Defaults", 700);
-      });
-    }
-
     // --- PROMPTS (ELvl + Pickaxe) ---
     const elvlPrompt1 = document.getElementById("elvlPrompt1");
 
@@ -1286,26 +1262,58 @@
     }
 
     function wirePromptAutosave(){
-  const inputs = [
-    elvlPrompt1,
-    pickaxePrompt1, pickaxePrompt2, pickaxePrompt3,
-    pickaxePrompt4, pickaxePrompt5, pickaxePrompt6
-  ].filter(Boolean);
+      const inputs = [
+        elvlPrompt1,
+        pickaxePrompt1, pickaxePrompt2, pickaxePrompt3,
+        pickaxePrompt4, pickaxePrompt5, pickaxePrompt6
+      ].filter(Boolean);
 
-  const handler = () => {
-    collectPromptsFromUI();
-    saveSettingsObj(state);
-  };
+      const handler = () => {
+        collectPromptsFromUI();
+        saveSettingsObj(state);
+      };
 
-  inputs.forEach(el => {
-    el.addEventListener("input", handler);
-    el.addEventListener("change", handler); // important for select
-  });
-}
-
+      inputs.forEach(el => {
+        el.addEventListener("input", handler);
+        el.addEventListener("change", handler);
+      });
+    }
 
     loadPromptsToUI();
     wirePromptAutosave();
+
+    if(resetBtn){
+      resetBtn.addEventListener("click", () => {
+        // Reset everything cleanly
+        state.theme = DEFAULTS.theme;
+        state.notation = DEFAULTS.notation;
+        state.profileName = DEFAULTS.profileName;
+        state.defaultSection = DEFAULTS.defaultSection;
+        state.uiScale = DEFAULTS.uiScale;
+        state.showHints = DEFAULTS.showHints;
+        state.hardcore = DEFAULTS.hardcore;
+        state.prompts = { ...DEFAULT_PROMPTS };
+
+        saveSettingsObj(state);
+        applyTheme(state.theme);
+        setRouteById(state.defaultSection);
+
+        if(profileName) profileName.value = "";
+        if(defaultSection) defaultSection.value = DEFAULTS.defaultSection;
+        if(uiScale) uiScale.value = DEFAULTS.uiScale;
+        if(showHints) showHints.checked = DEFAULTS.showHints;
+        if(hardcore) hardcore.checked = DEFAULTS.hardcore;
+
+        document.querySelectorAll('input[name="theme"]').forEach(r => { r.checked = (r.value === DEFAULTS.theme); });
+        document.querySelectorAll('input[name="notation"]').forEach(r => { r.checked = (r.value === DEFAULTS.notation); });
+
+        updateNumberDisplays(state.notation);
+        loadPromptsToUI();
+
+        resetBtn.textContent = "Reset";
+        window.setTimeout(() => resetBtn.textContent = "Reset Defaults", 700);
+      });
+    }
   </script>
 </body>
 </html>
