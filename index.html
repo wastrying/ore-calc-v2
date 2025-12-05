@@ -1533,13 +1533,17 @@
     }
 
     function computeMilestoneValue(milestone, currentElvl){
-      try{
-        const v = milestone.formula(currentElvl);
-        return Number.isFinite(v) ? v : 0;
-      }catch{
-        return 0;
-      }
-    }
+  try{
+    const v = milestone.formula(currentElvl);
+    const safe = Number.isFinite(v) ? v : 0;
+
+    // ✅ clamp to minimum 1x
+    return Math.max(1, safe);
+  }catch{
+    return 1; // ✅ fallback also respects 1x minimum
+  }
+}
+
 
     function updateElvlSidebarMilestone(){
       const node = document.getElementById("elvlSidebarMilestone");
