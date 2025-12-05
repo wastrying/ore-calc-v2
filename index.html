@@ -463,6 +463,7 @@
       font-size: 11px;
       color: var(--muted);
       margin-top: 2px;
+      min-height: 14px;
     }
 
     @media (max-width: 980px){
@@ -568,6 +569,14 @@
     }
     html[data-theme="dark"] .btn.secondary{
       border-color: rgba(255,255,255,0.12);
+    }
+
+    /* --- NEW: pickaxe steps --- */
+    .pickaxe-step{
+      margin-bottom: 14px;
+    }
+    .hidden{
+      display: none !important;
     }
 
     @media (max-width: 900px){
@@ -891,29 +900,66 @@
             </div>
           </section>
 
-          <!-- PICKAXE (1 image picker prompt) -->
+          <!-- PICKAXE (Step 1 images -> Step 2 dropdown) -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
                 <div class="section-title">Pickaxe</div>
-                <div class="section-sub">Choose your pickaxe visually. Your selection saves automatically.</div>
+                <div class="section-sub">Pick your pickaxe, then continue to the next prompt.</div>
               </div>
               <span class="pill">Pickaxe</span>
             </div>
 
-            <div class="pickaxe-chooser">
-              <div class="section-head" style="margin-bottom:10px;">
-                <div>
-                  <div class="section-title" style="font-size:16px;">Choose your pickaxe</div>
+            <!-- STEP 1: IMAGE CHOOSER -->
+            <div id="pickaxeStepChoose" class="pickaxe-step">
+              <div class="pickaxe-chooser">
+                <div class="section-head" style="margin-bottom:10px;">
+                  <div>
+                    <div class="section-title" style="font-size:16px;">Choose your pickaxe</div>
+                    <div class="section-sub">Click an image to select it.</div>
+                  </div>
+                  <span class="pill">Step 1</span>
                 </div>
-                <span class="pill">Selection</span>
-              </div>
 
-              <!-- JS will render cards here -->
-              <div id="pickaxeChooserGrid" class="pickaxe-grid" role="listbox" aria-label="Pickaxe choices"></div>
+                <div id="pickaxeChooserGrid" class="pickaxe-grid" role="listbox" aria-label="Pickaxe choices"></div>
+              </div>
             </div>
 
-            <div class="section-sub" id="pickaxeSelectedText" style="margin:10px 2px 14px;"></div>
+            <!-- STEP 2: DROPDOWN PROMPT -->
+            <div id="pickaxeStepDropdown" class="pickaxe-step hidden">
+              <div class="section-head">
+                <div>
+                  <div class="section-title" style="font-size:18px;">Pickaxe Prompt</div>
+                  <div class="section-sub">Your pickaxe is locked in. Choose the next option.</div>
+                </div>
+                <span class="pill">Step 2</span>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>Pickaxe Selected</label>
+                  <input type="text" id="pickaxeSelectedName" readonly />
+                  <div class="section-sub" style="margin-top:8px;">Auto-filled from Step 1.</div>
+                </div>
+
+                <div class="field">
+                  <label>Pickaxe Mode</label>
+                  <select id="pickaxeDropdown1">
+                    <option value="">Select an option</option>
+                    <option value="A">Option A</option>
+                    <option value="B">Option B</option>
+                    <option value="C">Option C</option>
+                    <option value="D">Option D</option>
+                    <option value="E">Option E</option>
+                  </select>
+                  <div class="section-sub" style="margin-top:8px;">Rename these to your real choices.</div>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn secondary" type="button" id="pickaxeChangeBtn">Change Pickaxe</button>
+              </div>
+            </div>
 
             <div class="table-wrap">
               <table>
@@ -1087,10 +1133,10 @@
   <script>
     const STORAGE_KEY = "remblyx_mini_settings_v1";
 
-    // Only the prompts you actually want right now.
     const DEFAULT_PROMPTS = {
       elvl1: "",
-      pickaxeChoice: "" // stores the pickaxe id
+      pickaxeChoice: "",      // stores pickaxe id
+      pickaxeDropdown1: ""    // stores dropdown value
     };
 
     const DEFAULTS = {
@@ -1111,8 +1157,6 @@
       { id: "diamondp", name: "Diamond Pickaxe", img: "images/pickaxe/diamond_pickaxe.png" },
       { id: "dragonstonep", name: "Dragonstone Pickaxe", img: "images/pickaxe/dragonstone_pickaxe.png" },
       { id: "starglassp", name: "Starglass Pickaxe", img: "images/pickaxe/starglass_pickaxe.png" },
-      // Add more:
-      // { id: "my_pick", name: "My Pickaxe", sub: "Custom", img: "images/pickaxe/my_pick.png" },
     ];
 
     function loadSettings(){
@@ -1298,36 +1342,56 @@
       });
     }
 
-    // --- PROMPTS (ELvl + Pickaxe Choice) ---
+    // --- PROMPTS (ELvl + Pickaxe Flow) ---
     const elvlPrompt1 = document.getElementById("elvlPrompt1");
-    const pickaxeGrid = document.getElementById("pickaxeChooserGrid");
-    const pickaxeSelectedText = document.getElementById("pickaxeSelectedText");
 
-    function loadPromptsToUI(){
-      const p = state.prompts || DEFAULT_PROMPTS;
-      if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
-      renderPickaxeChooser(p.pickaxeChoice ?? "");
+    // Pickaxe UI refs
+    const pickaxeGrid = document.getElementById("pickaxeChooserGrid");
+    const pickaxeStepChoose = document.getElementById("pickaxeStepChoose");
+    const pickaxeStepDropdown = document.getElementById("pickaxeStepDropdown");
+    const pickaxeSelectedName = document.getElementById("pickaxeSelectedName");
+    const pickaxeDropdown1 = document.getElementById("pickaxeDropdown1");
+    const pickaxeChangeBtn = document.getElementById("pickaxeChangeBtn");
+
+    function ensurePrompts(){
+      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
-    function collectPromptsFromUI(){
-      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
-      state.prompts.elvl1 = elvlPrompt1?.value ?? "";
-      // pickaxeChoice is updated by setPickaxeChoice()
+    function showPickaxeStep(step){
+      // step: "choose" | "dropdown"
+      if(!pickaxeStepChoose || !pickaxeStepDropdown) return;
+
+      if(step === "dropdown"){
+        pickaxeStepChoose.classList.add("hidden");
+        pickaxeStepDropdown.classList.remove("hidden");
+      }else{
+        pickaxeStepDropdown.classList.add("hidden");
+        pickaxeStepChoose.classList.remove("hidden");
+      }
+    }
+
+    function syncPickaxeSelectedName(){
+      if(!pickaxeSelectedName) return;
+      const selectedId = state.prompts.pickaxeChoice;
+      const obj = PICKAXE_OPTIONS.find(o => o.id === selectedId);
+      pickaxeSelectedName.value = obj ? obj.name : "";
     }
 
     function setPickaxeChoice(id){
-      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
+      ensurePrompts();
       state.prompts.pickaxeChoice = id;
+
+      // Auto-go to Step 2 immediately
       saveSettingsObj(state);
       renderPickaxeChooser(id);
+      syncPickaxeSelectedName();
+      showPickaxeStep("dropdown");
     }
 
     function renderPickaxeChooser(selectedId){
       if(!pickaxeGrid) return;
 
       pickaxeGrid.innerHTML = "";
-
-      const selectedObj = PICKAXE_OPTIONS.find(p => p.id === selectedId);
 
       PICKAXE_OPTIONS.forEach(opt => {
         const card = document.createElement("div");
@@ -1357,25 +1421,54 @@
 
         pickaxeGrid.appendChild(card);
       });
+    }
 
-      if(pickaxeSelectedText){
-        pickaxeSelectedText.textContent = selectedObj
-          ? `Selected pickaxe: ${selectedObj.name}`
-          : "No pickaxe selected yet.";
+    function loadPromptsToUI(){
+      ensurePrompts();
+      const p = state.prompts;
+
+      if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
+
+      // Pickaxe
+      renderPickaxeChooser(p.pickaxeChoice ?? "");
+      if(pickaxeDropdown1) pickaxeDropdown1.value = p.pickaxeDropdown1 ?? "";
+
+      syncPickaxeSelectedName();
+
+      // Decide which step to show on load
+      if(p.pickaxeChoice){
+        showPickaxeStep("dropdown");
+      }else{
+        showPickaxeStep("choose");
       }
     }
 
+    function collectPromptsFromUI(){
+      ensurePrompts();
+      state.prompts.elvl1 = elvlPrompt1?.value ?? "";
+      state.prompts.pickaxeDropdown1 = pickaxeDropdown1?.value ?? "";
+    }
+
     function wirePromptAutosave(){
-      const inputs = [ elvlPrompt1 ].filter(Boolean);
+      const inputs = [ elvlPrompt1, pickaxeDropdown1 ].filter(Boolean);
 
       const handler = () => {
         collectPromptsFromUI();
         saveSettingsObj(state);
+        syncPickaxeSelectedName();
       };
 
       inputs.forEach(el => {
         el.addEventListener("input", handler);
         el.addEventListener("change", handler);
+      });
+    }
+
+    if(pickaxeChangeBtn){
+      pickaxeChangeBtn.addEventListener("click", () => {
+        ensurePrompts();
+        // Keep dropdown value if you want, but allow changing pickaxe
+        showPickaxeStep("choose");
       });
     }
 
