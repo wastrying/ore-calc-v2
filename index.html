@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +20,28 @@
       --shadow-sm: 0 2px 10px rgba(0,0,0,0.06);
       --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
       --sidebar-w: 220px;
+      --border-soft: rgba(0,0,0,0.06);
+      --row-hover: #f4fbf7;
+      --row-odd: #fcfdfc;
+      --thead-bg: #fbfffd;
+    }
+
+    html[data-theme="dark"]{
+      --bg: #0f1413;
+      --panel: #121a18;
+      --mint-100: #0f2420;
+      --mint-200: #123029;
+      --mint-300: #154037;
+      --accent: #4bd6a2;
+      --accent-dark: #c9ffea;
+      --text: #e6f0ee;
+      --muted: #9aa7a3;
+      --shadow-sm: 0 2px 10px rgba(0,0,0,0.35);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.45);
+      --border-soft: rgba(255,255,255,0.06);
+      --row-hover: #14261f;
+      --row-odd: #101a17;
+      --thead-bg: #0f1f1a;
     }
 
     *{box-sizing:border-box;}
@@ -35,7 +57,6 @@
       min-height:100vh;
     }
 
-    /* ---------------- CSS-only main navigation ---------------- */
     .route{
       position: absolute;
       opacity: 0;
@@ -48,10 +69,9 @@
       min-height: 100vh;
     }
 
-    /* ---------------- Sidebar (flush left) ---------------- */
     .sidebar{
       background: var(--panel);
-      border-right: 1px solid rgba(0,0,0,0.06);
+      border-right: 1px solid var(--border-soft);
       box-shadow: 6px 0 24px rgba(0,0,0,0.05);
       padding: 14px 10px 18px;
       position: sticky;
@@ -82,7 +102,7 @@
 
     .nav-divider{
       height: 1px;
-      background: rgba(0,0,0,0.06);
+      background: var(--border-soft);
       margin: 8px 8px 6px;
     }
 
@@ -101,7 +121,7 @@
       user-select:none;
     }
     .nav-btn:hover{
-      background: #f3f7f5;
+      background: rgba(47,143,107,0.08);
       color: var(--text);
     }
     .nav-btn:active{ transform: translateY(1px); }
@@ -115,8 +135,11 @@
       background: rgba(0,0,0,0.04);
       white-space: nowrap;
     }
+    html[data-theme="dark"] .nav-mini{
+      color: rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.06);
+    }
 
-    /* Active sidebar states */
     #r-upgrades:checked ~ .frame .sidebar label[for="r-upgrades"],
     #r-ore:checked ~ .frame .sidebar label[for="r-ore"],
     #r-pickaxe:checked ~ .frame .sidebar label[for="r-pickaxe"],
@@ -129,7 +152,6 @@
       box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
     }
 
-    /* ---------------- Right content column ---------------- */
     .content{
       padding: 26px 22px 60px;
     }
@@ -138,7 +160,7 @@
       background: var(--panel);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid var(--border-soft);
       overflow: hidden;
     }
 
@@ -158,7 +180,6 @@
       display:block;
     }
 
-    /* ---------------- Section header ---------------- */
     .section-head{
       display:flex;
       align-items:center;
@@ -194,7 +215,6 @@
 
     .muted{ color: var(--muted); }
 
-    /* ---------------- Destination pills (Upgrades only) ---------------- */
     .dest-route{
       position: absolute;
       opacity: 0;
@@ -206,7 +226,7 @@
       flex-wrap: wrap;
       gap: 8px;
       padding: 10px 0 14px;
-      border-bottom: 1px dashed rgba(0,0,0,0.08);
+      border-bottom: 1px dashed var(--border-soft);
       margin-bottom: 16px;
     }
 
@@ -239,6 +259,10 @@
       font-weight: 800;
       letter-spacing: 0.04em;
     }
+    html[data-theme="dark"] .dest-pill .mini{
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.75);
+    }
 
     .dest-bar .dest-pill{ opacity: .55; }
 
@@ -264,12 +288,11 @@
       display:block;
     }
 
-    /* ---------------- Table styling ---------------- */
     .table-wrap{
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius-md);
       overflow: auto;
-      background: #fff;
+      background: transparent;
     }
 
     table{
@@ -281,28 +304,27 @@
     thead th{
       position: sticky;
       top: 0;
-      background: #fbfffd;
+      background: var(--thead-bg);
       text-align:left;
       font-size: 11px;
-      color: #0f3d2d;
+      color: var(--accent-dark);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       padding: 12px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+      border-bottom: 1px solid var(--border-soft);
     }
 
     tbody td{
       padding: 11px 12px;
       font-size: 13px;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      color: #111827;
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--text);
       vertical-align: top;
     }
 
-    tbody tr:nth-child(odd){ background: #fcfdfc; }
-    tbody tr:hover{ background: #f4fbf7; }
+    tbody tr:nth-child(odd){ background: var(--row-odd); }
+    tbody tr:hover{ background: var(--row-hover); }
 
-    /* ---------------- Settings form bits ---------------- */
     .form-grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
@@ -310,10 +332,13 @@
     }
 
     .field{
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius-md);
       padding: 12px 12px 10px;
-      background: linear-gradient(180deg, #ffffff, #fbfbfb);
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.2));
+    }
+    html[data-theme="dark"] .field{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     }
 
     .field label{
@@ -327,7 +352,6 @@
     }
 
     .field input[type="text"],
-    .field input[type="number"],
     .field select{
       width: 100%;
       border: 1px solid rgba(0,0,0,0.1);
@@ -335,8 +359,13 @@
       padding: 9px 10px;
       font-size: 13px;
       outline: none;
-      background: #fff;
+      background: var(--panel);
+      color: var(--text);
       transition: border-color .15s, box-shadow .15s;
+    }
+    html[data-theme="dark"] .field input,
+    html[data-theme="dark"] .field select{
+      border-color: rgba(255,255,255,0.12);
     }
 
     .field input:focus,
@@ -356,6 +385,57 @@
     .toggle input{
       width: 18px; height: 18px;
       accent-color: var(--accent);
+    }
+
+    .radio-row{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+    }
+
+    .radio-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(0,0,0,0.02);
+      font-size: 11px;
+      font-weight: 650;
+      color: var(--muted);
+      cursor: pointer;
+      user-select:none;
+    }
+    html[data-theme="dark"] .radio-pill{
+      background: rgba(255,255,255,0.04);
+    }
+    .radio-pill input{ accent-color: var(--accent); }
+
+    .demo-box{
+      border: 1px dashed var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 10px 10px 8px;
+      margin-top: 8px;
+      background: rgba(0,0,0,0.02);
+    }
+    html[data-theme="dark"] .demo-box{
+      background: rgba(255,255,255,0.03);
+    }
+
+    .demo-row{
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 6px 4px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .demo-row:last-child{ border-bottom: none; }
+
+    .demo-k{
+      color: var(--muted);
+      font-weight: 600;
     }
 
     .btn-row{
@@ -383,12 +463,14 @@
     .btn:active{ transform: translateY(1px); }
 
     .btn.secondary{
-      background: #fff;
+      background: var(--panel);
       border-color: rgba(0,0,0,0.1);
       color: var(--muted);
     }
+    html[data-theme="dark"] .btn.secondary{
+      border-color: rgba(255,255,255,0.12);
+    }
 
-    /* ---------------- Responsive ---------------- */
     @media (max-width: 900px){
       :root{ --sidebar-w: 190px; }
       table{ min-width: 560px; }
@@ -406,7 +488,7 @@
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
         box-shadow: var(--shadow-sm);
         border-right: none;
-        border-bottom: 1px solid rgba(0,0,0,0.06);
+        border-bottom: 1px solid var(--border-soft);
       }
       .nav{ flex-direction: row; flex-wrap: wrap; }
       .nav-btn{ flex: 1 1 auto; justify-content:center; }
@@ -417,7 +499,6 @@
 </head>
 
 <body>
-  <!-- Main routes for CSS-only navigation -->
   <input class="route" type="radio" name="route" id="r-upgrades" checked />
   <input class="route" type="radio" name="route" id="r-ore" />
   <input class="route" type="radio" name="route" id="r-pickaxe" />
@@ -428,54 +509,28 @@
 
   <div class="frame">
 
-    <!-- Sidebar flush to left edge -->
     <aside class="sidebar" aria-label="Sections">
       <div class="sidebar-title">Core</div>
       <nav class="nav">
-        <label class="nav-btn" for="r-upgrades">
-          <span>Upgrades</span>
-          <span class="nav-mini">U</span>
-        </label>
-        <label class="nav-btn" for="r-ore">
-          <span>Ore Mastery</span>
-          <span class="nav-mini">OM</span>
-        </label>
-        <label class="nav-btn" for="r-pickaxe">
-          <span>Pickaxe</span>
-          <span class="nav-mini">P</span>
-        </label>
-        <label class="nav-btn" for="r-elvl">
-          <span>ELvl</span>
-          <span class="nav-mini">E</span>
-        </label>
-        <label class="nav-btn" for="r-cards">
-          <span>Cards</span>
-          <span class="nav-mini">C</span>
-        </label>
+        <label class="nav-btn" for="r-upgrades"><span>Upgrades</span><span class="nav-mini">U</span></label>
+        <label class="nav-btn" for="r-ore"><span>Ore Mastery</span><span class="nav-mini">OM</span></label>
+        <label class="nav-btn" for="r-pickaxe"><span>Pickaxe</span><span class="nav-mini">P</span></label>
+        <label class="nav-btn" for="r-elvl"><span>ELvl</span><span class="nav-mini">E</span></label>
+        <label class="nav-btn" for="r-cards"><span>Cards</span><span class="nav-mini">C</span></label>
 
         <div class="nav-divider"></div>
 
         <div class="sidebar-title" style="padding-top:4px;">Meta</div>
-
-        <label class="nav-btn" for="r-timewarp">
-          <span>Time Warp</span>
-          <span class="nav-mini">TW</span>
-        </label>
-        <label class="nav-btn" for="r-settings">
-          <span>Settings</span>
-          <span class="nav-mini">⚙</span>
-        </label>
+        <label class="nav-btn" for="r-timewarp"><span>Time Warp</span><span class="nav-mini">TW</span></label>
+        <label class="nav-btn" for="r-settings"><span>Settings</span><span class="nav-mini">⚙</span></label>
       </nav>
     </aside>
 
-    <!-- Right content column -->
     <div class="content">
       <main class="main">
         <div class="main-inner">
 
-          <!-- ===================== UPGRADES PAGE ===================== -->
           <section class="page" id="page-upgrades">
-            <!-- Destination sub-routes (CSS-only) -->
             <input class="dest-route" type="radio" name="dest" id="d-point" checked />
             <input class="dest-route" type="radio" name="dest" id="d-blackhole" />
             <input class="dest-route" type="radio" name="dest" id="d-mining" />
@@ -491,29 +546,15 @@
               <span class="pill">Destinations</span>
             </div>
 
-            <!-- 6 destination pill boxes -->
             <div class="dest-bar" role="tablist" aria-label="Destinations">
-              <label class="dest-pill" for="d-point" role="tab">
-                <span>Point Basement</span><span class="mini">PB</span>
-              </label>
-              <label class="dest-pill" for="d-blackhole" role="tab">
-                <span>Blackhole Basement</span><span class="mini">BB</span>
-              </label>
-              <label class="dest-pill" for="d-mining" role="tab">
-                <span>Mining Baseplate</span><span class="mini">MB</span>
-              </label>
-              <label class="dest-pill" for="d-transcend" role="tab">
-                <span>Transcend Baseplate</span><span class="mini">TB</span>
-              </label>
-              <label class="dest-pill" for="d-star" role="tab">
-                <span>Star Tree</span><span class="mini">ST</span>
-              </label>
-              <label class="dest-pill" for="d-sacrifice" role="tab">
-                <span>Sacrifice Baseplate</span><span class="mini">SB</span>
-              </label>
+              <label class="dest-pill" for="d-point" role="tab"><span>Point Basement</span><span class="mini">PB</span></label>
+              <label class="dest-pill" for="d-blackhole" role="tab"><span>Blackhole Basement</span><span class="mini">BB</span></label>
+              <label class="dest-pill" for="d-mining" role="tab"><span>Mining Baseplate</span><span class="mini">MB</span></label>
+              <label class="dest-pill" for="d-transcend" role="tab"><span>Transcend Baseplate</span><span class="mini">TB</span></label>
+              <label class="dest-pill" for="d-star" role="tab"><span>Star Tree</span><span class="mini">ST</span></label>
+              <label class="dest-pill" for="d-sacrifice" role="tab"><span>Sacrifice Baseplate</span><span class="mini">SB</span></label>
             </div>
 
-            <!-- Destination-specific tables -->
             <div class="dest-content">
 
               <div class="dest-panel" id="panel-point">
@@ -527,30 +568,23 @@
                 <div class="table-wrap">
                   <table>
                     <thead>
-                      <tr>
-                        <th>Upgrade</th>
-                        <th>Type</th>
-                        <th>Cost</th>
-                        <th>Requirement</th>
-                        <th>Effect</th>
-                        <th class="muted">Notes</th>
-                      </tr>
+                      <tr><th>Upgrade</th><th>Type</th><th>Cost</th><th>Requirement</th><th>Effect</th><th class="muted">Notes</th></tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Point Amplifier I</td>
                         <td><span class="pill">Economy</span></td>
-                        <td>150 Ore</td>
+                        <td><span data-num="150"></span> Ore</td>
                         <td>Base Level 1</td>
-                        <td>+5% point gain</td>
+                        <td>+<span data-num="5"></span>% point gain</td>
                         <td class="muted">Early scaling</td>
                       </tr>
                       <tr>
                         <td>Basement Shield</td>
                         <td><span class="pill">Defense</span></td>
-                        <td>400 Ore</td>
+                        <td><span data-num="400"></span> Ore</td>
                         <td>Complete 1 quest</td>
-                        <td>+10% structure HP</td>
+                        <td>+<span data-num="10"></span>% structure HP</td>
                         <td class="muted">Example row</td>
                       </tr>
                     </tbody>
@@ -569,30 +603,23 @@
                 <div class="table-wrap">
                   <table>
                     <thead>
-                      <tr>
-                        <th>Upgrade</th>
-                        <th>Type</th>
-                        <th>Cost</th>
-                        <th>Requirement</th>
-                        <th>Effect</th>
-                        <th class="muted">Notes</th>
-                      </tr>
+                      <tr><th>Upgrade</th><th>Type</th><th>Cost</th><th>Requirement</th><th>Effect</th><th class="muted">Notes</th></tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Gravity Well I</td>
                         <td><span class="pill">Utility</span></td>
-                        <td>1 Void Core</td>
-                        <td>ELvl 5</td>
+                        <td><span data-num="1"></span> Void Core</td>
+                        <td>ELvl <span data-num="5"></span></td>
                         <td>Unlock pull mechanic</td>
                         <td class="muted">Theme core</td>
                       </tr>
                       <tr>
                         <td>Singularity Forge</td>
                         <td><span class="pill">Economy</span></td>
-                        <td>900 Ore</td>
+                        <td><span data-num="900"></span> Ore</td>
                         <td>Pickaxe Mk.2</td>
-                        <td>+1.5 Ore/sec passive</td>
+                        <td>+<span data-num="1.5"></span> Ore/sec passive</td>
                         <td class="muted">Example row</td>
                       </tr>
                     </tbody>
@@ -611,30 +638,23 @@
                 <div class="table-wrap">
                   <table>
                     <thead>
-                      <tr>
-                        <th>Upgrade</th>
-                        <th>Type</th>
-                        <th>Cost</th>
-                        <th>Requirement</th>
-                        <th>Effect</th>
-                        <th class="muted">Notes</th>
-                      </tr>
+                      <tr><th>Upgrade</th><th>Type</th><th>Cost</th><th>Requirement</th><th>Effect</th><th class="muted">Notes</th></tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Auto Miner Array</td>
                         <td><span class="pill">Economy</span></td>
-                        <td>1,200 Ore</td>
+                        <td><span data-num="1200"></span> Ore</td>
                         <td>Base Level 2</td>
-                        <td>+2 Ore/sec passive</td>
+                        <td>+<span data-num="2"></span> Ore/sec passive</td>
                         <td class="muted">Core mining loop</td>
                       </tr>
                       <tr>
                         <td>Vein Scanner</td>
                         <td><span class="pill">Utility</span></td>
-                        <td>3 Scanner Parts</td>
+                        <td><span data-num="3"></span> Scanner Parts</td>
                         <td>Ore Mastery I</td>
-                        <td>+10% rare find chance</td>
+                        <td>+<span data-num="10"></span>% rare find chance</td>
                         <td class="muted">Example row</td>
                       </tr>
                     </tbody>
@@ -653,30 +673,23 @@
                 <div class="table-wrap">
                   <table>
                     <thead>
-                      <tr>
-                        <th>Upgrade</th>
-                        <th>Type</th>
-                        <th>Cost</th>
-                        <th>Requirement</th>
-                        <th>Effect</th>
-                        <th class="muted">Notes</th>
-                      </tr>
+                      <tr><th>Upgrade</th><th>Type</th><th>Cost</th><th>Requirement</th><th>Effect</th><th class="muted">Notes</th></tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Ascension Catalysts</td>
                         <td><span class="pill">Progression</span></td>
-                        <td>1 Transcend Sigil</td>
-                        <td>ELvl 25</td>
+                        <td><span data-num="1"></span> Transcend Sigil</td>
+                        <td>ELvl <span data-num="25"></span></td>
                         <td>Unlock prestige track</td>
                         <td class="muted">Late game gate</td>
                       </tr>
                       <tr>
                         <td>Echo Multipliers</td>
                         <td><span class="pill">Economy</span></td>
-                        <td>2 Sigils</td>
+                        <td><span data-num="2"></span> Sigils</td>
                         <td>Complete 5 trials</td>
-                        <td>+15% all gains</td>
+                        <td>+<span data-num="15"></span>% all gains</td>
                         <td class="muted">Example row</td>
                       </tr>
                     </tbody>
@@ -695,20 +708,13 @@
                 <div class="table-wrap">
                   <table>
                     <thead>
-                      <tr>
-                        <th>Upgrade</th>
-                        <th>Type</th>
-                        <th>Cost</th>
-                        <th>Requirement</th>
-                        <th>Effect</th>
-                        <th class="muted">Notes</th>
-                      </tr>
+                      <tr><th>Upgrade</th><th>Type</th><th>Cost</th><th>Requirement</th><th>Effect</th><th class="muted">Notes</th></tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Starlight Sap</td>
                         <td><span class="pill">Utility</span></td>
-                        <td>50 Star Leaves</td>
+                        <td><span data-num="50"></span> Star Leaves</td>
                         <td>Ore Mastery II</td>
                         <td>Unlock star crafting</td>
                         <td class="muted">Theme unlock</td>
@@ -716,9 +722,9 @@
                       <tr>
                         <td>Constellation Boost</td>
                         <td><span class="pill">Economy</span></td>
-                        <td>200 Leaves</td>
+                        <td><span data-num="200"></span> Leaves</td>
                         <td>Complete 3 events</td>
-                        <td>+8% global gain</td>
+                        <td>+<span data-num="8"></span>% global gain</td>
                         <td class="muted">Example row</td>
                       </tr>
                     </tbody>
@@ -737,30 +743,23 @@
                 <div class="table-wrap">
                   <table>
                     <thead>
-                      <tr>
-                        <th>Upgrade</th>
-                        <th>Type</th>
-                        <th>Cost</th>
-                        <th>Requirement</th>
-                        <th>Effect</th>
-                        <th class="muted">Notes</th>
-                      </tr>
+                      <tr><th>Upgrade</th><th>Type</th><th>Cost</th><th>Requirement</th><th>Effect</th><th class="muted">Notes</th></tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Offering Engine</td>
                         <td><span class="pill">Progression</span></td>
-                        <td>1 Relic</td>
-                        <td>ELvl 15</td>
+                        <td><span data-num="1"></span> Relic</td>
+                        <td>ELvl <span data-num="15"></span></td>
                         <td>Convert losses into buffs</td>
                         <td class="muted">High-risk system</td>
                       </tr>
                       <tr>
                         <td>Bloodline Pact</td>
                         <td><span class="pill">Defense</span></td>
-                        <td>3 Relics</td>
+                        <td><span data-num="3"></span> Relics</td>
                         <td>Complete 2 sacrifices</td>
-                        <td>+12% damage resist</td>
+                        <td>+<span data-num="12"></span>% damage resist</td>
                         <td class="muted">Example row</td>
                       </tr>
                     </tbody>
@@ -771,7 +770,6 @@
             </div>
           </section>
 
-          <!-- ===================== ORE MASTERY PAGE ===================== -->
           <section class="page" id="page-ore">
             <div class="section-head">
               <div>
@@ -780,50 +778,18 @@
               </div>
               <span class="pill">Ore Mastery</span>
             </div>
-
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th>Ore Type</th>
-                    <th>Tier</th>
-                    <th>XP Required</th>
-                    <th>Bonus</th>
-                    <th>Unlocks</th>
-                    <th class="muted">Notes</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Ore Type</th><th>Tier</th><th>XP Required</th><th>Bonus</th><th>Unlocks</th><th class="muted">Notes</th></tr></thead>
                 <tbody>
-                  <tr>
-                    <td>Iron</td>
-                    <td><span class="pill">I</span></td>
-                    <td>0</td>
-                    <td>+0%</td>
-                    <td>Base mining</td>
-                    <td class="muted">Starter</td>
-                  </tr>
-                  <tr>
-                    <td>Gold</td>
-                    <td><span class="pill">II</span></td>
-                    <td>500</td>
-                    <td>+5% yield</td>
-                    <td>Improved smelt</td>
-                    <td class="muted">Example row</td>
-                  </tr>
-                  <tr>
-                    <td>Mythic Ore</td>
-                    <td><span class="pill">V</span></td>
-                    <td>10,000</td>
-                    <td>+25% yield</td>
-                    <td>Special crafts</td>
-                    <td class="muted">Endgame</td>
-                  </tr>
+                  <tr><td>Iron</td><td><span class="pill">I</span></td><td><span data-num="0"></span></td><td>+<span data-num="0"></span>%</td><td>Base mining</td><td class="muted">Starter</td></tr>
+                  <tr><td>Gold</td><td><span class="pill">II</span></td><td><span data-num="500"></span></td><td>+<span data-num="5"></span>% yield</td><td>Improved smelt</td><td class="muted">Example row</td></tr>
+                  <tr><td>Mythic Ore</td><td><span class="pill">V</span></td><td><span data-num="10000"></span></td><td>+<span data-num="25"></span>% yield</td><td>Special crafts</td><td class="muted">Endgame</td></tr>
                 </tbody>
               </table>
             </div>
           </section>
 
-          <!-- ===================== PICKAXE PAGE ===================== -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
@@ -832,50 +798,18 @@
               </div>
               <span class="pill">Pickaxe</span>
             </div>
-
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th>Model</th>
-                    <th>Tier</th>
-                    <th>Power</th>
-                    <th>Speed</th>
-                    <th>Special</th>
-                    <th class="muted">Notes</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Model</th><th>Tier</th><th>Power</th><th>Speed</th><th>Special</th><th class="muted">Notes</th></tr></thead>
                 <tbody>
-                  <tr>
-                    <td>Starter Pick</td>
-                    <td><span class="pill">Mk.1</span></td>
-                    <td>10</td>
-                    <td>1.0x</td>
-                    <td>None</td>
-                    <td class="muted">Baseline stats</td>
-                  </tr>
-                  <tr>
-                    <td>Core Splitter</td>
-                    <td><span class="pill">Mk.3</span></td>
-                    <td>35</td>
-                    <td>1.4x</td>
-                    <td>+5% crit</td>
-                    <td class="muted">Example</td>
-                  </tr>
-                  <tr>
-                    <td>Celestial Drill</td>
-                    <td><span class="pill">Mk.6</span></td>
-                    <td>120</td>
-                    <td>2.2x</td>
-                    <td>AOE break</td>
-                    <td class="muted">Late game</td>
-                  </tr>
+                  <tr><td>Starter Pick</td><td><span class="pill">Mk.1</span></td><td><span data-num="10"></span></td><td><span data-num="1"></span>x</td><td>None</td><td class="muted">Baseline stats</td></tr>
+                  <tr><td>Core Splitter</td><td><span class="pill">Mk.3</span></td><td><span data-num="35"></span></td><td><span data-num="1.4"></span>x</td><td>+<span data-num="5"></span>% crit</td><td class="muted">Example</td></tr>
+                  <tr><td>Celestial Drill</td><td><span class="pill">Mk.6</span></td><td><span data-num="120"></span></td><td><span data-num="2.2"></span>x</td><td>AOE break</td><td class="muted">Late game</td></tr>
                 </tbody>
               </table>
             </div>
           </section>
 
-          <!-- ===================== ELVL PAGE ===================== -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -884,50 +818,18 @@
               </div>
               <span class="pill">ELvl</span>
             </div>
-
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th>Level</th>
-                    <th>XP Needed</th>
-                    <th>Reward</th>
-                    <th>Unlock</th>
-                    <th>Multiplier</th>
-                    <th class="muted">Notes</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Level</th><th>XP Needed</th><th>Reward</th><th>Unlock</th><th>Multiplier</th><th class="muted">Notes</th></tr></thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>Starter pack</td>
-                    <td>Basic destinations</td>
-                    <td>1.00x</td>
-                    <td class="muted">Example row</td>
-                  </tr>
-                  <tr>
-                    <td>10</td>
-                    <td>2,000</td>
-                    <td>+1 card slot</td>
-                    <td>Ore Mastery II</td>
-                    <td>1.05x</td>
-                    <td class="muted">Mid milestone</td>
-                  </tr>
-                  <tr>
-                    <td>50</td>
-                    <td>50,000</td>
-                    <td>Legend token</td>
-                    <td>Transcend systems</td>
-                    <td>1.20x</td>
-                    <td class="muted">End milestone</td>
-                  </tr>
+                  <tr><td><span data-num="1"></span></td><td><span data-num="0"></span></td><td>Starter pack</td><td>Basic destinations</td><td><span data-num="1"></span>.00x</td><td class="muted">Example row</td></tr>
+                  <tr><td><span data-num="10"></span></td><td><span data-num="2000"></span></td><td>+1 card slot</td><td>Ore Mastery II</td><td><span data-num="1.05"></span>x</td><td class="muted">Mid milestone</td></tr>
+                  <tr><td><span data-num="50"></span></td><td><span data-num="50000"></span></td><td>Legend token</td><td>Transcend systems</td><td><span data-num="1.2"></span>x</td><td class="muted">End milestone</td></tr>
                 </tbody>
               </table>
             </div>
           </section>
 
-          <!-- ===================== CARDS PAGE ===================== -->
           <section class="page" id="page-cards">
             <div class="section-head">
               <div>
@@ -936,50 +838,18 @@
               </div>
               <span class="pill">Cards</span>
             </div>
-
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th>Card Name</th>
-                    <th>Rarity</th>
-                    <th>Energy</th>
-                    <th>Ability</th>
-                    <th>Synergy</th>
-                    <th class="muted">Notes</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Card Name</th><th>Rarity</th><th>Energy</th><th>Ability</th><th>Synergy</th><th class="muted">Notes</th></tr></thead>
                 <tbody>
-                  <tr>
-                    <td>Gravity Seed</td>
-                    <td><span class="pill">Rare</span></td>
-                    <td>2</td>
-                    <td>Pull enemies 1 tile</td>
-                    <td>Blackhole set</td>
-                    <td class="muted">Great for combos</td>
-                  </tr>
-                  <tr>
-                    <td>Ore Bloom</td>
-                    <td><span class="pill">Common</span></td>
-                    <td>1</td>
-                    <td>Gain +100 Ore</td>
-                    <td>Mining builds</td>
-                    <td class="muted">Fast economy spike</td>
-                  </tr>
-                  <tr>
-                    <td>Transcend Echo</td>
-                    <td><span class="pill">Epic</span></td>
-                    <td>4</td>
-                    <td>Duplicate last effect</td>
-                    <td>Combo decks</td>
-                    <td class="muted">High skill ceiling</td>
-                  </tr>
+                  <tr><td>Gravity Seed</td><td><span class="pill">Rare</span></td><td><span data-num="2"></span></td><td>Pull enemies 1 tile</td><td>Blackhole set</td><td class="muted">Great for combos</td></tr>
+                  <tr><td>Ore Bloom</td><td><span class="pill">Common</span></td><td><span data-num="1"></span></td><td>Gain +<span data-num="100"></span> Ore</td><td>Mining builds</td><td class="muted">Fast economy spike</td></tr>
+                  <tr><td>Transcend Echo</td><td><span class="pill">Epic</span></td><td><span data-num="4"></span></td><td>Duplicate last effect</td><td>Combo decks</td><td class="muted">High skill ceiling</td></tr>
                 </tbody>
               </table>
             </div>
           </section>
 
-          <!-- ===================== TIME WARP PAGE ===================== -->
           <section class="page" id="page-timewarp">
             <div class="section-head">
               <div>
@@ -988,60 +858,27 @@
               </div>
               <span class="pill">Meta</span>
             </div>
-
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th>Warp Name</th>
-                    <th>Type</th>
-                    <th>Cost</th>
-                    <th>Duration</th>
-                    <th>Effect</th>
-                    <th class="muted">Cooldown</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Warp Name</th><th>Type</th><th>Cost</th><th>Duration</th><th>Effect</th><th class="muted">Cooldown</th></tr></thead>
                 <tbody>
-                  <tr>
-                    <td>Minute Skip</td>
-                    <td><span class="pill">Boost</span></td>
-                    <td>1 Time Shard</td>
-                    <td>60s</td>
-                    <td>Instantly grant 60s of passive income</td>
-                    <td class="muted">5m</td>
-                  </tr>
-                  <tr>
-                    <td>Echo Loop</td>
-                    <td><span class="pill">Utility</span></td>
-                    <td>3 Shards</td>
-                    <td>120s</td>
-                    <td>Repeat last upgrade effect at 50%</td>
-                    <td class="muted">15m</td>
-                  </tr>
-                  <tr>
-                    <td>Stasis Field</td>
-                    <td><span class="pill">Defense</span></td>
-                    <td>2 Shards</td>
-                    <td>90s</td>
-                    <td>Reduce damage taken by 20%</td>
-                    <td class="muted">10m</td>
-                  </tr>
+                  <tr><td>Minute Skip</td><td><span class="pill">Boost</span></td><td><span data-num="1"></span> Time Shard</td><td><span data-num="60"></span>s</td><td>Instantly grant <span data-num="60"></span>s of passive income</td><td class="muted"><span data-num="5"></span>m</td></tr>
+                  <tr><td>Echo Loop</td><td><span class="pill">Utility</span></td><td><span data-num="3"></span> Shards</td><td><span data-num="120"></span>s</td><td>Repeat last upgrade effect at <span data-num="50"></span>%</td><td class="muted"><span data-num="15"></span>m</td></tr>
+                  <tr><td>Stasis Field</td><td><span class="pill">Defense</span></td><td><span data-num="2"></span> Shards</td><td><span data-num="90"></span>s</td><td>Reduce damage taken by <span data-num="20"></span>%</td><td class="muted"><span data-num="10"></span>m</td></tr>
                 </tbody>
               </table>
             </div>
-
             <div class="btn-row">
               <button class="btn" type="button">Activate Warp</button>
               <button class="btn secondary" type="button">View History</button>
             </div>
           </section>
 
-          <!-- ===================== SETTINGS PAGE ===================== -->
           <section class="page" id="page-settings">
             <div class="section-head">
               <div>
                 <div class="section-title">Settings</div>
-                <div class="section-sub">UI and gameplay preferences (placeholder layout).</div>
+                <div class="section-sub">Number notation and theme preferences (with live preview).</div>
               </div>
               <span class="pill">System</span>
             </div>
@@ -1049,60 +886,66 @@
             <div class="form-grid">
               <div class="field">
                 <label>Profile Name</label>
-                <input type="text" placeholder="Enter display name" />
+                <input type="text" id="profileName" placeholder="Enter display name" />
               </div>
+
               <div class="field">
                 <label>Default Section</label>
-                <select>
-                  <option>Upgrades</option>
-                  <option>Ore Mastery</option>
-                  <option>Pickaxe</option>
-                  <option>ELvl</option>
-                  <option>Cards</option>
-                  <option>Time Warp</option>
+                <select id="defaultSection">
+                  <option value="r-upgrades">Upgrades</option>
+                  <option value="r-ore">Ore Mastery</option>
+                  <option value="r-pickaxe">Pickaxe</option>
+                  <option value="r-elvl">ELvl</option>
+                  <option value="r-cards">Cards</option>
+                  <option value="r-timewarp">Time Warp</option>
+                  <option value="r-settings">Settings</option>
                 </select>
+                <div class="section-sub" style="margin-top:8px;">Applies on refresh (demo).</div>
               </div>
+
+              <div class="field">
+                <label>Theme</label>
+                <div class="radio-row">
+                  <label class="radio-pill"><input type="radio" name="theme" value="light" /><span>Light</span></label>
+                  <label class="radio-pill"><input type="radio" name="theme" value="dark" /><span>Dark</span></label>
+                  <label class="radio-pill"><input type="radio" name="theme" value="system" checked /><span>System</span></label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Number Notation</label>
+                <div class="radio-row">
+                  <label class="radio-pill"><input type="radio" name="notation" value="suffix" checked /><span>K/M/B/T/Qd/Qn</span></label>
+                  <label class="radio-pill"><input type="radio" name="notation" value="scientific" /><span>Scientific (e)</span></label>
+                  <label class="radio-pill"><input type="radio" name="notation" value="index" /><span>Index (×10^)</span></label>
+                </div>
+
+                <div class="demo-box">
+                  <div class="demo-row"><span class="demo-k">1,234</span><span class="demo-v" data-demo="1234"></span></div>
+                  <div class="demo-row"><span class="demo-k">987,654,321</span><span class="demo-v" data-demo="987654321"></span></div>
+                  <div class="demo-row"><span class="demo-k">1,230,000,000,000,000</span><span class="demo-v" data-demo="1230000000000000"></span></div>
+                </div>
+              </div>
+
               <div class="field">
                 <label>UI Scale</label>
-                <select>
-                  <option>Compact</option>
-                  <option selected>Comfortable</option>
-                  <option>Spacious</option>
+                <select id="uiScale">
+                  <option value="compact">Compact</option>
+                  <option value="comfortable" selected>Comfortable</option>
+                  <option value="spacious">Spacious</option>
                 </select>
               </div>
-              <div class="field">
-                <label>Number Format</label>
-                <select>
-                  <option>1,234</option>
-                  <option>1.23K</option>
-                  <option>1.23e3</option>
-                </select>
-              </div>
+
               <div class="field">
                 <label>Gameplay Toggles</label>
-                <div class="toggle">
-                  <input type="checkbox" checked />
-                  <span>Show unlock hints</span>
-                </div>
-                <div class="toggle" style="margin-top:8px;">
-                  <input type="checkbox" />
-                  <span>Enable hardcore mode</span>
-                </div>
-              </div>
-              <div class="field">
-                <label>Autosave Frequency</label>
-                <select>
-                  <option>Off</option>
-                  <option>Every 1 min</option>
-                  <option selected>Every 5 min</option>
-                  <option>Every 15 min</option>
-                </select>
+                <div class="toggle"><input type="checkbox" id="showHints" checked /><span>Show unlock hints</span></div>
+                <div class="toggle" style="margin-top:8px;"><input type="checkbox" id="hardcore" /><span>Enable hardcore mode</span></div>
               </div>
             </div>
 
             <div class="btn-row">
-              <button class="btn" type="button">Save Settings</button>
-              <button class="btn secondary" type="button">Reset Defaults</button>
+              <button class="btn" type="button" id="saveSettings">Save Settings</button>
+              <button class="btn secondary" type="button" id="resetSettings">Reset Defaults</button>
             </div>
           </section>
 
@@ -1111,5 +954,211 @@
     </div>
 
   </div>
+
+  <script>
+    const STORAGE_KEY = "remblyx_mini_settings_v1";
+
+    const DEFAULTS = {
+      theme: "system",
+      notation: "suffix",
+      profileName: "",
+      defaultSection: "r-upgrades",
+      uiScale: "comfortable",
+      showHints: true,
+      hardcore: false,
+    };
+
+    function loadSettings(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return { ...DEFAULTS };
+        const parsed = JSON.parse(raw);
+        return { ...DEFAULTS, ...parsed };
+      }catch{
+        return { ...DEFAULTS };
+      }
+    }
+
+    function saveSettingsObj(obj){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    }
+
+    function applyTheme(theme){
+      const root = document.documentElement;
+      if(theme === "system"){
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+      }else{
+        root.setAttribute("data-theme", theme);
+      }
+    }
+
+    function bindSystemThemeListener(getTheme){
+      if(!window.matchMedia) return;
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      mq.addEventListener?.("change", () => {
+        if(getTheme() === "system") applyTheme("system");
+      });
+    }
+
+    function tidyFixed(value, decimals){
+      const n = Number(value);
+      if(!Number.isFinite(n)) return "0";
+      const fixed = n.toFixed(decimals);
+      return String(Number(fixed));
+    }
+
+    function formatSuffix(n){
+      const abs = Math.abs(n);
+      const sign = n < 0 ? "-" : "";
+      const units = [
+        { v: 1e18, s: "Qn" },
+        { v: 1e15, s: "Qd" },
+        { v: 1e12, s: "T" },
+        { v: 1e9,  s: "B" },
+        { v: 1e6,  s: "M" },
+        { v: 1e3,  s: "K" },
+      ];
+      for(const u of units){
+        if(abs >= u.v){
+          const val = abs / u.v;
+          const dec = val >= 100 ? 0 : val >= 10 ? 1 : 2;
+          return sign + tidyFixed(val, dec) + u.s;
+        }
+      }
+      const dec = abs >= 100 ? 0 : abs >= 10 ? 1 : 2;
+      return sign + tidyFixed(abs, dec);
+    }
+
+    function formatScientific(n){
+      const abs = Math.abs(n);
+      if(abs === 0) return "0";
+      if(abs < 1000) return String(n);
+      return Number(n).toExponential(2).replace("e+","e");
+    }
+
+    function formatIndexHTML(n){
+      const abs = Math.abs(n);
+      if(abs === 0) return "0";
+      if(abs < 1000) return String(n);
+      const exp = Math.floor(Math.log10(abs));
+      const mant = n / Math.pow(10, exp);
+      const am = Math.abs(mant);
+      const dec = am >= 100 ? 0 : am >= 10 ? 1 : 2;
+      const mantStr = tidyFixed(mant, dec);
+      return `${mantStr}×10<sup>${exp}</sup>`;
+    }
+
+    function formatNumber(n, mode){
+      if(mode === "scientific") return { text: formatScientific(n), html: null };
+      if(mode === "index") return { text: null, html: formatIndexHTML(n) };
+      return { text: formatSuffix(n), html: null };
+    }
+
+    function updateNumberDisplays(mode){
+      document.querySelectorAll("[data-num]").forEach(node => {
+        const n = Number(node.getAttribute("data-num"));
+        const out = formatNumber(n, mode);
+        if(out.html) node.innerHTML = out.html; else node.textContent = out.text ?? String(n);
+      });
+
+      document.querySelectorAll("[data-demo]").forEach(node => {
+        const n = Number(node.getAttribute("data-demo"));
+        const out = formatNumber(n, mode);
+        if(out.html) node.innerHTML = out.html; else node.textContent = out.text ?? String(n);
+      });
+    }
+
+    function setRouteById(id){
+      const input = document.getElementById(id);
+      if(input && input.classList.contains("route")) input.checked = true;
+    }
+
+    const state = loadSettings();
+
+    applyTheme(state.theme);
+    bindSystemThemeListener(() => state.theme);
+    setRouteById(state.defaultSection);
+
+    const profileName = document.getElementById("profileName");
+    const defaultSection = document.getElementById("defaultSection");
+    const uiScale = document.getElementById("uiScale");
+    const showHints = document.getElementById("showHints");
+    const hardcore = document.getElementById("hardcore");
+
+    if(profileName) profileName.value = state.profileName;
+    if(defaultSection) defaultSection.value = state.defaultSection;
+    if(uiScale) uiScale.value = state.uiScale;
+    if(showHints) showHints.checked = !!state.showHints;
+    if(hardcore) hardcore.checked = !!state.hardcore;
+
+    document.querySelectorAll('input[name="theme"]').forEach(r => { r.checked = (r.value === state.theme); });
+    document.querySelectorAll('input[name="notation"]').forEach(r => { r.checked = (r.value === state.notation); });
+
+    updateNumberDisplays(state.notation);
+
+    document.querySelectorAll('input[name="theme"]').forEach(r => {
+      r.addEventListener("change", () => {
+        state.theme = r.value;
+        applyTheme(state.theme);
+      });
+    });
+
+    document.querySelectorAll('input[name="notation"]').forEach(r => {
+      r.addEventListener("change", () => {
+        state.notation = r.value;
+        updateNumberDisplays(state.notation);
+      });
+    });
+
+    const saveBtn = document.getElementById("saveSettings");
+    const resetBtn = document.getElementById("resetSettings");
+
+    function collectStateFromUI(){
+      state.profileName = profileName?.value ?? "";
+      state.defaultSection = defaultSection?.value ?? "r-upgrades";
+      state.uiScale = uiScale?.value ?? "comfortable";
+      state.showHints = showHints?.checked ?? true;
+      state.hardcore = hardcore?.checked ?? false;
+      const themeSel = document.querySelector('input[name="theme"]:checked');
+      const notationSel = document.querySelector('input[name="notation"]:checked');
+      state.theme = themeSel?.value ?? "system";
+      state.notation = notationSel?.value ?? "suffix";
+    }
+
+    if(saveBtn){
+      saveBtn.addEventListener("click", () => {
+        collectStateFromUI();
+        saveSettingsObj(state);
+        applyTheme(state.theme);
+        updateNumberDisplays(state.notation);
+        saveBtn.textContent = "Saved";
+        window.setTimeout(() => saveBtn.textContent = "Save Settings", 700);
+      });
+    }
+
+    if(resetBtn){
+      resetBtn.addEventListener("click", () => {
+        Object.assign(state, DEFAULTS);
+        saveSettingsObj(state);
+        applyTheme(state.theme);
+        setRouteById(state.defaultSection);
+
+        if(profileName) profileName.value = "";
+        if(defaultSection) defaultSection.value = DEFAULTS.defaultSection;
+        if(uiScale) uiScale.value = DEFAULTS.uiScale;
+        if(showHints) showHints.checked = DEFAULTS.showHints;
+        if(hardcore) hardcore.checked = DEFAULTS.hardcore;
+
+        document.querySelectorAll('input[name="theme"]').forEach(r => { r.checked = (r.value === DEFAULTS.theme); });
+        document.querySelectorAll('input[name="notation"]').forEach(r => { r.checked = (r.value === DEFAULTS.notation); });
+
+        updateNumberDisplays(state.notation);
+
+        resetBtn.textContent = "Reset";
+        window.setTimeout(() => resetBtn.textContent = "Reset Defaults", 700);
+      });
+    }
+  </script>
 </body>
 </html>
