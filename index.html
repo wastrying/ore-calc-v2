@@ -126,7 +126,7 @@
     }
     .nav-btn:active{ transform: translateY(1px); }
 
-    /* --- NEW: stacked label for ELvl milestone subtext --- */
+    /* --- stacked label for ELvl milestone subtext --- */
     .nav-stack{
       display:flex;
       flex-direction: column;
@@ -595,7 +595,7 @@
       border-color: rgba(255,255,255,0.12);
     }
 
-    /* --- NEW: pickaxe steps --- */
+    /* --- pickaxe steps --- */
     .pickaxe-step{
       margin-bottom: 14px;
     }
@@ -648,7 +648,7 @@
         <label class="nav-btn" for="r-ore"><span>Ore Mastery</span><span class="nav-mini">OM</span></label>
         <label class="nav-btn" for="r-pickaxe"><span>Pickaxe/Gears</span><span class="nav-mini">P/G</span></label>
 
-        <!-- UPDATED: ELvl with milestone subtext -->
+        <!-- ELvl with formula-based milestone subtext -->
         <label class="nav-btn" for="r-elvl">
           <span class="nav-stack">
             <span>ELvl</span>
@@ -671,7 +671,7 @@
       <main class="main">
         <div class="main-inner">
 
-          <!-- UPGRADES (no prompts yet) -->
+          <!-- UPGRADES -->
           <section class="page" id="page-upgrades">
             <input class="dest-route" type="radio" name="dest" id="d-point" checked />
             <input class="dest-route" type="radio" name="dest" id="d-blackhole" />
@@ -912,7 +912,7 @@
             </div>
           </section>
 
-          <!-- ORE MASTERY (no prompts yet) -->
+          <!-- ORE MASTERY -->
           <section class="page" id="page-ore">
             <div class="section-head">
               <div>
@@ -933,7 +933,7 @@
             </div>
           </section>
 
-          <!-- PICKAXE (Step 1 images -> Step 2 dropdown) -->
+          <!-- PICKAXE -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
@@ -943,7 +943,7 @@
               <span class="pill">Pickaxe</span>
             </div>
 
-            <!-- STEP 1: IMAGE CHOOSER -->
+            <!-- STEP 1 -->
             <div id="pickaxeStepChoose" class="pickaxe-step">
               <div class="pickaxe-chooser">
                 <div class="section-head" style="margin-bottom:10px;">
@@ -958,7 +958,7 @@
               </div>
             </div>
 
-            <!-- STEP 2: DROPDOWN PROMPT -->
+            <!-- STEP 2 -->
             <div id="pickaxeStepDropdown" class="pickaxe-step hidden">
               <div class="section-head">
                 <div>
@@ -991,7 +991,7 @@
                 </div>
               </div>
 
-              <!-- STEP 3: FOLLOW-UP PROMPTS (appear after Specials is chosen) -->
+              <!-- STEP 3 -->
               <div id="pickaxeFollowups" class="pickaxe-step hidden">
                 <div class="section-head" style="margin-top:12px;">
                   <div>
@@ -1100,7 +1100,7 @@
             </div>
           </section>
 
-          <!-- ELVL (1 text prompt) -->
+          <!-- ELVL -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -1129,7 +1129,7 @@
             </div>
           </section>
 
-          <!-- CARDS (no prompts yet) -->
+          <!-- CARDS -->
           <section class="page" id="page-cards">
             <div class="section-head">
               <div>
@@ -1262,10 +1262,8 @@
 
     const DEFAULT_PROMPTS = {
       elvl1: "",
-      pickaxeChoice: "",       // stores pickaxe id
-      pickaxeDropdown1: "",    // stores first dropdown value
-
-      // follow-up prompts after dropdown #1
+      pickaxeChoice: "",
+      pickaxeDropdown1: "",
       pickaxePrompt2: "",
       pickaxePrompt3: "",
       pickaxePrompt4: "",
@@ -1284,7 +1282,6 @@
       prompts: { ...DEFAULT_PROMPTS }
     };
 
-    // Update this list to match your real filenames in images/pickaxe/
     const PICKAXE_OPTIONS = [
       { id: "normalp", name: "Normal Pickaxe", img: "images/pickaxe/normal_pickaxe.png" },
       { id: "goldp", name: "Gold Pickaxe", img: "images/pickaxe/gold_pickaxe.png" },
@@ -1300,7 +1297,6 @@
           return { ...DEFAULTS, prompts: { ...DEFAULT_PROMPTS } };
         }
         const parsed = JSON.parse(raw);
-
         return {
           ...DEFAULTS,
           ...parsed,
@@ -1341,31 +1337,6 @@
       if(!Number.isFinite(n)) return "0";
       const fixed = n.toFixed(decimals);
       return String(Number(fixed));
-    }
-
-    function getAllowedPickaxeFollowups(){
-      return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
-    }
-
-    function updatePickaxeFollowupsUI(){
-      if(!pickaxeFollowups) return;
-
-      const firstAnswered = !!(state.prompts.pickaxeDropdown1);
-
-      // Only show the follow-ups AFTER dropdown #1 has a value
-      if(!firstAnswered){
-        pickaxeFollowups.classList.add("hidden");
-        return;
-      }
-
-      pickaxeFollowups.classList.remove("hidden");
-
-      const allowed = getAllowedPickaxeFollowups();
-
-      pickaxeFollowups.querySelectorAll("[data-extra-idx]").forEach(field => {
-        const idx = Number(field.getAttribute("data-extra-idx"));
-        field.classList.toggle("hidden", idx > allowed);
-      });
     }
 
     function formatSuffix(n){
@@ -1518,11 +1489,26 @@
     const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
     const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
 
-    /* --- NEW: ELvl milestones for sidebar --- */
+    /* ============================================================
+       ✅ ELVL FORMULA MILESTONES (EDIT HERE)
+       Replace minLevel + formula with YOUR real 14 milestone rules.
+       The sidebar will show the ACTIVE milestone result for your ELvl.
+       ============================================================ */
     const ELVL_MILESTONES = [
-      { level: 1,  reward: "Starter pack" },
-      { level: 10, reward: "+1 card slot" },
-      { level: 50, reward: "Legend token" },
+      { id: 1,  short: "M1",  minLevel: 1,  formula: (lvl) => 1.5 * lvl },
+      { id: 2,  short: "M2",  minLevel: 5,  formula: (lvl) => 2.0 * lvl },
+      { id: 3,  short: "M3",  minLevel: 10, formula: (lvl) => 2.5 * lvl },
+      { id: 4,  short: "M4",  minLevel: 15, formula: (lvl) => 3.0 * lvl },
+      { id: 5,  short: "M5",  minLevel: 20, formula: (lvl) => 3.5 * lvl },
+      { id: 6,  short: "M6",  minLevel: 25, formula: (lvl) => 4.0 * lvl },
+      { id: 7,  short: "M7",  minLevel: 30, formula: (lvl) => 4.5 * lvl },
+      { id: 8,  short: "M8",  minLevel: 35, formula: (lvl) => 5.0 * lvl },
+      { id: 9,  short: "M9",  minLevel: 40, formula: (lvl) => 5.5 * lvl },
+      { id: 10, short: "M10", minLevel: 45, formula: (lvl) => 6.0 * lvl },
+      { id: 11, short: "M11", minLevel: 50, formula: (lvl) => 6.5 * lvl },
+      { id: 12, short: "M12", minLevel: 60, formula: (lvl) => 7.0 * lvl },
+      { id: 13, short: "M13", minLevel: 70, formula: (lvl) => 7.5 * lvl },
+      { id: 14, short: "M14", minLevel: 80, formula: (lvl) => 8.0 * lvl },
     ];
 
     function getCurrentElvl(){
@@ -1532,19 +1518,31 @@
       return Math.max(0, Math.floor(n));
     }
 
-    function getNextMilestone(level){
-      for(const m of ELVL_MILESTONES){
-        if(level < m.level) return m;
+    function getActiveMilestone(level){
+      const sorted = [...ELVL_MILESTONES].sort((a,b) => a.minLevel - b.minLevel);
+      let active = null;
+      for(const m of sorted){
+        if(level >= m.minLevel) active = m;
+        else break;
+      }
+      return active;
+    }
+
+    function getNextMilestoneByLevel(level){
+      const sorted = [...ELVL_MILESTONES].sort((a,b) => a.minLevel - b.minLevel);
+      for(const m of sorted){
+        if(level < m.minLevel) return m;
       }
       return null;
     }
 
-    function getLatestMilestone(level){
-      let latest = null;
-      for(const m of ELVL_MILESTONES){
-        if(level >= m.level) latest = m;
+    function computeMilestoneValue(milestone, level){
+      try{
+        const v = milestone.formula(level);
+        return Number.isFinite(v) ? v : 0;
+      }catch{
+        return 0;
       }
-      return latest;
     }
 
     function updateElvlSidebarMilestone(){
@@ -1558,19 +1556,21 @@
         return;
       }
 
-      const next = getNextMilestone(lvl);
+      const active = getActiveMilestone(lvl);
+      const next = getNextMilestoneByLevel(lvl);
 
-      if(next){
-        const diff = next.level - lvl;
-        node.textContent = `Next: Lv${next.level} • ${next.reward} (${diff} to go)`;
+      if(!active){
+        node.textContent = "Milestones ready";
         return;
       }
 
-      const latest = getLatestMilestone(lvl);
-      if(latest){
-        node.textContent = `All milestones cleared • Lv${latest.level}`;
+      const activeVal = computeMilestoneValue(active, lvl);
+
+      if(next){
+        const toGo = Math.max(0, next.minLevel - lvl);
+        node.textContent = `${active.short}: ${tidyFixed(activeVal, 2)}x • Next ${next.short} in ${toGo} lvl`;
       }else{
-        node.textContent = "Milestones ready";
+        node.textContent = `${active.short}: ${tidyFixed(activeVal, 2)}x • Max milestone`;
       }
     }
 
@@ -1578,8 +1578,32 @@
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
+    // --- Pickaxe followups limiter ---
+    function getAllowedPickaxeFollowups(){
+      return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
+    }
+
+    function updatePickaxeFollowupsUI(){
+      if(!pickaxeFollowups) return;
+
+      const firstAnswered = !!(state.prompts.pickaxeDropdown1);
+
+      if(!firstAnswered){
+        pickaxeFollowups.classList.add("hidden");
+        return;
+      }
+
+      pickaxeFollowups.classList.remove("hidden");
+
+      const allowed = getAllowedPickaxeFollowups();
+
+      pickaxeFollowups.querySelectorAll("[data-extra-idx]").forEach(field => {
+        const idx = Number(field.getAttribute("data-extra-idx"));
+        field.classList.toggle("hidden", idx > allowed);
+      });
+    }
+
     function showPickaxeStep(step){
-      // step: "choose" | "dropdown"
       if(!pickaxeStepChoose || !pickaxeStepDropdown) return;
 
       if(step === "dropdown"){
@@ -1602,7 +1626,6 @@
       ensurePrompts();
       state.prompts.pickaxeChoice = id;
 
-      // Auto-go to Step 2 immediately
       saveSettingsObj(state);
       renderPickaxeChooser(id);
       syncPickaxeSelectedName();
@@ -1651,7 +1674,6 @@
 
       if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
 
-      // Pickaxe
       renderPickaxeChooser(p.pickaxeChoice ?? "");
       if(pickaxeDropdown1) pickaxeDropdown1.value = p.pickaxeDropdown1 ?? "";
       if(pickaxePrompt2) pickaxePrompt2.value = p.pickaxePrompt2 ?? "";
@@ -1662,7 +1684,6 @@
 
       syncPickaxeSelectedName();
 
-      // Decide which step to show on load
       if(p.pickaxeChoice){
         showPickaxeStep("dropdown");
       }else{
@@ -1712,7 +1733,6 @@
     if(pickaxeChangeBtn){
       pickaxeChangeBtn.addEventListener("click", () => {
         ensurePrompts();
-        // Keep dropdown value if you want, but allow changing pickaxe
         showPickaxeStep("choose");
       });
     }
