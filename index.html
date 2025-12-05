@@ -1120,11 +1120,7 @@
             <div class="table-wrap">
               <table>
                 <thead><tr><th>Level</th><th>XP Needed</th><th>Reward</th><th>Unlock</th><th>Multiplier</th><th class="muted">Notes</th></tr></thead>
-                <tbody>
-                  <tr><td><span data-num="1"></span></td><td><span data-num="0"></span></td><td>Starter pack</td><td>Basic destinations</td><td><span data-num="1"></span>.00x</td><td class="muted">Example row</td></tr>
-                  <tr><td><span data-num="10"></span></td><td><span data-num="2000"></span></td><td>+1 card slot</td><td>Ore Mastery II</td><td><span data-num="1.05"></span>x</td><td class="muted">Mid milestone</td></tr>
-                  <tr><td><span data-num="50"></span></td><td><span data-num="50000"></span></td><td>Legend token</td><td>Transcend systems</td><td><span data-num="1.2"></span>x</td><td class="muted">End milestone</td></tr>
-                </tbody>
+                <tbody id="elvlMilestoneBody"></tbody>
               </table>
             </div>
           </section>
@@ -1489,90 +1485,212 @@
     const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
     const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
 
-    /* ============================================================
-       ✅ ELVL FORMULA MILESTONES (EDIT HERE)
-       Replace minLevel + formula with YOUR real 14 milestone rules.
-       The sidebar will show the ACTIVE milestone result for your ELvl.
-       ============================================================ */
-    const ELVL_MILESTONES = [
-      { id: 1,  short: "M1",  minLevel: 1,  formula: (lvl) => 1.5 * lvl },
-      { id: 2,  short: "M2",  minLevel: 5,  formula: (lvl) => 2.0 * lvl },
-      { id: 3,  short: "M3",  minLevel: 10, formula: (lvl) => 2.5 * lvl },
-      { id: 4,  short: "M4",  minLevel: 15, formula: (lvl) => 3.0 * lvl },
-      { id: 5,  short: "M5",  minLevel: 20, formula: (lvl) => 3.5 * lvl },
-      { id: 6,  short: "M6",  minLevel: 25, formula: (lvl) => 4.0 * lvl },
-      { id: 7,  short: "M7",  minLevel: 30, formula: (lvl) => 4.5 * lvl },
-      { id: 8,  short: "M8",  minLevel: 35, formula: (lvl) => 5.0 * lvl },
-      { id: 9,  short: "M9",  minLevel: 40, formula: (lvl) => 5.5 * lvl },
-      { id: 10, short: "M10", minLevel: 45, formula: (lvl) => 6.0 * lvl },
-      { id: 11, short: "M11", minLevel: 50, formula: (lvl) => 6.5 * lvl },
-      { id: 12, short: "M12", minLevel: 60, formula: (lvl) => 7.0 * lvl },
-      { id: 13, short: "M13", minLevel: 70, formula: (lvl) => 7.5 * lvl },
-      { id: 14, short: "M14", minLevel: 80, formula: (lvl) => 8.0 * lvl },
-    ];
+  /* ============================================================
+   ✅ ELVL MILESTONES (14) WITH FORMULAS + TABLE RENDER
+   Edit levels/xp/reward/unlock/notes/formula to your real values.
+   Each row's Multiplier shows the FINAL computed value using
+   the CURRENT ELvl input.
+   ============================================================ */
 
-    function getCurrentElvl(){
-      const raw = (elvlPrompt1?.value ?? "").trim();
-      const n = Number(raw);
-      if(!Number.isFinite(n)) return null;
-      return Math.max(0, Math.floor(n));
-    }
+const ELVL_MILESTONES = [
+  {
+    id: 1,
+    short: "M1",
+    level: 1,
+    xpNeeded: 0,
+    reward: "Starter pack",
+    unlock: "Basic destinations",
+    notes: "Example",
+    formula: (elvl) => 1.5 * elvl,
+  },
+  {
+    id: 2,
+    short: "M2",
+    level: 5,
+    xpNeeded: 250,
+    reward: "Small boost",
+    unlock: "Ore Mastery I",
+    notes: "Placeholder",
+    formula: (elvl) => 1.8 * elvl,
+  },
+  {
+    id: 3,
+    short: "M3",
+    level: 10,
+    xpNeeded: 2000,
+    reward: "+1 card slot",
+    unlock: "Ore Mastery II",
+    notes: "Example",
+    formula: (elvl) => 2.2 * elvl,
+  },
+  {
+    id: 4,
+    short: "M4",
+    level: 15,
+    xpNeeded: 4500,
+    reward: "Unlock perk",
+    unlock: "Pickaxe Mk.2",
+    notes: "Placeholder",
+    formula: (elvl) => 2.6 * elvl,
+  },
+  {
+    id: 5,
+    short: "M5",
+    level: 20,
+    xpNeeded: 9000,
+    reward: "Resource bonus",
+    unlock: "New destination",
+    notes: "Placeholder",
+    formula: (elvl) => 3.0 * elvl,
+  },
+  {
+    id: 6,
+    short: "M6",
+    level: 25,
+    xpNeeded: 15000,
+    reward: "Rare token",
+    unlock: "Advanced crafting",
+    notes: "Placeholder",
+    formula: (elvl) => 3.4 * elvl,
+  },
+  {
+    id: 7,
+    short: "M7",
+    level: 30,
+    xpNeeded: 23000,
+    reward: "Passive buff",
+    unlock: "Mining Baseplate II",
+    notes: "Placeholder",
+    formula: (elvl) => 3.8 * elvl,
+  },
+  {
+    id: 8,
+    short: "M8",
+    level: 35,
+    xpNeeded: 33000,
+    reward: "Prestige shard",
+    unlock: "Meta system hint",
+    notes: "Placeholder",
+    formula: (elvl) => 4.2 * elvl,
+  },
+  {
+    id: 9,
+    short: "M9",
+    level: 40,
+    xpNeeded: 45000,
+    reward: "Global gain",
+    unlock: "Star Tree I",
+    notes: "Placeholder",
+    formula: (elvl) => 4.6 * elvl,
+  },
+  {
+    id: 10,
+    short: "M10",
+    level: 45,
+    xpNeeded: 60000,
+    reward: "Defense boost",
+    unlock: "Blackhole perks",
+    notes: "Placeholder",
+    formula: (elvl) => 5.0 * elvl,
+  },
+  {
+    id: 11,
+    short: "M11",
+    level: 50,
+    xpNeeded: 80000,
+    reward: "Legend token",
+    unlock: "Transcend systems",
+    notes: "Example",
+    formula: (elvl) => 5.5 * elvl,
+  },
+  {
+    id: 12,
+    short: "M12",
+    level: 60,
+    xpNeeded: 120000,
+    reward: "Mythic unlock",
+    unlock: "Ore Mastery IV",
+    notes: "Placeholder",
+    formula: (elvl) => 6.2 * elvl,
+  },
+  {
+    id: 13,
+    short: "M13",
+    level: 70,
+    xpNeeded: 170000,
+    reward: "Ultra perk",
+    unlock: "Sacrifice I",
+    notes: "Placeholder",
+    formula: (elvl) => 7.0 * elvl,
+  },
+  {
+    id: 14,
+    short: "M14",
+    level: 80,
+    xpNeeded: 230000,
+    reward: "Endgame key",
+    unlock: "Final track",
+    notes: "Placeholder",
+    formula: (elvl) => 8.0 * elvl,
+  },
+];
 
-    function getActiveMilestone(level){
-      const sorted = [...ELVL_MILESTONES].sort((a,b) => a.minLevel - b.minLevel);
-      let active = null;
-      for(const m of sorted){
-        if(level >= m.minLevel) active = m;
-        else break;
-      }
-      return active;
-    }
+function getSortedElvlMilestones(){
+  return [...ELVL_MILESTONES].sort((a,b) => a.level - b.level);
+}
 
-    function getNextMilestoneByLevel(level){
-      const sorted = [...ELVL_MILESTONES].sort((a,b) => a.minLevel - b.minLevel);
-      for(const m of sorted){
-        if(level < m.minLevel) return m;
-      }
-      return null;
-    }
+function getNextMilestone(level){
+  for(const m of getSortedElvlMilestones()){
+    if(level < m.level) return m;
+  }
+  return null;
+}
 
-    function computeMilestoneValue(milestone, level){
-      try{
-        const v = milestone.formula(level);
-        return Number.isFinite(v) ? v : 0;
-      }catch{
-        return 0;
-      }
-    }
+function getLatestMilestone(level){
+  let latest = null;
+  for(const m of getSortedElvlMilestones()){
+    if(level >= m.level) latest = m;
+  }
+  return latest;
+}
 
-    function updateElvlSidebarMilestone(){
-      const node = document.getElementById("elvlSidebarMilestone");
-      if(!node) return;
+function computeMilestoneValue(milestone, currentElvl){
+  try{
+    const v = milestone.formula(currentElvl);
+    return Number.isFinite(v) ? v : 0;
+  }catch{
+    return 0;
+  }
+}
 
-      const lvl = getCurrentElvl();
+/* ✅ NEW: Render full 14-row ELvl table with computed multipliers */
+function renderElvlMilestoneTable(){
+  const body = document.getElementById("elvlMilestoneBody");
+  if(!body) return;
 
-      if(lvl == null){
-        node.textContent = "No level set";
-        return;
-      }
+  const lvl = getCurrentElvl();
+  const rows = getSortedElvlMilestones();
 
-      const active = getActiveMilestone(lvl);
-      const next = getNextMilestoneByLevel(lvl);
+  body.innerHTML = "";
 
-      if(!active){
-        node.textContent = "Milestones ready";
-        return;
-      }
+  rows.forEach(m => {
+    const multVal = (lvl == null) ? null : computeMilestoneValue(m, lvl);
 
-      const activeVal = computeMilestoneValue(active, lvl);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>Lv${m.level}</td>
+      <td><span data-num="${m.xpNeeded ?? 0}"></span></td>
+      <td>${m.reward ?? ""}</td>
+      <td>${m.unlock ?? ""}</td>
+      <td>${multVal == null ? "—" : `${tidyFixed(multVal, 2)}x`}</td>
+      <td class="muted">${m.notes ?? ""}</td>
+    `;
+    body.appendChild(tr);
+  });
 
-      if(next){
-        const toGo = Math.max(0, next.minLevel - lvl);
-        node.textContent = `${active.short}: ${tidyFixed(activeVal, 2)}x • Next ${next.short} in ${toGo} lvl`;
-      }else{
-        node.textContent = `${active.short}: ${tidyFixed(activeVal, 2)}x • Max milestone`;
-      }
-    }
+  // Respect your number notation toggle for XP
+  updateNumberDisplays(state.notation);
+}
 
     function ensurePrompts(){
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
@@ -1691,7 +1809,7 @@
       }
 
       updatePickaxeFollowupsUI();
-      updateElvlSidebarMilestone();
+      renderElvlMilestoneTable();
     }
 
     function collectPromptsFromUI(){
@@ -1721,7 +1839,7 @@
         saveSettingsObj(state);
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
-        updateElvlSidebarMilestone();
+        renderElvlMilestoneTable();
       };
 
       inputs.forEach(el => {
