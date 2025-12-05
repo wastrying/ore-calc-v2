@@ -1492,18 +1492,18 @@
        ============================================================ */
 
     const ELVL_MILESTONES = [
-      { id: 1,  short: "M1",  level: 1,  xpNeeded: 0,       reward: "Starter pack",  unlock: "Basic destinations", notes: "Example",      formula: (elvl) => 1.25^elvl },
-      { id: 2,  short: "M2",  level: 5,  xpNeeded: 250,     reward: "Small boost",   unlock: "Ore Mastery I",     notes: "Placeholder",  formula: (elvl) => 1.25^(elvl-1) },
-      { id: 3,  short: "M3",  level: 10, xpNeeded: 2000,    reward: "+1 card slot",  unlock: "Ore Mastery II",    notes: "Example",      formula: (elvl) => 1.15^(elvl-2) },
-      { id: 4,  short: "M4",  level: 15, xpNeeded: 4500,    reward: "Unlock perk",   unlock: "Pickaxe Mk.2",      notes: "Placeholder",  formula: (elvl) => 1.2^(elvl-3) },
-      { id: 5,  short: "M5",  level: 20, xpNeeded: 9000,    reward: "Resource bonus",unlock: "New destination",    notes: "Placeholder",  formula: (elvl) => 1.2^(elvl-4) },
-      { id: 6,  short: "M6",  level: 25, xpNeeded: 15000,   reward: "Rare token",    unlock: "Advanced crafting", notes: "Placeholder",  formula: (elvl) => 1.2^(elvl-5) },
-      { id: 7,  short: "M7",  level: 30, xpNeeded: 23000,   reward: "Passive buff",  unlock: "Mining Baseplate II",notes:"Placeholder", formula: (elvl) => 1.15^(elvl-6) },
-      { id: 8,  short: "M8",  level: 35, xpNeeded: 33000,   reward: "Prestige shard",unlock: "Meta system hint",  notes: "Placeholder",  formula: (elvl) => 1.4^(elvl-7) },
-      { id: 9,  short: "M9",  level: 40, xpNeeded: 45000,   reward: "Global gain",   unlock: "Star Tree I",       notes: "Placeholder",  formula: (elvl) => 1.15^(elvl-8) },
-      { id: 10, short: "M10", level: 45, xpNeeded: 60000,   reward: "Defense boost", unlock: "Blackhole perks",   notes: "Placeholder",  formula: (elvl) => 1.075^(elvl-10) },
-      { id: 11, short: "M11", level: 50, xpNeeded: 80000,   reward: "Legend token",  unlock: "Transcend systems", notes: "Example",      formula: (elvl) => 1.1^(elvl-11) },
-      { id: 12, short: "M12", level: 60, xpNeeded: 120000,  reward: "Mythic unlock", unlock: "Ore Mastery IV",    notes: "Placeholder",  formula: (elvl) => 2^(elvl-12) },
+      { id: 1,  short: "M1",  level: 1,  xpNeeded: 0,       reward: "Starter pack",  unlock: "Basic destinations", notes: "Example",      formula: (elvl) => Math.pow(1.25, elvl) },
+      { id: 2,  short: "M2",  level: 5,  xpNeeded: 250,     reward: "Small boost",   unlock: "Ore Mastery I",     notes: "Placeholder",  formula: (elvl) => Math.pow(1.25, elvl-1) },
+      { id: 3,  short: "M3",  level: 10, xpNeeded: 2000,    reward: "+1 card slot",  unlock: "Ore Mastery II",    notes: "Example",      formula: (elvl) => Math.pow(1.15, elvl-2) },
+      { id: 4,  short: "M4",  level: 15, xpNeeded: 4500,    reward: "Unlock perk",   unlock: "Pickaxe Mk.2",      notes: "Placeholder",  formula: (elvl) => Math.pow(1.2, elvl-3) },
+      { id: 5,  short: "M5",  level: 20, xpNeeded: 9000,    reward: "Resource bonus",unlock: "New destination",    notes: "Placeholder",  formula: (elvl) => Math.pow(1.2, elvl-4) },
+      { id: 6,  short: "M6",  level: 25, xpNeeded: 15000,   reward: "Rare token",    unlock: "Advanced crafting", notes: "Placeholder",  formula: (elvl) => Math.pow(1.2, elvl-5) },
+      { id: 7,  short: "M7",  level: 30, xpNeeded: 23000,   reward: "Passive buff",  unlock: "Mining Baseplate II",notes:"Placeholder", formula: (elvl) => Math.pow(1.15, elvl-6) },
+      { id: 8,  short: "M8",  level: 35, xpNeeded: 33000,   reward: "Prestige shard",unlock: "Meta system hint",  notes: "Placeholder",  formula: (elvl) => Math.pow(1.4, elvl-7) },
+      { id: 9,  short: "M9",  level: 40, xpNeeded: 45000,   reward: "Global gain",   unlock: "Star Tree I",       notes: "Placeholder",  formula: (elvl) => Math.pow(1.15, elvl-8) },
+      { id: 10, short: "M10", level: 45, xpNeeded: 60000,   reward: "Defense boost", unlock: "Blackhole perks",   notes: "Placeholder",  formula: (elvl) => Math.pow(1.075, elvl-10) },
+      { id: 11, short: "M11", level: 50, xpNeeded: 80000,   reward: "Legend token",  unlock: "Transcend systems", notes: "Example",      formula: (elvl) => Math.pow(1.1, elvl-11) },
+      { id: 12, short: "M12", level: 60, xpNeeded: 120000,  reward: "Mythic unlock", unlock: "Ore Mastery IV",    notes: "Placeholder",  formula: (elvl) => Math.pow(2, elvl-12) },
     ];
 
     function getSortedElvlMilestones(){
