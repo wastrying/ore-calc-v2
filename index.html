@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upgrades & Cards</title>
+  <title>Upgrades Hub</title>
   <style>
     :root{
       --bg: #f6f8f7;
@@ -19,32 +19,36 @@
       --radius-md: 10px;
       --shadow-sm: 0 2px 10px rgba(0,0,0,0.06);
       --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+      --sidebar-w: 210px;
     }
 
     *{box-sizing:border-box;}
+
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
-      background: radial-gradient(1200px 600px at 80% -10%, var(--mint-100), transparent 60%),
-                  radial-gradient(900px 500px at -10% 30%, var(--mint-200), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, var(--mint-100), transparent 60%),
+        radial-gradient(900px 500px at -10% 30%, var(--mint-200), transparent 55%),
+        var(--bg);
       min-height:100vh;
-      padding: 32px 18px 60px;
     }
 
     .app{
-      max-width: 980px;
+      max-width: 1200px;
       margin: 0 auto;
+      padding: 26px 18px 60px;
     }
 
-    /* Header block mimicking your sheet band */
+    /* ---------- Header band (Destination + current section label) ---------- */
     .header-band{
       background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
       border: 1px solid rgba(0,0,0,0.05);
       border-radius: var(--radius-lg);
-      padding: 18px 18px 16px;
+      padding: 18px 18px 14px;
       box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
     }
 
     .destination-row{
@@ -80,8 +84,8 @@
       box-shadow: 0 0 0 4px rgba(47,143,107,0.12);
     }
 
-    .title-pill{
-      margin-top: 10px;
+    .section-pill{
+      margin-top: 6px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
@@ -90,14 +94,98 @@
       background: var(--mint-300);
       color: #0f3d2d;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
-    /* Tabs */
-    .tabs{
-      margin-top: 18px;
+    /* ---------- Layout ---------- */
+    .shell{
+      display:grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    /* Hide radio inputs for CSS-only routing */
+    .route{
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar{
+      position: sticky;
+      top: 18px;
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(0,0,0,0.05);
+      padding: 10px;
+    }
+
+    .sidebar-title{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 10px 6px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 6px;
+    }
+
+    .nav-btn{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--muted);
+      transition: background .15s, color .15s, box-shadow .15s, transform .08s;
+      user-select:none;
+    }
+    .nav-btn:hover{
+      background: #f3f7f5;
+      color: var(--text);
+    }
+    .nav-btn:active{ transform: translateY(1px); }
+
+    .nav-mini{
+      font-size: 10px;
+      color: rgba(0,0,0,0.35);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* Active sidebar states */
+    #r-upgrades:checked ~ .app .sidebar label[for="r-upgrades"],
+    #r-ore:checked ~ .app .sidebar label[for="r-ore"],
+    #r-pickaxe:checked ~ .app .sidebar label[for="r-pickaxe"],
+    #r-elvl:checked ~ .app .sidebar label[for="r-elvl"],
+    #r-cards:checked ~ .app .sidebar label[for="r-cards"]{
+      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+      color: var(--accent-dark);
+      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
+    }
+
+    /* ---------- Main panel ---------- */
+    .main{
       background: var(--panel);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
@@ -105,57 +193,23 @@
       overflow: hidden;
     }
 
-    /* Hide radio inputs */
-    .tabs input[type="radio"]{
-      position:absolute;
-      opacity:0;
-      pointer-events:none;
+    .main-inner{
+      padding: 18px 18px 24px;
     }
 
-    .tab-bar{
-      display:flex;
-      gap: 6px;
-      padding: 10px;
-      background: linear-gradient(180deg, #ffffff, #fbfbfb);
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .tab-btn{
-      flex: 0 0 auto;
-      padding: 10px 14px;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 650;
-      color: var(--muted);
-      transition: background .15s, color .15s, transform .08s, box-shadow .15s;
-      user-select:none;
-    }
-    .tab-btn:hover{
-      background: #f3f7f5;
-      color: var(--text);
-    }
-    .tab-btn:active{
-      transform: translateY(1px);
-    }
-
-    /* Active tab styling via :checked */
-    #tab-upgrades:checked ~ .tab-bar label[for="tab-upgrades"],
-    #tab-cards:checked ~ .tab-bar label[for="tab-cards"]{
-      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
-      color: var(--accent-dark);
-      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
-    }
-
-    .tab-content{
+    .page{
       display:none;
-      padding: 18px 18px 22px;
     }
 
-    #tab-upgrades:checked ~ .content-wrap #content-upgrades{ display:block; }
-    #tab-cards:checked ~ .content-wrap #content-cards{ display:block; }
+    #r-upgrades:checked ~ .app #page-upgrades,
+    #r-ore:checked ~ .app #page-ore,
+    #r-pickaxe:checked ~ .app #page-pickaxe,
+    #r-elvl:checked ~ .app #page-elvl,
+    #r-cards:checked ~ .app #page-cards{
+      display:block;
+    }
 
-    /* Table styling */
+    /* ---------- Section header ---------- */
     .section-head{
       display:flex;
       align-items:center;
@@ -164,51 +218,15 @@
       margin-bottom: 12px;
     }
     .section-title{
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 750;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
     .section-sub{
       font-size: 12px;
       color: var(--muted);
+      margin-top: 2px;
     }
-
-    .table-wrap{
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: var(--radius-md);
-      overflow: auto;
-      background: #fff;
-    }
-
-    table{
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 620px;
-    }
-
-    thead th{
-      position: sticky;
-      top: 0;
-      background: #fbfffd;
-      text-align:left;
-      font-size: 12px;
-      color: #0f3d2d;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 12px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-
-    tbody td{
-      padding: 11px 12px;
-      font-size: 13px;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      color: #111827;
-      vertical-align: top;
-    }
-
-    tbody tr:nth-child(odd){ background: #fcfdfc; }
-    tbody tr:hover{ background: #f4fbf7; }
 
     .pill{
       display:inline-flex;
@@ -227,18 +245,96 @@
 
     .muted{ color: var(--muted); }
 
-    /* Responsive tweaks */
-    @media (max-width: 640px){
-      body{ padding-top: 22px; }
-      .section-head{ flex-direction: column; align-items:flex-start; }
-      .tab-bar{ flex-wrap: wrap; }
-      table{ min-width: 520px; }
+    /* ---------- Table styling ---------- */
+    .table-wrap{
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius-md);
+      overflow: auto;
+      background: #fff;
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    thead th{
+      position: sticky;
+      top: 0;
+      background: #fbfffd;
+      text-align:left;
+      font-size: 11px;
+      color: #0f3d2d;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    tbody td{
+      padding: 11px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      color: #111827;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(odd){ background: #fcfdfc; }
+    tbody tr:hover{ background: #f4fbf7; }
+
+    /* ---------- Simple card grid for non-table pages (optional) ---------- */
+    .cards-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card{
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius-md);
+      padding: 12px 12px 10px;
+      background: linear-gradient(180deg, #ffffff, #fbfbfb);
+    }
+    .mini-card h4{
+      margin:0 0 6px 0;
+      font-size: 14px;
+    }
+    .mini-card p{
+      margin:0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 980px){
+      .shell{ grid-template-columns: 180px 1fr; }
+      :root{ --sidebar-w: 180px; }
+      .cards-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px){
+      .shell{ grid-template-columns: 1fr; }
+      .sidebar{ position: static; }
+      .nav{ flex-direction: row; flex-wrap: wrap; }
+      .nav-btn{ flex: 1 1 auto; justify-content:center; }
+      table{ min-width: 540px; }
+      .cards-grid{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
+
 <body>
+  <!-- Routes live outside .app so the sibling selectors work cleanly -->
+  <input class="route" type="radio" name="route" id="r-upgrades" checked />
+  <input class="route" type="radio" name="route" id="r-ore" />
+  <input class="route" type="radio" name="route" id="r-pickaxe" />
+  <input class="route" type="radio" name="route" id="r-elvl" />
+  <input class="route" type="radio" name="route" id="r-cards" />
+
   <div class="app">
 
+    <!-- Header matching your sheet vibe -->
     <div class="header-band">
       <div class="destination-row">
         <div class="destination-label">Destination</div>
@@ -250,125 +346,304 @@
           <option>Star_Tree</option>
           <option>Sacrifice_Baseplate</option>
         </select>
-        <span class="title-pill">Upgrades</span>
+        <span class="section-pill">Dashboard</span>
       </div>
     </div>
 
-    <div class="tabs">
-      <!-- CSS-only tab state -->
-      <input type="radio" name="tab" id="tab-upgrades" checked />
-      <input type="radio" name="tab" id="tab-cards" />
+    <div class="shell">
+      <!-- Sidebar tabs -->
+      <aside class="sidebar" aria-label="Sections">
+        <div class="sidebar-title">Sections</div>
+        <nav class="nav">
+          <label class="nav-btn" for="r-upgrades">
+            <span>Upgrades</span>
+            <span class="nav-mini">U</span>
+          </label>
+          <label class="nav-btn" for="r-ore">
+            <span>Ore Mastery</span>
+            <span class="nav-mini">OM</span>
+          </label>
+          <label class="nav-btn" for="r-pickaxe">
+            <span>Pickaxe</span>
+            <span class="nav-mini">P</span>
+          </label>
+          <label class="nav-btn" for="r-elvl">
+            <span>ELvl</span>
+            <span class="nav-mini">E</span>
+          </label>
+          <label class="nav-btn" for="r-cards">
+            <span>Cards</span>
+            <span class="nav-mini">C</span>
+          </label>
+        </nav>
+      </aside>
 
-      <div class="tab-bar">
-        <label class="tab-btn" for="tab-upgrades">Upgrades</label>
-        <label class="tab-btn" for="tab-cards">Cards</label>
-      </div>
+      <!-- Main content panel -->
+      <main class="main">
+        <div class="main-inner">
 
-      <div class="content-wrap">
-        <!-- UPGRADES TAB -->
-        <section class="tab-content" id="content-upgrades">
-          <div class="section-head">
-            <div>
-              <div class="section-title">Destination Upgrades</div>
-              <div class="section-sub">Replace these rows with your real upgrade data.</div>
+          <!-- UPGRADES PAGE -->
+          <section class="page" id="page-upgrades">
+            <div class="section-head">
+              <div>
+                <div class="section-title">Destination Upgrades</div>
+                <div class="section-sub">Your upgrades table for the selected destination.</div>
+              </div>
+              <span class="pill">Upgrades</span>
             </div>
-            <span class="pill">Active Tab</span>
-          </div>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Upgrade</th>
-                  <th>Type</th>
-                  <th>Cost</th>
-                  <th>Requirement</th>
-                  <th>Effect</th>
-                  <th class="muted">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Reinforced Walls I</td>
-                  <td><span class="pill">Defense</span></td>
-                  <td>250 Ore</td>
-                  <td>Base Level 1</td>
-                  <td>+10% HP to structures</td>
-                  <td class="muted">Starter upgrade</td>
-                </tr>
-                <tr>
-                  <td>Auto Miner Array</td>
-                  <td><span class="pill">Economy</span></td>
-                  <td>1,200 Ore</td>
-                  <td>Pickaxe Mk.2</td>
-                  <td>+2 Ore/sec passive</td>
-                  <td class="muted">Stacks with boosts</td>
-                </tr>
-                <tr>
-                  <td>Warp Relay Node</td>
-                  <td><span class="pill">Utility</span></td>
-                  <td>3 Star Shards</td>
-                  <td>Complete 3 quests</td>
-                  <td>Unlock fast travel</td>
-                  <td class="muted">Destination-specific</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- CARDS TAB -->
-        <section class="tab-content" id="content-cards">
-          <div class="section-head">
-            <div>
-              <div class="section-title">Cards Library</div>
-              <div class="section-sub">This is a separate table layout for your cards.</div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Upgrade</th>
+                    <th>Type</th>
+                    <th>Cost</th>
+                    <th>Requirement</th>
+                    <th>Effect</th>
+                    <th class="muted">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Reinforced Walls I</td>
+                    <td><span class="pill">Defense</span></td>
+                    <td>250 Ore</td>
+                    <td>Base Level 1</td>
+                    <td>+10% HP to structures</td>
+                    <td class="muted">Starter upgrade</td>
+                  </tr>
+                  <tr>
+                    <td>Auto Miner Array</td>
+                    <td><span class="pill">Economy</span></td>
+                    <td>1,200 Ore</td>
+                    <td>Pickaxe Mk.2</td>
+                    <td>+2 Ore/sec passive</td>
+                    <td class="muted">Stacks with boosts</td>
+                  </tr>
+                  <tr>
+                    <td>Warp Relay Node</td>
+                    <td><span class="pill">Utility</span></td>
+                    <td>3 Star Shards</td>
+                    <td>Complete 3 quests</td>
+                    <td>Unlock fast travel</td>
+                    <td class="muted">Destination-specific</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <span class="pill">Active Tab</span>
-          </div>
+          </section>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Card Name</th>
-                  <th>Rarity</th>
-                  <th>Energy</th>
-                  <th>Ability</th>
-                  <th>Synergy</th>
-                  <th class="muted">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Gravity Seed</td>
-                  <td><span class="pill">Rare</span></td>
-                  <td>2</td>
-                  <td>Pull enemies 1 tile</td>
-                  <td>Blackhole set</td>
-                  <td class="muted">Great for combos</td>
-                </tr>
-                <tr>
-                  <td>Ore Bloom</td>
-                  <td><span class="pill">Common</span></td>
-                  <td>1</td>
-                  <td>Gain +100 Ore</td>
-                  <td>Mining builds</td>
-                  <td class="muted">Fast economy spike</td>
-                </tr>
-                <tr>
-                  <td>Transcend Echo</td>
-                  <td><span class="pill">Epic</span></td>
-                  <td>4</td>
-                  <td>Duplicate last effect</td>
-                  <td>Combo decks</td>
-                  <td class="muted">High skill ceiling</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
+          <!-- ORE MASTERY PAGE -->
+          <section class="page" id="page-ore">
+            <div class="section-head">
+              <div>
+                <div class="section-title">Ore Mastery</div>
+                <div class="section-sub">Track mastery tiers, bonuses, and unlock paths.</div>
+              </div>
+              <span class="pill">Ore Mastery</span>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ore Type</th>
+                    <th>Tier</th>
+                    <th>XP Required</th>
+                    <th>Bonus</th>
+                    <th>Unlocks</th>
+                    <th class="muted">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Iron</td>
+                    <td><span class="pill">I</span></td>
+                    <td>0</td>
+                    <td>+0%</td>
+                    <td>Base mining</td>
+                    <td class="muted">Starter</td>
+                  </tr>
+                  <tr>
+                    <td>Gold</td>
+                    <td><span class="pill">II</span></td>
+                    <td>500</td>
+                    <td>+5% yield</td>
+                    <td>Improved smelt</td>
+                    <td class="muted">Example row</td>
+                  </tr>
+                  <tr>
+                    <td>Mythic Ore</td>
+                    <td><span class="pill">V</span></td>
+                    <td>10,000</td>
+                    <td>+25% yield</td>
+                    <td>Special crafts</td>
+                    <td class="muted">Endgame</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- PICKAXE PAGE -->
+          <section class="page" id="page-pickaxe">
+            <div class="section-head">
+              <div>
+                <div class="section-title">Pickaxe</div>
+                <div class="section-sub">Manage pickaxe tiers, stats, and modules.</div>
+              </div>
+              <span class="pill">Pickaxe</span>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Tier</th>
+                    <th>Power</th>
+                    <th>Speed</th>
+                    <th>Special</th>
+                    <th class="muted">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Starter Pick</td>
+                    <td><span class="pill">Mk.1</span></td>
+                    <td>10</td>
+                    <td>1.0x</td>
+                    <td>None</td>
+                    <td class="muted">Baseline stats</td>
+                  </tr>
+                  <tr>
+                    <td>Core Splitter</td>
+                    <td><span class="pill">Mk.3</span></td>
+                    <td>35</td>
+                    <td>1.4x</td>
+                    <td>+5% crit</td>
+                    <td class="muted">Example</td>
+                  </tr>
+                  <tr>
+                    <td>Celestial Drill</td>
+                    <td><span class="pill">Mk.6</span></td>
+                    <td>120</td>
+                    <td>2.2x</td>
+                    <td>AOE break</td>
+                    <td class="muted">Late game</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ELVL PAGE -->
+          <section class="page" id="page-elvl">
+            <div class="section-head">
+              <div>
+                <div class="section-title">ELvl</div>
+                <div class="section-sub">Experience levels, rewards, and milestones.</div>
+              </div>
+              <span class="pill">ELvl</span>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Level</th>
+                    <th>XP Needed</th>
+                    <th>Reward</th>
+                    <th>Unlock</th>
+                    <th>Multiplier</th>
+                    <th class="muted">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>Starter pack</td>
+                    <td>Basic destinations</td>
+                    <td>1.00x</td>
+                    <td class="muted">Example row</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>2,000</td>
+                    <td>+1 card slot</td>
+                    <td>Ore Mastery II</td>
+                    <td>1.05x</td>
+                    <td class="muted">Mid milestone</td>
+                  </tr>
+                  <tr>
+                    <td>50</td>
+                    <td>50,000</td>
+                    <td>Legend token</td>
+                    <td>Transcend systems</td>
+                    <td>1.20x</td>
+                    <td class="muted">End milestone</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- CARDS PAGE -->
+          <section class="page" id="page-cards">
+            <div class="section-head">
+              <div>
+                <div class="section-title">Cards Library</div>
+                <div class="section-sub">A different table layout for cards.</div>
+              </div>
+              <span class="pill">Cards</span>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Card Name</th>
+                    <th>Rarity</th>
+                    <th>Energy</th>
+                    <th>Ability</th>
+                    <th>Synergy</th>
+                    <th class="muted">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Gravity Seed</td>
+                    <td><span class="pill">Rare</span></td>
+                    <td>2</td>
+                    <td>Pull enemies 1 tile</td>
+                    <td>Blackhole set</td>
+                    <td class="muted">Great for combos</td>
+                  </tr>
+                  <tr>
+                    <td>Ore Bloom</td>
+                    <td><span class="pill">Common</span></td>
+                    <td>1</td>
+                    <td>Gain +100 Ore</td>
+                    <td>Mining builds</td>
+                    <td class="muted">Fast economy spike</td>
+                  </tr>
+                  <tr>
+                    <td>Transcend Echo</td>
+                    <td><span class="pill">Epic</span></td>
+                    <td>4</td>
+                    <td>Duplicate last effect</td>
+                    <td>Combo decks</td>
+                    <td class="muted">High skill ceiling</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+        </div>
+      </main>
     </div>
 
   </div>
