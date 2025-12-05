@@ -126,6 +126,23 @@
     }
     .nav-btn:active{ transform: translateY(1px); }
 
+    /* --- NEW: stacked label for ELvl milestone subtext --- */
+    .nav-stack{
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+      line-height: 1.1;
+    }
+    .nav-sub{
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+
     .nav-mini{
       font-size: 10px;
       color: rgba(0,0,0,0.35);
@@ -150,6 +167,12 @@
       background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
       color: var(--accent-dark);
       box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
+    }
+
+    /* Make the ELvl nav subtext brighten when active */
+    #r-elvl:checked ~ .frame .sidebar label[for="r-elvl"] .nav-sub{
+      color: var(--accent-dark);
+      opacity: 1;
     }
 
     .content{
@@ -352,6 +375,7 @@
     }
 
     .field input[type="text"],
+    .field input[type="number"],
     .field select{
       width: 100%;
       border: 1px solid rgba(0,0,0,0.1);
@@ -623,7 +647,16 @@
         <label class="nav-btn" for="r-upgrades"><span>Upgrades</span><span class="nav-mini">U</span></label>
         <label class="nav-btn" for="r-ore"><span>Ore Mastery</span><span class="nav-mini">OM</span></label>
         <label class="nav-btn" for="r-pickaxe"><span>Pickaxe/Gears</span><span class="nav-mini">P/G</span></label>
-        <label class="nav-btn" for="r-elvl"><span>ELvl</span><span class="nav-mini">E</span></label>
+
+        <!-- UPDATED: ELvl with milestone subtext -->
+        <label class="nav-btn" for="r-elvl">
+          <span class="nav-stack">
+            <span>ELvl</span>
+            <span class="nav-sub" id="elvlSidebarMilestone">No level set</span>
+          </span>
+          <span class="nav-mini">E</span>
+        </label>
+
         <label class="nav-btn" for="r-cards"><span>Cards</span><span class="nav-mini">C</span></label>
 
         <div class="nav-divider"></div>
@@ -957,98 +990,98 @@
                   </select>
                 </div>
               </div>
+
               <!-- STEP 3: FOLLOW-UP PROMPTS (appear after Specials is chosen) -->
-<div id="pickaxeFollowups" class="pickaxe-step hidden">
-  <div class="section-head" style="margin-top:12px;">
-    <div>
-      <div class="section-title" style="font-size:16px;">Enchants</div>
-    </div>
-    <span class="pill">Step 3</span>
-  </div>
+              <div id="pickaxeFollowups" class="pickaxe-step hidden">
+                <div class="section-head" style="margin-top:12px;">
+                  <div>
+                    <div class="section-title" style="font-size:16px;">Enchants</div>
+                  </div>
+                  <span class="pill">Step 3</span>
+                </div>
 
-  <div class="form-grid">
-  <div class="field" data-extra-idx="1">
-    <label>Enchant 1</label>
-    <select id="pickaxePrompt2">
-      <option value="">Select enchant</option>
-      <option value="Power">Power</option>
-      <option value="Haste">Haste</option>
-      <option value="Critical">Critical</option>
-      <option value="Piercing">Piercing</option>
-      <option value="Affluence">Affluence</option>
-      <option value="Flame">Flame</option>
-      <option value="Poison">Poison</option>
-      <option value="Frostbite">Frostbite</option>
-      <option value="Fragmentation">Fragmentation</option>
-    </select>
-  </div>
+                <div class="form-grid">
+                  <div class="field" data-extra-idx="1">
+                    <label>Enchant 1</label>
+                    <select id="pickaxePrompt2">
+                      <option value="">Select enchant</option>
+                      <option value="Power">Power</option>
+                      <option value="Haste">Haste</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Piercing">Piercing</option>
+                      <option value="Affluence">Affluence</option>
+                      <option value="Flame">Flame</option>
+                      <option value="Poison">Poison</option>
+                      <option value="Frostbite">Frostbite</option>
+                      <option value="Fragmentation">Fragmentation</option>
+                    </select>
+                  </div>
 
-  <div class="field" data-extra-idx="2">
-    <label>Enchant 2</label>
-    <select id="pickaxePrompt3">
-      <option value="">Select enchant</option>
-      <option value="Power">Power</option>
-      <option value="Haste">Haste</option>
-      <option value="Critical">Critical</option>
-      <option value="Piercing">Piercing</option>
-      <option value="Affluence">Affluence</option>
-      <option value="Flame">Flame</option>
-      <option value="Poison">Poison</option>
-      <option value="Frostbite">Frostbite</option>
-      <option value="Fragmentation">Fragmentation</option>
-    </select>
-  </div>
+                  <div class="field" data-extra-idx="2">
+                    <label>Enchant 2</label>
+                    <select id="pickaxePrompt3">
+                      <option value="">Select enchant</option>
+                      <option value="Power">Power</option>
+                      <option value="Haste">Haste</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Piercing">Piercing</option>
+                      <option value="Affluence">Affluence</option>
+                      <option value="Flame">Flame</option>
+                      <option value="Poison">Poison</option>
+                      <option value="Frostbite">Frostbite</option>
+                      <option value="Fragmentation">Fragmentation</option>
+                    </select>
+                  </div>
 
-  <div class="field" data-extra-idx="3">
-    <label>Enchant 3</label>
-    <select id="pickaxePrompt4">
-      <option value="">Select enchant</option>
-      <option value="Power">Power</option>
-      <option value="Haste">Haste</option>
-      <option value="Critical">Critical</option>
-      <option value="Piercing">Piercing</option>
-      <option value="Affluence">Affluence</option>
-      <option value="Flame">Flame</option>
-      <option value="Poison">Poison</option>
-      <option value="Frostbite">Frostbite</option>
-      <option value="Fragmentation">Fragmentation</option>
-    </select>
-  </div>
+                  <div class="field" data-extra-idx="3">
+                    <label>Enchant 3</label>
+                    <select id="pickaxePrompt4">
+                      <option value="">Select enchant</option>
+                      <option value="Power">Power</option>
+                      <option value="Haste">Haste</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Piercing">Piercing</option>
+                      <option value="Affluence">Affluence</option>
+                      <option value="Flame">Flame</option>
+                      <option value="Poison">Poison</option>
+                      <option value="Frostbite">Frostbite</option>
+                      <option value="Fragmentation">Fragmentation</option>
+                    </select>
+                  </div>
 
-  <div class="field" data-extra-idx="4">
-    <label>Enchant 4</label>
-    <select id="pickaxePrompt5">
-      <option value="">Select enchant</option>
-      <option value="Power">Power</option>
-      <option value="Haste">Haste</option>
-      <option value="Critical">Critical</option>
-      <option value="Piercing">Piercing</option>
-      <option value="Affluence">Affluence</option>
-      <option value="Flame">Flame</option>
-      <option value="Poison">Poison</option>
-      <option value="Frostbite">Frostbite</option>
-      <option value="Fragmentation">Fragmentation</option>
-    </select>
-  </div>
+                  <div class="field" data-extra-idx="4">
+                    <label>Enchant 4</label>
+                    <select id="pickaxePrompt5">
+                      <option value="">Select enchant</option>
+                      <option value="Power">Power</option>
+                      <option value="Haste">Haste</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Piercing">Piercing</option>
+                      <option value="Affluence">Affluence</option>
+                      <option value="Flame">Flame</option>
+                      <option value="Poison">Poison</option>
+                      <option value="Frostbite">Frostbite</option>
+                      <option value="Fragmentation">Fragmentation</option>
+                    </select>
+                  </div>
 
-  <div class="field" data-extra-idx="5">
-    <label>Enchant 5</label>
-    <select id="pickaxePrompt6">
-      <option value="">Select enchant</option>
-      <option value="Power">Power</option>
-      <option value="Haste">Haste</option>
-      <option value="Critical">Critical</option>
-      <option value="Piercing">Piercing</option>
-      <option value="Affluence">Affluence</option>
-      <option value="Flame">Flame</option>
-      <option value="Poison">Poison</option>
-      <option value="Frostbite">Frostbite</option>
-      <option value="Fragmentation">Fragmentation</option>
-    </select>
-  </div>
-</div>
-
-</div>
+                  <div class="field" data-extra-idx="5">
+                    <label>Enchant 5</label>
+                    <select id="pickaxePrompt6">
+                      <option value="">Select enchant</option>
+                      <option value="Power">Power</option>
+                      <option value="Haste">Haste</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Piercing">Piercing</option>
+                      <option value="Affluence">Affluence</option>
+                      <option value="Flame">Flame</option>
+                      <option value="Poison">Poison</option>
+                      <option value="Frostbite">Frostbite</option>
+                      <option value="Fragmentation">Fragmentation</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
               <div class="btn-row">
                 <button class="btn secondary" type="button" id="pickaxeChangeBtn">Change Pickaxe</button>
@@ -1079,8 +1112,8 @@
 
             <div class="form-grid" style="margin-bottom: 14px;">
               <div class="field">
-                <label>ELvl Prompt</label>
-                <input type="text" id="elvlPrompt1" placeholder="Type here..." />
+                <label>Current ELvl</label>
+                <input type="number" id="elvlPrompt1" placeholder="Enter level..." min="0" step="1" />
               </div>
             </div>
 
@@ -1228,18 +1261,17 @@
     const STORAGE_KEY = "remblyx_mini_settings_v1";
 
     const DEFAULT_PROMPTS = {
-  elvl1: "",
-  pickaxeChoice: "",       // stores pickaxe id
-  pickaxeDropdown1: "",    // stores first dropdown value
+      elvl1: "",
+      pickaxeChoice: "",       // stores pickaxe id
+      pickaxeDropdown1: "",    // stores first dropdown value
 
-  // follow-up prompts after dropdown #1
-  pickaxePrompt2: "",
-  pickaxePrompt3: "",
-  pickaxePrompt4: "",
-  pickaxePrompt5: "",
-  pickaxePrompt6: ""
-};
-
+      // follow-up prompts after dropdown #1
+      pickaxePrompt2: "",
+      pickaxePrompt3: "",
+      pickaxePrompt4: "",
+      pickaxePrompt5: "",
+      pickaxePrompt6: ""
+    };
 
     const DEFAULTS = {
       theme: "system",
@@ -1310,30 +1342,31 @@
       const fixed = n.toFixed(decimals);
       return String(Number(fixed));
     }
-  function getAllowedPickaxeFollowups(){
-  return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
-}
 
-function updatePickaxeFollowupsUI(){
-  if(!pickaxeFollowups) return;
+    function getAllowedPickaxeFollowups(){
+      return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
+    }
 
-  const firstAnswered = !!(state.prompts.pickaxeDropdown1);
+    function updatePickaxeFollowupsUI(){
+      if(!pickaxeFollowups) return;
 
-  // Only show the follow-ups AFTER dropdown #1 has a value
-  if(!firstAnswered){
-    pickaxeFollowups.classList.add("hidden");
-    return;
-  }
+      const firstAnswered = !!(state.prompts.pickaxeDropdown1);
 
-  pickaxeFollowups.classList.remove("hidden");
+      // Only show the follow-ups AFTER dropdown #1 has a value
+      if(!firstAnswered){
+        pickaxeFollowups.classList.add("hidden");
+        return;
+      }
 
-  const allowed = getAllowedPickaxeFollowups();
+      pickaxeFollowups.classList.remove("hidden");
 
-  pickaxeFollowups.querySelectorAll("[data-extra-idx]").forEach(field => {
-    const idx = Number(field.getAttribute("data-extra-idx"));
-    field.classList.toggle("hidden", idx > allowed);
-  });
-}
+      const allowed = getAllowedPickaxeFollowups();
+
+      pickaxeFollowups.querySelectorAll("[data-extra-idx]").forEach(field => {
+        const idx = Number(field.getAttribute("data-extra-idx"));
+        field.classList.toggle("hidden", idx > allowed);
+      });
+    }
 
     function formatSuffix(n){
       const abs = Math.abs(n);
@@ -1485,6 +1518,61 @@ function updatePickaxeFollowupsUI(){
     const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
     const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
 
+    /* --- NEW: ELvl milestones for sidebar --- */
+    const ELVL_MILESTONES = [
+      { level: 1,  reward: "Starter pack" },
+      { level: 10, reward: "+1 card slot" },
+      { level: 50, reward: "Legend token" },
+    ];
+
+    function getCurrentElvl(){
+      const raw = (elvlPrompt1?.value ?? "").trim();
+      const n = Number(raw);
+      if(!Number.isFinite(n)) return null;
+      return Math.max(0, Math.floor(n));
+    }
+
+    function getNextMilestone(level){
+      for(const m of ELVL_MILESTONES){
+        if(level < m.level) return m;
+      }
+      return null;
+    }
+
+    function getLatestMilestone(level){
+      let latest = null;
+      for(const m of ELVL_MILESTONES){
+        if(level >= m.level) latest = m;
+      }
+      return latest;
+    }
+
+    function updateElvlSidebarMilestone(){
+      const node = document.getElementById("elvlSidebarMilestone");
+      if(!node) return;
+
+      const lvl = getCurrentElvl();
+
+      if(lvl == null){
+        node.textContent = "No level set";
+        return;
+      }
+
+      const next = getNextMilestone(lvl);
+
+      if(next){
+        const diff = next.level - lvl;
+        node.textContent = `Next: Lv${next.level} • ${next.reward} (${diff} to go)`;
+        return;
+      }
+
+      const latest = getLatestMilestone(lvl);
+      if(latest){
+        node.textContent = `All milestones cleared • Lv${latest.level}`;
+      }else{
+        node.textContent = "Milestones ready";
+      }
+    }
 
     function ensurePrompts(){
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
@@ -1493,7 +1581,6 @@ function updatePickaxeFollowupsUI(){
     function showPickaxeStep(step){
       // step: "choose" | "dropdown"
       if(!pickaxeStepChoose || !pickaxeStepDropdown) return;
-
 
       if(step === "dropdown"){
         pickaxeStepChoose.classList.add("hidden");
@@ -1581,7 +1668,9 @@ function updatePickaxeFollowupsUI(){
       }else{
         showPickaxeStep("choose");
       }
+
       updatePickaxeFollowupsUI();
+      updateElvlSidebarMilestone();
     }
 
     function collectPromptsFromUI(){
@@ -1606,12 +1695,12 @@ function updatePickaxeFollowupsUI(){
           pickaxePrompt6
       ].filter(Boolean);
 
-
       const handler = () => {
         collectPromptsFromUI();
         saveSettingsObj(state);
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
+        updateElvlSidebarMilestone();
       };
 
       inputs.forEach(el => {
@@ -1657,6 +1746,7 @@ function updatePickaxeFollowupsUI(){
 
         updateNumberDisplays(state.notation);
         loadPromptsToUI();
+        updateElvlSidebarMilestone();
 
         resetBtn.textContent = "Reset";
         window.setTimeout(() => resetBtn.textContent = "Reset Defaults", 700);
