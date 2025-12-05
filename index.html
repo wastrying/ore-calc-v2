@@ -35,21 +35,20 @@
       min-height:100vh;
     }
 
-    /* Hide radio inputs for CSS-only routing */
+    /* ---------------- CSS-only main navigation ---------------- */
     .route{
       position: absolute;
       opacity: 0;
       pointer-events: none;
     }
 
-    /* ---------- Full-width frame ---------- */
     .frame{
       display:grid;
       grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
       min-height: 100vh;
     }
 
-    /* ---------- Sidebar (flush left) ---------- */
+    /* ---------------- Sidebar (flush left) ---------------- */
     .sidebar{
       background: var(--panel);
       border-right: 1px solid rgba(0,0,0,0.06);
@@ -59,7 +58,6 @@
       top: 0;
       height: 100vh;
       overflow: auto;
-      /* Rounded only on the inner/right side so it sits cleanly on the edge */
       border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
     }
 
@@ -111,7 +109,6 @@
       background: rgba(0,0,0,0.04);
     }
 
-    /* Active sidebar states */
     #r-upgrades:checked ~ .frame .sidebar label[for="r-upgrades"],
     #r-ore:checked ~ .frame .sidebar label[for="r-ore"],
     #r-pickaxe:checked ~ .frame .sidebar label[for="r-pickaxe"],
@@ -122,70 +119,11 @@
       box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
     }
 
-    /* ---------- Content area ---------- */
+    /* ---------------- Right content column ---------------- */
     .content{
       padding: 26px 22px 60px;
     }
 
-    /* Header band (Destination + current section label) */
-    .header-band{
-      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: var(--radius-lg);
-      padding: 18px 18px 14px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 16px;
-    }
-
-    .destination-row{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      align-items:center;
-      justify-items:center;
-      text-align:center;
-    }
-
-    .destination-label{
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .destination-select{
-      width: min(520px, 100%);
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
-      outline: none;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .destination-select:focus{
-      border-color: rgba(47,143,107,0.5);
-      box-shadow: 0 0 0 4px rgba(47,143,107,0.12);
-    }
-
-    .section-pill{
-      margin-top: 6px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: var(--mint-300);
-      color: #0f3d2d;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    /* ---------- Main panel ---------- */
     .main{
       background: var(--panel);
       border-radius: var(--radius-lg);
@@ -208,17 +146,17 @@
       display:block;
     }
 
-    /* ---------- Section header ---------- */
+    /* ---------------- Section header ---------------- */
     .section-head{
       display:flex;
       align-items:center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .section-title{
-      font-size: 20px;
-      font-weight: 750;
+      font-size: 22px;
+      font-weight: 780;
       letter-spacing: 0.01em;
     }
     .section-sub{
@@ -244,7 +182,79 @@
 
     .muted{ color: var(--muted); }
 
-    /* ---------- Table styling ---------- */
+    /* ---------------- Destination pills (Upgrades only) ---------------- */
+    .dest-route{
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .dest-bar{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 0 14px;
+      border-bottom: 1px dashed rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+
+    .dest-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+      background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+      border: 1px solid rgba(47,143,107,0.18);
+      cursor: pointer;
+      transition: transform .08s, box-shadow .15s, filter .15s, opacity .15s;
+      user-select:none;
+    }
+    .dest-pill:hover{ filter: saturate(1.05); box-shadow: var(--shadow-sm); }
+    .dest-pill:active{ transform: translateY(1px); }
+
+    .dest-pill .mini{
+      font-size: 9px;
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.55);
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    /* Dim non-active pills by default using a class hook */
+    .dest-bar .dest-pill{ opacity: .55; }
+
+    /* Active destination pill styles */
+    #d-point:checked ~ .dest-bar label[for="d-point"],
+    #d-blackhole:checked ~ .dest-bar label[for="d-blackhole"],
+    #d-mining:checked ~ .dest-bar label[for="d-mining"],
+    #d-transcend:checked ~ .dest-bar label[for="d-transcend"],
+    #d-star:checked ~ .dest-bar label[for="d-star"],
+    #d-sacrifice:checked ~ .dest-bar label[for="d-sacrifice"]{
+      opacity: 1;
+      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.22), var(--shadow-sm);
+      filter: saturate(1.15);
+    }
+
+    .dest-panel{ display:none; }
+
+    #d-point:checked ~ .dest-content #panel-point,
+    #d-blackhole:checked ~ .dest-content #panel-blackhole,
+    #d-mining:checked ~ .dest-content #panel-mining,
+    #d-transcend:checked ~ .dest-content #panel-transcend,
+    #d-star:checked ~ .dest-content #panel-star,
+    #d-sacrifice:checked ~ .dest-content #panel-sacrifice{
+      display:block;
+    }
+
+    /* ---------------- Table styling ---------------- */
     .table-wrap{
       border: 1px solid rgba(0,0,0,0.06);
       border-radius: var(--radius-md);
@@ -282,7 +292,7 @@
     tbody tr:nth-child(odd){ background: #fcfdfc; }
     tbody tr:hover{ background: #f4fbf7; }
 
-    /* ---------- Responsive ---------- */
+    /* ---------------- Responsive ---------------- */
     @media (max-width: 900px){
       :root{ --sidebar-w: 190px; }
       table{ min-width: 560px; }
@@ -307,7 +317,7 @@
 </head>
 
 <body>
-  <!-- Routes for CSS-only navigation -->
+  <!-- Main routes for CSS-only navigation -->
   <input class="route" type="radio" name="route" id="r-upgrades" checked />
   <input class="route" type="radio" name="route" id="r-ore" />
   <input class="route" type="radio" name="route" id="r-pickaxe" />
@@ -345,80 +355,308 @@
 
     <!-- Right content column -->
     <div class="content">
-
-      <!-- Header matching your sheet vibe -->
-      <div class="header-band">
-        <div class="destination-row">
-          <div class="destination-label">Destination</div>
-          <select class="destination-select" aria-label="Destination">
-            <option>Point_Basement</option>
-            <option>Blackhole_Basement</option>
-            <option>Mining_Baseplate</option>
-            <option>Transcend_Baseplate</option>
-            <option>Star_Tree</option>
-            <option>Sacrifice_Baseplate</option>
-          </select>
-          <span class="section-pill">Dashboard</span>
-        </div>
-      </div>
-
-      <!-- Main content panel -->
       <main class="main">
         <div class="main-inner">
 
-          <!-- UPGRADES PAGE -->
+          <!-- ===================== UPGRADES PAGE ===================== -->
           <section class="page" id="page-upgrades">
+            <!-- Destination sub-routes (CSS-only) -->
+            <input class="dest-route" type="radio" name="dest" id="d-point" checked />
+            <input class="dest-route" type="radio" name="dest" id="d-blackhole" />
+            <input class="dest-route" type="radio" name="dest" id="d-mining" />
+            <input class="dest-route" type="radio" name="dest" id="d-transcend" />
+            <input class="dest-route" type="radio" name="dest" id="d-star" />
+            <input class="dest-route" type="radio" name="dest" id="d-sacrifice" />
+
             <div class="section-head">
               <div>
-                <div class="section-title">Destination Upgrades</div>
-                <div class="section-sub">Your upgrades table for the selected destination.</div>
+                <div class="section-title">Upgrades</div>
+                <div class="section-sub">Pick a destination to view its upgrade table.</div>
               </div>
-              <span class="pill">Upgrades</span>
+              <span class="pill">Destinations</span>
             </div>
 
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Upgrade</th>
-                    <th>Type</th>
-                    <th>Cost</th>
-                    <th>Requirement</th>
-                    <th>Effect</th>
-                    <th class="muted">Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Reinforced Walls I</td>
-                    <td><span class="pill">Defense</span></td>
-                    <td>250 Ore</td>
-                    <td>Base Level 1</td>
-                    <td>+10% HP to structures</td>
-                    <td class="muted">Starter upgrade</td>
-                  </tr>
-                  <tr>
-                    <td>Auto Miner Array</td>
-                    <td><span class="pill">Economy</span></td>
-                    <td>1,200 Ore</td>
-                    <td>Pickaxe Mk.2</td>
-                    <td>+2 Ore/sec passive</td>
-                    <td class="muted">Stacks with boosts</td>
-                  </tr>
-                  <tr>
-                    <td>Warp Relay Node</td>
-                    <td><span class="pill">Utility</span></td>
-                    <td>3 Star Shards</td>
-                    <td>Complete 3 quests</td>
-                    <td>Unlock fast travel</td>
-                    <td class="muted">Destination-specific</td>
-                  </tr>
-                </tbody>
-              </table>
+            <!-- 6 destination pill boxes -->
+            <div class="dest-bar" role="tablist" aria-label="Destinations">
+              <label class="dest-pill" for="d-point" role="tab">
+                <span>Point Basement</span><span class="mini">PB</span>
+              </label>
+              <label class="dest-pill" for="d-blackhole" role="tab">
+                <span>Blackhole Basement</span><span class="mini">BB</span>
+              </label>
+              <label class="dest-pill" for="d-mining" role="tab">
+                <span>Mining Baseplate</span><span class="mini">MB</span>
+              </label>
+              <label class="dest-pill" for="d-transcend" role="tab">
+                <span>Transcend Baseplate</span><span class="mini">TB</span>
+              </label>
+              <label class="dest-pill" for="d-star" role="tab">
+                <span>Star Tree</span><span class="mini">ST</span>
+              </label>
+              <label class="dest-pill" for="d-sacrifice" role="tab">
+                <span>Sacrifice Baseplate</span><span class="mini">SB</span>
+              </label>
+            </div>
+
+            <!-- Destination-specific tables -->
+            <div class="dest-content">
+
+              <div class="dest-panel" id="panel-point">
+                <div class="section-head">
+                  <div>
+                    <div class="section-title" style="font-size:18px;">Point Basement Upgrades</div>
+                    <div class="section-sub">Replace these rows with your real Point Basement data.</div>
+                  </div>
+                  <span class="pill">PB</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Upgrade</th>
+                        <th>Type</th>
+                        <th>Cost</th>
+                        <th>Requirement</th>
+                        <th>Effect</th>
+                        <th class="muted">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Point Amplifier I</td>
+                        <td><span class="pill">Economy</span></td>
+                        <td>150 Ore</td>
+                        <td>Base Level 1</td>
+                        <td>+5% point gain</td>
+                        <td class="muted">Early scaling</td>
+                      </tr>
+                      <tr>
+                        <td>Basement Shield</td>
+                        <td><span class="pill">Defense</span></td>
+                        <td>400 Ore</td>
+                        <td>Complete 1 quest</td>
+                        <td>+10% structure HP</td>
+                        <td class="muted">Example row</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="dest-panel" id="panel-blackhole">
+                <div class="section-head">
+                  <div>
+                    <div class="section-title" style="font-size:18px;">Blackhole Basement Upgrades</div>
+                    <div class="section-sub">Replace these rows with your real Blackhole data.</div>
+                  </div>
+                  <span class="pill">BB</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Upgrade</th>
+                        <th>Type</th>
+                        <th>Cost</th>
+                        <th>Requirement</th>
+                        <th>Effect</th>
+                        <th class="muted">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Gravity Well I</td>
+                        <td><span class="pill">Utility</span></td>
+                        <td>1 Void Core</td>
+                        <td>ELvl 5</td>
+                        <td>Unlock pull mechanic</td>
+                        <td class="muted">Theme core</td>
+                      </tr>
+                      <tr>
+                        <td>Singularity Forge</td>
+                        <td><span class="pill">Economy</span></td>
+                        <td>900 Ore</td>
+                        <td>Pickaxe Mk.2</td>
+                        <td>+1.5 Ore/sec passive</td>
+                        <td class="muted">Example row</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="dest-panel" id="panel-mining">
+                <div class="section-head">
+                  <div>
+                    <div class="section-title" style="font-size:18px;">Mining Baseplate Upgrades</div>
+                    <div class="section-sub">Replace these rows with your real Mining data.</div>
+                  </div>
+                  <span class="pill">MB</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Upgrade</th>
+                        <th>Type</th>
+                        <th>Cost</th>
+                        <th>Requirement</th>
+                        <th>Effect</th>
+                        <th class="muted">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Auto Miner Array</td>
+                        <td><span class="pill">Economy</span></td>
+                        <td>1,200 Ore</td>
+                        <td>Base Level 2</td>
+                        <td>+2 Ore/sec passive</td>
+                        <td class="muted">Core mining loop</td>
+                      </tr>
+                      <tr>
+                        <td>Vein Scanner</td>
+                        <td><span class="pill">Utility</span></td>
+                        <td>3 Scanner Parts</td>
+                        <td>Ore Mastery I</td>
+                        <td>+10% rare find chance</td>
+                        <td class="muted">Example row</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="dest-panel" id="panel-transcend">
+                <div class="section-head">
+                  <div>
+                    <div class="section-title" style="font-size:18px;">Transcend Baseplate Upgrades</div>
+                    <div class="section-sub">Replace these rows with your real Transcend data.</div>
+                  </div>
+                  <span class="pill">TB</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Upgrade</th>
+                        <th>Type</th>
+                        <th>Cost</th>
+                        <th>Requirement</th>
+                        <th>Effect</th>
+                        <th class="muted">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Ascension Catalysts</td>
+                        <td><span class="pill">Progression</span></td>
+                        <td>1 Transcend Sigil</td>
+                        <td>ELvl 25</td>
+                        <td>Unlock prestige track</td>
+                        <td class="muted">Late game gate</td>
+                      </tr>
+                      <tr>
+                        <td>Echo Multipliers</td>
+                        <td><span class="pill">Economy</span></td>
+                        <td>2 Sigils</td>
+                        <td>Complete 5 trials</td>
+                        <td>+15% all gains</td>
+                        <td class="muted">Example row</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="dest-panel" id="panel-star">
+                <div class="section-head">
+                  <div>
+                    <div class="section-title" style="font-size:18px;">Star Tree Upgrades</div>
+                    <div class="section-sub">Replace these rows with your real Star Tree data.</div>
+                  </div>
+                  <span class="pill">ST</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Upgrade</th>
+                        <th>Type</th>
+                        <th>Cost</th>
+                        <th>Requirement</th>
+                        <th>Effect</th>
+                        <th class="muted">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Starlight Sap</td>
+                        <td><span class="pill">Utility</span></td>
+                        <td>50 Star Leaves</td>
+                        <td>Ore Mastery II</td>
+                        <td>Unlock star crafting</td>
+                        <td class="muted">Theme unlock</td>
+                      </tr>
+                      <tr>
+                        <td>Constellation Boost</td>
+                        <td><span class="pill">Economy</span></td>
+                        <td>200 Leaves</td>
+                        <td>Complete 3 events</td>
+                        <td>+8% global gain</td>
+                        <td class="muted">Example row</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="dest-panel" id="panel-sacrifice">
+                <div class="section-head">
+                  <div>
+                    <div class="section-title" style="font-size:18px;">Sacrifice Baseplate Upgrades</div>
+                    <div class="section-sub">Replace these rows with your real Sacrifice data.</div>
+                  </div>
+                  <span class="pill">SB</span>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Upgrade</th>
+                        <th>Type</th>
+                        <th>Cost</th>
+                        <th>Requirement</th>
+                        <th>Effect</th>
+                        <th class="muted">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Offering Engine</td>
+                        <td><span class="pill">Progression</span></td>
+                        <td>1 Relic</td>
+                        <td>ELvl 15</td>
+                        <td>Convert losses into buffs</td>
+                        <td class="muted">High-risk system</td>
+                      </tr>
+                      <tr>
+                        <td>Bloodline Pact</td>
+                        <td><span class="pill">Defense</span></td>
+                        <td>3 Relics</td>
+                        <td>Complete 2 sacrifices</td>
+                        <td>+12% damage resist</td>
+                        <td class="muted">Example row</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
             </div>
           </section>
 
-          <!-- ORE MASTERY PAGE -->
+          <!-- ===================== ORE MASTERY PAGE ===================== -->
           <section class="page" id="page-ore">
             <div class="section-head">
               <div>
@@ -470,7 +708,7 @@
             </div>
           </section>
 
-          <!-- PICKAXE PAGE -->
+          <!-- ===================== PICKAXE PAGE ===================== -->
           <section class="page" id="page-pickaxe">
             <div class="section-head">
               <div>
@@ -522,7 +760,7 @@
             </div>
           </section>
 
-          <!-- ELVL PAGE -->
+          <!-- ===================== ELVL PAGE ===================== -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -574,7 +812,7 @@
             </div>
           </section>
 
-          <!-- CARDS PAGE -->
+          <!-- ===================== CARDS PAGE ===================== -->
           <section class="page" id="page-cards">
             <div class="section-head">
               <div>
