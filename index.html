@@ -1485,212 +1485,116 @@
     const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
     const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
 
-  /* ============================================================
-   ✅ ELVL MILESTONES (14) WITH FORMULAS + TABLE RENDER
-   Edit levels/xp/reward/unlock/notes/formula to your real values.
-   Each row's Multiplier shows the FINAL computed value using
-   the CURRENT ELvl input.
-   ============================================================ */
+    /* ============================================================
+       ✅ ELVL MILESTONES (14) WITH FORMULAS + TABLE RENDER
+       Each row's Multiplier shows the FINAL computed value using
+       the CURRENT ELvl input.
+       ============================================================ */
 
-const ELVL_MILESTONES = [
-  {
-    id: 1,
-    short: "M1",
-    level: 1,
-    xpNeeded: 0,
-    reward: "Starter pack",
-    unlock: "Basic destinations",
-    notes: "Example",
-    formula: (elvl) => 1.5 * elvl,
-  },
-  {
-    id: 2,
-    short: "M2",
-    level: 5,
-    xpNeeded: 250,
-    reward: "Small boost",
-    unlock: "Ore Mastery I",
-    notes: "Placeholder",
-    formula: (elvl) => 1.8 * elvl,
-  },
-  {
-    id: 3,
-    short: "M3",
-    level: 10,
-    xpNeeded: 2000,
-    reward: "+1 card slot",
-    unlock: "Ore Mastery II",
-    notes: "Example",
-    formula: (elvl) => 2.2 * elvl,
-  },
-  {
-    id: 4,
-    short: "M4",
-    level: 15,
-    xpNeeded: 4500,
-    reward: "Unlock perk",
-    unlock: "Pickaxe Mk.2",
-    notes: "Placeholder",
-    formula: (elvl) => 2.6 * elvl,
-  },
-  {
-    id: 5,
-    short: "M5",
-    level: 20,
-    xpNeeded: 9000,
-    reward: "Resource bonus",
-    unlock: "New destination",
-    notes: "Placeholder",
-    formula: (elvl) => 3.0 * elvl,
-  },
-  {
-    id: 6,
-    short: "M6",
-    level: 25,
-    xpNeeded: 15000,
-    reward: "Rare token",
-    unlock: "Advanced crafting",
-    notes: "Placeholder",
-    formula: (elvl) => 3.4 * elvl,
-  },
-  {
-    id: 7,
-    short: "M7",
-    level: 30,
-    xpNeeded: 23000,
-    reward: "Passive buff",
-    unlock: "Mining Baseplate II",
-    notes: "Placeholder",
-    formula: (elvl) => 3.8 * elvl,
-  },
-  {
-    id: 8,
-    short: "M8",
-    level: 35,
-    xpNeeded: 33000,
-    reward: "Prestige shard",
-    unlock: "Meta system hint",
-    notes: "Placeholder",
-    formula: (elvl) => 4.2 * elvl,
-  },
-  {
-    id: 9,
-    short: "M9",
-    level: 40,
-    xpNeeded: 45000,
-    reward: "Global gain",
-    unlock: "Star Tree I",
-    notes: "Placeholder",
-    formula: (elvl) => 4.6 * elvl,
-  },
-  {
-    id: 10,
-    short: "M10",
-    level: 45,
-    xpNeeded: 60000,
-    reward: "Defense boost",
-    unlock: "Blackhole perks",
-    notes: "Placeholder",
-    formula: (elvl) => 5.0 * elvl,
-  },
-  {
-    id: 11,
-    short: "M11",
-    level: 50,
-    xpNeeded: 80000,
-    reward: "Legend token",
-    unlock: "Transcend systems",
-    notes: "Example",
-    formula: (elvl) => 5.5 * elvl,
-  },
-  {
-    id: 12,
-    short: "M12",
-    level: 60,
-    xpNeeded: 120000,
-    reward: "Mythic unlock",
-    unlock: "Ore Mastery IV",
-    notes: "Placeholder",
-    formula: (elvl) => 6.2 * elvl,
-  },
-  {
-    id: 13,
-    short: "M13",
-    level: 70,
-    xpNeeded: 170000,
-    reward: "Ultra perk",
-    unlock: "Sacrifice I",
-    notes: "Placeholder",
-    formula: (elvl) => 7.0 * elvl,
-  },
-  {
-    id: 14,
-    short: "M14",
-    level: 80,
-    xpNeeded: 230000,
-    reward: "Endgame key",
-    unlock: "Final track",
-    notes: "Placeholder",
-    formula: (elvl) => 8.0 * elvl,
-  },
-];
+    const ELVL_MILESTONES = [
+      { id: 1,  short: "M1",  level: 1,  xpNeeded: 0,       reward: "Starter pack",  unlock: "Basic destinations", notes: "Example",      formula: (elvl) => 1.5 * elvl },
+      { id: 2,  short: "M2",  level: 5,  xpNeeded: 250,     reward: "Small boost",   unlock: "Ore Mastery I",     notes: "Placeholder",  formula: (elvl) => 1.8 * elvl },
+      { id: 3,  short: "M3",  level: 10, xpNeeded: 2000,    reward: "+1 card slot",  unlock: "Ore Mastery II",    notes: "Example",      formula: (elvl) => 2.2 * elvl },
+      { id: 4,  short: "M4",  level: 15, xpNeeded: 4500,    reward: "Unlock perk",   unlock: "Pickaxe Mk.2",      notes: "Placeholder",  formula: (elvl) => 2.6 * elvl },
+      { id: 5,  short: "M5",  level: 20, xpNeeded: 9000,    reward: "Resource bonus",unlock: "New destination",    notes: "Placeholder",  formula: (elvl) => 3.0 * elvl },
+      { id: 6,  short: "M6",  level: 25, xpNeeded: 15000,   reward: "Rare token",    unlock: "Advanced crafting", notes: "Placeholder",  formula: (elvl) => 3.4 * elvl },
+      { id: 7,  short: "M7",  level: 30, xpNeeded: 23000,   reward: "Passive buff",  unlock: "Mining Baseplate II",notes:"Placeholder", formula: (elvl) => 3.8 * elvl },
+      { id: 8,  short: "M8",  level: 35, xpNeeded: 33000,   reward: "Prestige shard",unlock: "Meta system hint",  notes: "Placeholder",  formula: (elvl) => 4.2 * elvl },
+      { id: 9,  short: "M9",  level: 40, xpNeeded: 45000,   reward: "Global gain",   unlock: "Star Tree I",       notes: "Placeholder",  formula: (elvl) => 4.6 * elvl },
+      { id: 10, short: "M10", level: 45, xpNeeded: 60000,   reward: "Defense boost", unlock: "Blackhole perks",   notes: "Placeholder",  formula: (elvl) => 5.0 * elvl },
+      { id: 11, short: "M11", level: 50, xpNeeded: 80000,   reward: "Legend token",  unlock: "Transcend systems", notes: "Example",      formula: (elvl) => 5.5 * elvl },
+      { id: 12, short: "M12", level: 60, xpNeeded: 120000,  reward: "Mythic unlock", unlock: "Ore Mastery IV",    notes: "Placeholder",  formula: (elvl) => 6.2 * elvl },
+      { id: 13, short: "M13", level: 70, xpNeeded: 170000,  reward: "Ultra perk",    unlock: "Sacrifice I",       notes: "Placeholder",  formula: (elvl) => 7.0 * elvl },
+      { id: 14, short: "M14", level: 80, xpNeeded: 230000,  reward: "Endgame key",   unlock: "Final track",       notes: "Placeholder",  formula: (elvl) => 8.0 * elvl },
+    ];
 
-function getSortedElvlMilestones(){
-  return [...ELVL_MILESTONES].sort((a,b) => a.level - b.level);
-}
+    function getSortedElvlMilestones(){
+      return [...ELVL_MILESTONES].sort((a,b) => a.level - b.level);
+    }
 
-function getNextMilestone(level){
-  for(const m of getSortedElvlMilestones()){
-    if(level < m.level) return m;
-  }
-  return null;
-}
+    function getCurrentElvl(){
+      const raw = (elvlPrompt1?.value ?? "").trim();
+      const n = Number(raw);
+      if(!Number.isFinite(n)) return null;
+      return Math.max(0, Math.floor(n));
+    }
 
-function getLatestMilestone(level){
-  let latest = null;
-  for(const m of getSortedElvlMilestones()){
-    if(level >= m.level) latest = m;
-  }
-  return latest;
-}
+    function getNextMilestone(level){
+      for(const m of getSortedElvlMilestones()){
+        if(level < m.level) return m;
+      }
+      return null;
+    }
 
-function computeMilestoneValue(milestone, currentElvl){
-  try{
-    const v = milestone.formula(currentElvl);
-    return Number.isFinite(v) ? v : 0;
-  }catch{
-    return 0;
-  }
-}
+    function getLatestMilestone(level){
+      let latest = null;
+      for(const m of getSortedElvlMilestones()){
+        if(level >= m.level) latest = m;
+      }
+      return latest;
+    }
 
-/* ✅ NEW: Render full 14-row ELvl table with computed multipliers */
-function renderElvlMilestoneTable(){
-  const body = document.getElementById("elvlMilestoneBody");
-  if(!body) return;
+    function computeMilestoneValue(milestone, currentElvl){
+      try{
+        const v = milestone.formula(currentElvl);
+        return Number.isFinite(v) ? v : 0;
+      }catch{
+        return 0;
+      }
+    }
 
-  const lvl = getCurrentElvl();
-  const rows = getSortedElvlMilestones();
+    function updateElvlSidebarMilestone(){
+      const node = document.getElementById("elvlSidebarMilestone");
+      if(!node) return;
 
-  body.innerHTML = "";
+      const lvl = getCurrentElvl();
 
-  rows.forEach(m => {
-    const multVal = (lvl == null) ? null : computeMilestoneValue(m, lvl);
+      if(lvl == null){
+        node.textContent = "No level set";
+        return;
+      }
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>Lv${m.level}</td>
-      <td><span data-num="${m.xpNeeded ?? 0}"></span></td>
-      <td>${m.reward ?? ""}</td>
-      <td>${m.unlock ?? ""}</td>
-      <td>${multVal == null ? "—" : `${tidyFixed(multVal, 2)}x`}</td>
-      <td class="muted">${m.notes ?? ""}</td>
-    `;
-    body.appendChild(tr);
-  });
+      const next = getNextMilestone(lvl);
+      if(next){
+        const diff = next.level - lvl;
+        node.textContent = `Next: Lv${next.level} • ${next.reward ?? next.short ?? "Milestone"} (${diff} to go)`;
+        return;
+      }
 
-  // Respect your number notation toggle for XP
-  updateNumberDisplays(state.notation);
-}
+      const latest = getLatestMilestone(lvl);
+      if(latest){
+        node.textContent = `All milestones cleared • Lv${latest.level}`;
+      }else{
+        node.textContent = "Milestones ready";
+      }
+    }
+
+    function renderElvlMilestoneTable(){
+      const body = document.getElementById("elvlMilestoneBody");
+      if(!body) return;
+
+      const lvl = getCurrentElvl();
+      const rows = getSortedElvlMilestones();
+
+      body.innerHTML = "";
+
+      rows.forEach(m => {
+        const multVal = (lvl == null) ? null : computeMilestoneValue(m, lvl);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>Lv${m.level}</td>
+          <td><span data-num="${m.xpNeeded ?? 0}"></span></td>
+          <td>${m.reward ?? ""}</td>
+          <td>${m.unlock ?? ""}</td>
+          <td>${multVal == null ? "—" : `${tidyFixed(multVal, 2)}x`}</td>
+          <td class="muted">${m.notes ?? ""}</td>
+        `;
+        body.appendChild(tr);
+      });
+
+      updateNumberDisplays(state.notation);
+    }
 
     function ensurePrompts(){
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
@@ -1810,6 +1714,7 @@ function renderElvlMilestoneTable(){
 
       updatePickaxeFollowupsUI();
       renderElvlMilestoneTable();
+      updateElvlSidebarMilestone();
     }
 
     function collectPromptsFromUI(){
@@ -1840,6 +1745,7 @@ function renderElvlMilestoneTable(){
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
         renderElvlMilestoneTable();
+        updateElvlSidebarMilestone();
       };
 
       inputs.forEach(el => {
