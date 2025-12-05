@@ -638,7 +638,7 @@
       <main class="main">
         <div class="main-inner">
 
-          <!-- UPGRADES (no s yet) -->
+          <!-- UPGRADES (no prompts yet) -->
           <section class="page" id="page-upgrades">
             <input class="dest-route" type="radio" name="dest" id="d-point" checked />
             <input class="dest-route" type="radio" name="dest" id="d-blackhole" />
@@ -879,7 +879,7 @@
             </div>
           </section>
 
-          <!-- ORE MASTERY (no s yet) -->
+          <!-- ORE MASTERY (no prompts yet) -->
           <section class="page" id="page-ore">
             <div class="section-head">
               <div>
@@ -905,7 +905,7 @@
             <div class="section-head">
               <div>
                 <div class="section-title">Pickaxe</div>
-                <div class="section-sub">Pick your pickaxe, then continue to the next .</div>
+                <div class="section-sub">Pick your pickaxe, then continue to the next prompt.</div>
               </div>
               <span class="pill">Pickaxe</span>
             </div>
@@ -925,11 +925,11 @@
               </div>
             </div>
 
-            <!-- STEP 2: DROPDOWN  -->
+            <!-- STEP 2: DROPDOWN PROMPT -->
             <div id="pickaxeStepDropdown" class="pickaxe-step hidden">
               <div class="section-head">
                 <div>
-                  <div class="section-title" style="font-size:18px;">Pickaxe </div>
+                  <div class="section-title" style="font-size:18px;">Pickaxe Prompt</div>
                   <div class="section-sub">Your pickaxe is locked in. Choose the next option.</div>
                 </div>
                 <span class="pill">Step 2</span>
@@ -957,7 +957,7 @@
                   </select>
                 </div>
               </div>
-              <!-- STEP 3: FOLLOW-UP S (appear after Specials is chosen) -->
+              <!-- STEP 3: FOLLOW-UP PROMPTS (appear after Specials is chosen) -->
 <div id="pickaxeFollowups" class="pickaxe-step hidden">
   <div class="section-head" style="margin-top:12px;">
     <div>
@@ -969,7 +969,7 @@
   <div class="form-grid">
   <div class="field" data-extra-idx="1">
     <label>Enchant 1</label>
-    <select id="pickaxe2">
+    <select id="pickaxePrompt2">
       <option value="">Select enchant</option>
       <option value="Power">Power</option>
       <option value="Haste">Haste</option>
@@ -985,7 +985,7 @@
 
   <div class="field" data-extra-idx="2">
     <label>Enchant 2</label>
-    <select id="pickaxe3">
+    <select id="pickaxePrompt3">
       <option value="">Select enchant</option>
       <option value="Power">Power</option>
       <option value="Haste">Haste</option>
@@ -1001,7 +1001,7 @@
 
   <div class="field" data-extra-idx="3">
     <label>Enchant 3</label>
-    <select id="pickaxe4">
+    <select id="pickaxePrompt4">
       <option value="">Select enchant</option>
       <option value="Power">Power</option>
       <option value="Haste">Haste</option>
@@ -1017,7 +1017,7 @@
 
   <div class="field" data-extra-idx="4">
     <label>Enchant 4</label>
-    <select id="pickaxe5">
+    <select id="pickaxePrompt5">
       <option value="">Select enchant</option>
       <option value="Power">Power</option>
       <option value="Haste">Haste</option>
@@ -1033,7 +1033,7 @@
 
   <div class="field" data-extra-idx="5">
     <label>Enchant 5</label>
-    <select id="pickaxe6">
+    <select id="pickaxePrompt6">
       <option value="">Select enchant</option>
       <option value="Power">Power</option>
       <option value="Haste">Haste</option>
@@ -1067,7 +1067,7 @@
             </div>
           </section>
 
-          <!-- ELVL (1 text ) -->
+          <!-- ELVL (1 text prompt) -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -1079,8 +1079,8 @@
 
             <div class="form-grid" style="margin-bottom: 14px;">
               <div class="field">
-                <label>ELvl </label>
-                <input type="text" id="elvl1" placeholder="Type here..." />
+                <label>ELvl Prompt</label>
+                <input type="text" id="elvlPrompt1" placeholder="Type here..." />
               </div>
             </div>
 
@@ -1096,7 +1096,7 @@
             </div>
           </section>
 
-          <!-- CARDS (no s yet) -->
+          <!-- CARDS (no prompts yet) -->
           <section class="page" id="page-cards">
             <div class="section-head">
               <div>
@@ -1227,17 +1227,17 @@
   <script>
     const STORAGE_KEY = "remblyx_mini_settings_v1";
 
-    const DEFAULT_S = {
+    const DEFAULT_PROMPTS = {
   elvl1: "",
   pickaxeChoice: "",       // stores pickaxe id
   pickaxeDropdown1: "",    // stores first dropdown value
 
-  // follow-up s after dropdown #1
-  pickaxe2: "",
-  pickaxe3: "",
-  pickaxe4: "",
-  pickaxe5: "",
-  pickaxe6: ""
+  // follow-up prompts after dropdown #1
+  pickaxePrompt2: "",
+  pickaxePrompt3: "",
+  pickaxePrompt4: "",
+  pickaxePrompt5: "",
+  pickaxePrompt6: ""
 };
 
 
@@ -1249,7 +1249,7 @@
       uiScale: "comfortable",
       showHints: true,
       hardcore: false,
-      s: { ...DEFAULT_S }
+      prompts: { ...DEFAULT_PROMPTS }
     };
 
     // Update this list to match your real filenames in images/pickaxe/
@@ -1265,20 +1265,20 @@
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
         if(!raw){
-          return { ...DEFAULTS, s: { ...DEFAULT_S } };
+          return { ...DEFAULTS, prompts: { ...DEFAULT_PROMPTS } };
         }
         const parsed = JSON.parse(raw);
 
         return {
           ...DEFAULTS,
           ...parsed,
-          s: {
-            ...DEFAULT_S,
-            ...(parsed.s || {})
+          prompts: {
+            ...DEFAULT_PROMPTS,
+            ...(parsed.prompts || {})
           }
         };
       }catch{
-        return { ...DEFAULTS, s: { ...DEFAULT_S } };
+        return { ...DEFAULTS, prompts: { ...DEFAULT_PROMPTS } };
       }
     }
 
@@ -1311,13 +1311,13 @@
       return String(Number(fixed));
     }
   function getAllowedPickaxeFollowups(){
-  return state.s.pickaxeChoice === "normalp" ? 3 : 5;
+  return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
 }
 
 function updatePickaxeFollowupsUI(){
   if(!pickaxeFollowups) return;
 
-  const firstAnswered = !!(state.s.pickaxeDropdown1);
+  const firstAnswered = !!(state.prompts.pickaxeDropdown1);
 
   // Only show the follow-ups AFTER dropdown #1 has a value
   if(!firstAnswered){
@@ -1468,8 +1468,8 @@ function updatePickaxeFollowupsUI(){
       });
     }
 
-    // --- S (ELvl + Pickaxe Flow) ---
-    const elvl1 = document.getElementById("elvl1");
+    // --- PROMPTS (ELvl + Pickaxe Flow) ---
+    const elvlPrompt1 = document.getElementById("elvlPrompt1");
 
     // Pickaxe UI refs
     const pickaxeGrid = document.getElementById("pickaxeChooserGrid");
@@ -1479,56 +1479,21 @@ function updatePickaxeFollowupsUI(){
     const pickaxeDropdown1 = document.getElementById("pickaxeDropdown1");
     const pickaxeChangeBtn = document.getElementById("pickaxeChangeBtn");
     const pickaxeFollowups = document.getElementById("pickaxeFollowups");
-    const pickaxe2 = document.getElementById("pickaxe2");
-    const pickaxe3 = document.getElementById("pickaxe3");
-    const pickaxe4 = document.getElementById("pickaxe4");
-    const pickaxe5 = document.getElementById("pickaxe5");
-    const pickaxe6 = document.getElementById("pickaxePrompt6");
-    function getActiveEnchantSelects(){
-  // Respect your "Normal pickaxe = 3, others = 5"
-  const all = [pickaxePrompt2, pickaxePrompt3, pickaxePrompt4, pickaxePrompt5, pickaxePrompt6].filter(Boolean);
-  const allowed = getAllowedPickaxeFollowups();
-  return all.slice(0, allowed);
-}
-
-function updateEnchantOptionLocks(){
-  const selects = getActiveEnchantSelects();
-  if(!selects.length) return;
-
-  // Collect chosen values (ignore empty)
-  const chosen = new Set(
-    selects.map(s => s.value).filter(v => v)
-  );
-
-  // Disable chosen options in other selects
-  selects.forEach(sel => {
-    Array.from(sel.options).forEach(opt => {
-      if(!opt.value){
-        opt.disabled = false; // keep placeholder selectable
-        return;
-      }
-
-      // Allow the option if it's the current selection of this select
-      if(opt.value === sel.value){
-        opt.disabled = false;
-        return;
-      }
-
-      // Otherwise disable if already chosen elsewhere
-      opt.disabled = chosen.has(opt.value);
-    });
-  });
-}
+    const pickaxePrompt2 = document.getElementById("pickaxePrompt2");
+    const pickaxePrompt3 = document.getElementById("pickaxePrompt3");
+    const pickaxePrompt4 = document.getElementById("pickaxePrompt4");
+    const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
+    const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
 
 
     function ensurePrompts(){
-      state.s = { ...DEFAULT_S };
+      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
     function showPickaxeStep(step){
       // step: "choose" | "dropdown"
       if(!pickaxeStepChoose || !pickaxeStepDropdown) return;
-      
+
 
       if(step === "dropdown"){
         pickaxeStepChoose.classList.add("hidden");
@@ -1556,7 +1521,6 @@ function updateEnchantOptionLocks(){
       syncPickaxeSelectedName();
       showPickaxeStep("dropdown");
       updatePickaxeFollowupsUI();
-      updateEnchantOptionLocks();
     }
 
     function renderPickaxeChooser(selectedId){
@@ -1618,7 +1582,6 @@ function updateEnchantOptionLocks(){
         showPickaxeStep("choose");
       }
       updatePickaxeFollowupsUI();
-      updateEnchantOptionLocks();
     }
 
     function collectPromptsFromUI(){
@@ -1649,7 +1612,6 @@ function updateEnchantOptionLocks(){
         saveSettingsObj(state);
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
-        updateEnchantOptionLocks();
       };
 
       inputs.forEach(el => {
