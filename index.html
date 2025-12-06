@@ -1883,7 +1883,7 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Emerald": [
     { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: (oreLvl) => 1+oreLvl*0.2},
-    { level: 5, label: "Poison does more damage based on Poison time", display: "×",formula: () => null},
+    { level: 5, label: "Poison does more damage based on Poison time", display: "×",formula: () => 1},
   ],
   "Diamond": [
     { level: 1, label: "+10% ore and fragment gain every level", display: "+", formula: (oreLvl) => 1+oreLvl*0.1,suffix:"%"},
