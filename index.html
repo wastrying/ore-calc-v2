@@ -1819,7 +1819,7 @@ const ORE_MILESTONES_OVERRIDE = {
   "Stone": [
     { level: 1, label: "Boost ₽ by ×1.1 per level compounding", display: "×", formula: (oreLvl) => Math.pow(1.1, oreLvl) },
     { level: 5, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (oreLvl) => Math.pow(1.1, (oreLvl-4)) },
-    { level: 10, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (lvl) => {const steps = Math.max(0, Math.floor((lvl - 9) / 5) + 1);
+    { level: 10, label: "Boost material gain from ores by ×1.5 every 5 levels compounding, starting from level 9", display: "×", formula: (lvl) => {const steps = Math.max(0, Math.floor((lvl - 9) / 5) + 1);
     return Math.pow(1.5, steps);},
     },
   ],
