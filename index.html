@@ -1844,8 +1844,12 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Coal": [
     { level: 1, label: "Boost forging speed by +0.1× every level", display: "×", formula: (oreLvl) => 1 + oreLvl * 0.1},
-    { level: 5, label: "×1.25 forging speed and ×1.25 smelting efficiency", display: "×", formula: (oreLvl) => Math.pow(1.2, (oreLvl-4))},
-    { level: 10, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "×", formula: (oreLvl) => 1 + oreLvl * 0.05},
+    { level: 5, label: "Boost XP gain by ×1.2 every level starting from level 4", display: "×", formula: (oreLvl) => Math.pow(1.2, (oreLvl-4))},
+    { level: 10, label: "Boost AXP gain by +0.05× every level starting from level 9", display: "×", formula: (oreLvl) => 1 + (oreLvl-9) * 0.05},
+  ],
+  "Aluminum": [
+    { level: 5, label: "Boost fire occurrence on pickaxes WITH enchant "Flame" by +4% for each level after 5 (max +60%)", display: "×", formula: (oreLvl) => Math.max(60,oreLvl*4),suffix: "%"},
+    { level: 10, label: "Boost the chance of stacking fire on pickaxes WITH enchant "Flame" by +4% for each level after level 10 (max 60%)", display: "×", formula: (oreLvl) => Math.max(60,(oreLvl-10)*4),suffix: "%"},
   ],
 };
 
