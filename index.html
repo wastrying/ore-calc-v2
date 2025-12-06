@@ -126,7 +126,6 @@
     }
     .nav-btn:active{ transform: translateY(1px); }
 
-    /* --- stacked label for ELvl milestone subtext --- */
     .nav-stack{
       display:flex;
       flex-direction: column;
@@ -169,7 +168,6 @@
       box-shadow: inset 0 0 0 1px rgba(47,143,107,0.18);
     }
 
-    /* Make the ELvl nav subtext brighten when active */
     #r-elvl:checked ~ .frame .sidebar label[for="r-elvl"] .nav-sub{
       color: var(--accent-dark);
       opacity: 1;
@@ -595,12 +593,45 @@
       border-color: rgba(255,255,255,0.12);
     }
 
-    /* --- pickaxe steps --- */
     .pickaxe-step{
       margin-bottom: 14px;
     }
     .hidden{
       display: none !important;
+    }
+
+    /* ============================================================
+       ✅ NEW ELVL LIST STYLE (your screenshot-style layout)
+       ============================================================ */
+    .elvl-list{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .elvl-item{
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(180deg, rgba(47,143,107,0.06), transparent 45%),
+        var(--panel);
+      padding: 12px 14px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .elvl-item small{
+      display:block;
+      margin-top: 4px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      opacity: 0.9;
     }
 
     @media (max-width: 900px){
@@ -648,7 +679,6 @@
         <label class="nav-btn" for="r-ore"><span>Ore Mastery</span><span class="nav-mini">OM</span></label>
         <label class="nav-btn" for="r-pickaxe"><span>Pickaxe/Gears</span><span class="nav-mini">P/G</span></label>
 
-        <!-- ELvl with formula-based milestone subtext -->
         <label class="nav-btn" for="r-elvl">
           <span class="nav-stack">
             <span>ELvl</span>
@@ -1100,12 +1130,12 @@
             </div>
           </section>
 
-          <!-- ELVL -->
+          <!-- ✅ ELVL (NEW LIST DISPLAY) -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
                 <div class="section-title">ELvl</div>
-                <div class="section-sub">Experience levels, rewards, and milestones.</div>
+                <div class="section-sub">Enter your ELvl to compute your milestone multipliers.</div>
               </div>
               <span class="pill">ELvl</span>
             </div>
@@ -1117,12 +1147,7 @@
               </div>
             </div>
 
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Level</th><th>XP Needed</th><th>Reward</th><th>Unlock</th><th>Multiplier</th><th class="muted">Notes</th></tr></thead>
-                <tbody id="elvlMilestoneBody"></tbody>
-              </table>
-            </div>
+            <div id="elvlMilestoneList" class="elvl-list"></div>
           </section>
 
           <!-- CARDS -->
@@ -1438,6 +1463,7 @@
       r.addEventListener("change", () => {
         state.notation = r.value;
         updateNumberDisplays(state.notation);
+        renderElvlMilestoneList(); // keep list in sync with notation style
       });
     });
 
@@ -1463,6 +1489,7 @@
         saveSettingsObj(state);
         applyTheme(state.theme);
         updateNumberDisplays(state.notation);
+        renderElvlMilestoneList();
         saveBtn.textContent = "Saved";
         window.setTimeout(() => saveBtn.textContent = "Save Settings", 700);
       });
@@ -1485,29 +1512,8 @@
     const pickaxePrompt5 = document.getElementById("pickaxePrompt5");
     const pickaxePrompt6 = document.getElementById("pickaxePrompt6");
 
-    /* ============================================================
-       ✅ ELVL MILESTONES (14) WITH FORMULAS + TABLE RENDER
-       Each row's Multiplier shows the FINAL computed value using
-       the CURRENT ELvl input.
-       ============================================================ */
-
-    const ELVL_MILESTONES = [
-      { id: 1,  short: "M1",  level: 1,  xpNeeded: 0,       reward: "Starter pack",  unlock: "Basic destinations", notes: "Example",      formula: (elvl) => Math.pow(1.25, elvl) },
-      { id: 2,  short: "M2",  level: 2,  xpNeeded: 250,     reward: "Small boost",   unlock: "Ore Mastery I",     notes: "Placeholder",  formula: (elvl) => Math.pow(1.25, elvl-1) },
-      { id: 3,  short: "M3",  level: 3, xpNeeded: 2000,    reward: "+1 card slot",  unlock: "Ore Mastery II",    notes: "Example",      formula: (elvl) => Math.pow(1.15, elvl-2) },
-      { id: 4,  short: "M4",  level: 4, xpNeeded: 4500,    reward: "Unlock perk",   unlock: "Pickaxe Mk.2",      notes: "Placeholder",  formula: (elvl) => Math.pow(1.2, elvl-3) },
-      { id: 5,  short: "M5",  level: 5, xpNeeded: 9000,    reward: "Resource bonus",unlock: "New destination",    notes: "Placeholder",  formula: (elvl) => Math.pow(1.2, elvl-4) },
-      { id: 6,  short: "M6",  level: 6, xpNeeded: 15000,   reward: "Rare token",    unlock: "Advanced crafting", notes: "Placeholder",  formula: (elvl) => Math.pow(1.2, elvl-5) },
-      { id: 7,  short: "M7",  level: 7, xpNeeded: 23000,   reward: "Passive buff",  unlock: "Mining Baseplate II",notes:"Placeholder", formula: (elvl) => Math.pow(1.15, elvl-6) },
-      { id: 8,  short: "M8",  level: 8, xpNeeded: 33000,   reward: "Prestige shard",unlock: "Meta system hint",  notes: "Placeholder",  formula: (elvl) => Math.pow(1.4, elvl-7) },
-      { id: 9,  short: "M9",  level: 9, xpNeeded: 45000,   reward: "Global gain",   unlock: "Star Tree I",       notes: "Placeholder",  formula: (elvl) => Math.pow(1.15, elvl-8) },
-      { id: 10, short: "M10", level: 10, xpNeeded: 60000,   reward: "Defense boost", unlock: "Blackhole perks",   notes: "Placeholder",  formula: (elvl) => Math.pow(1.075, elvl-10) },
-      { id: 11, short: "M11", level: 11, xpNeeded: 80000,   reward: "Legend token",  unlock: "Transcend systems", notes: "Example",      formula: (elvl) => Math.pow(1.1, elvl-11) },
-      { id: 12, short: "M12", level: 12, xpNeeded: 120000,  reward: "Mythic unlock", unlock: "Ore Mastery IV",    notes: "Placeholder",  formula: (elvl) => Math.pow(2, elvl-12) },
-    ];
-
-    function getSortedElvlMilestones(){
-      return [...ELVL_MILESTONES].sort((a,b) => a.level - b.level);
+    function ensurePrompts(){
+      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
     function getCurrentElvl(){
@@ -1515,6 +1521,91 @@
       const n = Number(raw);
       if(!Number.isFinite(n)) return null;
       return Math.max(0, Math.floor(n));
+    }
+
+    /* ============================================================
+       ✅ EDIT YOUR 14 MILESTONES HERE
+       - level: used for sidebar "next milestone" logic
+       - label: what shows in your list (like your screenshot)
+       - formula: returns the raw multiplier value
+       ============================================================ */
+    const ELVL_MILESTONES = [
+      {
+        id: 1,
+        level: 1,
+        label: "XP, AXP & ₱ gain",
+        formula: (elvl) => Math.pow(1.25, elvl),          // ✅ 1.25^elvl
+      },
+      {
+        id: 2,
+        level: 2,
+        label: "λ gain",
+        formula: (elvl) => Math.pow(1.25, (elvl - 1)),    // ✅ 1.25^(elvl-1)
+      },
+      {
+        id: 3,
+        level: 3,
+        label: "₹ gain",
+        formula: (elvl) => Math.pow(1.15, (elvl - 2))                    // placeholder
+      },
+      {
+        id: 4,
+        level: 4,
+        label: "Ƀ gain",
+        formula: (elvl) => Math.pow(1.2, (elvl - 3)),                    // placeholder
+      },
+      {
+        id: 5,
+        level: 5,
+        label: "₱X gain",
+        formula: (elvl) => Math.pow(1.2, (elvl - 4)),                    // placeholder
+      },
+      {
+        id: 6,
+        level: 6,
+        label: "☉ gain",
+        formula: (elvl) => Math.pow(1.2, (elvl - 5)),                    // placeholder
+      },
+      {
+        id: 7,
+        level: 7,
+        label: "τ gain",
+        formula: (elvl) => Math.pow(1.15, (elvl - 6)),                    // placeholder
+      },
+      {
+        id: 8,
+        level: 8,
+        label: "Λ gain",
+        formula: (elvl) => Math.pow(1.25, (elvl - 7)),                    // placeholder
+      },
+      {
+        id: 9,
+        level: 9,
+        label: "ore gain",
+        formula: (elvl) => Math.pow(1.25, (elvl - 8)),                    // placeholder
+      },
+      {
+        id: 10,
+        level: 10,
+        label: "qubit gain",
+        formula: (elvl) => Math.pow(1.25, (elvl - 10)),                    // placeholder
+      },
+      {
+        id: 11,
+        level: 11,
+        label: "Foraging speed",
+        formula: (elvl) => Math.pow(1.25, (elvl - 11)),                    // placeholder
+      },
+      {
+        id: 12,
+        level: 12,
+        label: "gamma gain",
+        formula: (elvl) => Math.pow(1.25, (elvl - 12)),                    // placeholder
+      },
+    ];
+
+    function getSortedElvlMilestones(){
+      return [...ELVL_MILESTONES].sort((a,b) => a.level - b.level);
     }
 
     function getNextMilestone(level){
@@ -1532,18 +1623,17 @@
       return latest;
     }
 
+    // ✅ clamp rule: never below 1x
     function computeMilestoneValue(milestone, currentElvl){
-  try{
-    const v = milestone.formula(currentElvl);
-    const safe = Number.isFinite(v) ? v : 0;
-
-    // ✅ clamp to minimum 1x
-    return Math.max(1, safe);
-  }catch{
-    return 1; // ✅ fallback also respects 1x minimum
-  }
-}
-
+      try{
+        const v = milestone.formula(currentElvl);
+        const num = Number(v);
+        if(!Number.isFinite(num)) return 1;
+        return Math.max(1, num);
+      }catch{
+        return 1;
+      }
+    }
 
     function updateElvlSidebarMilestone(){
       const node = document.getElementById("elvlSidebarMilestone");
@@ -1557,9 +1647,10 @@
       }
 
       const next = getNextMilestone(lvl);
+
       if(next){
         const diff = next.level - lvl;
-        node.textContent = `Next: Lv${next.level} • ${next.reward ?? next.short ?? "Milestone"} (${diff} to go)`;
+        node.textContent = `Next: Lv${next.level} • ${next.label} (${diff} to go)`;
         return;
       }
 
@@ -1571,35 +1662,35 @@
       }
     }
 
-    function renderElvlMilestoneTable(){
-      const body = document.getElementById("elvlMilestoneBody");
-      if(!body) return;
+    /* ✅ NEW LIST RENDER */
+    function renderElvlMilestoneList(){
+      const host = document.getElementById("elvlMilestoneList");
+      if(!host) return;
 
       const lvl = getCurrentElvl();
       const rows = getSortedElvlMilestones();
 
-      body.innerHTML = "";
+      host.innerHTML = "";
 
       rows.forEach(m => {
-        const multVal = (lvl == null) ? null : computeMilestoneValue(m, lvl);
+        const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>Lv${m.level}</td>
-          <td><span data-num="${m.xpNeeded ?? 0}"></span></td>
-          <td>${m.reward ?? ""}</td>
-          <td>${m.unlock ?? ""}</td>
-          <td>${multVal == null ? "—" : `${tidyFixed(multVal, 2)}x`}</td>
-          <td class="muted">${m.notes ?? ""}</td>
+        const item = document.createElement("div");
+        item.className = "elvl-item";
+
+        // We use data-num so your notation toggle (K/M/B etc.) also applies here.
+        item.innerHTML = `
+          ${value == null
+            ? `×— ${m.label}`
+            : `×<span data-num="${value}"></span> ${m.label}`
+          }
+          <small>Milestone Lv${m.level}</small>
         `;
-        body.appendChild(tr);
+
+        host.appendChild(item);
       });
 
       updateNumberDisplays(state.notation);
-    }
-
-    function ensurePrompts(){
-      if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
     // --- Pickaxe followups limiter ---
@@ -1715,7 +1806,7 @@
       }
 
       updatePickaxeFollowupsUI();
-      renderElvlMilestoneTable();
+      renderElvlMilestoneList();
       updateElvlSidebarMilestone();
     }
 
@@ -1732,13 +1823,13 @@
 
     function wirePromptAutosave(){
       const inputs = [
-          elvlPrompt1,
-          pickaxeDropdown1,
-          pickaxePrompt2,
-          pickaxePrompt3,
-          pickaxePrompt4,
-          pickaxePrompt5,
-          pickaxePrompt6
+        elvlPrompt1,
+        pickaxeDropdown1,
+        pickaxePrompt2,
+        pickaxePrompt3,
+        pickaxePrompt4,
+        pickaxePrompt5,
+        pickaxePrompt6
       ].filter(Boolean);
 
       const handler = () => {
@@ -1746,7 +1837,7 @@
         saveSettingsObj(state);
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
-        renderElvlMilestoneTable();
+        renderElvlMilestoneList();
         updateElvlSidebarMilestone();
       };
 
@@ -1792,7 +1883,6 @@
 
         updateNumberDisplays(state.notation);
         loadPromptsToUI();
-        updateElvlSidebarMilestone();
 
         resetBtn.textContent = "Reset";
         window.setTimeout(() => resetBtn.textContent = "Reset Defaults", 700);
