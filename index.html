@@ -1861,6 +1861,14 @@ const ORE_MILESTONES_OVERRIDE = {
     return Math.pow(1.25, steps);},
     },
   ],
+  "Copper Ingot": [
+    { level: 1, label: "Boost Fire and Poison damage by +0.65× every level, up to ×3.6", display: "×", formula: (oreLvl) => Math.min(3.6, Math.max(0,oreLvl*0.65))},
+    { level: 5, label: "reezing effect drains slower by +0.1× every level after level 4", display: "×", formula: (oreLvl) => 1+oreLvl*0.1},
+  ],
+  "Steel": [
+    { level: 5, label: "Boost smelting efficiency by +0.2× for every level starting at ×1", display: "×", formula: (oreLvl) => 1+oreLvl*0.2},
+    { level: 10, label: "If you gain any raw material, you'll get a small amount of its smelted counterpart. The amount for the raw material is not deducted.", display: "×", formula: (oreLvl) => Math.min(100, Math.max(0, (oreLvl-9) * 1)),suffix: "%"},
+  ],
 };
 
 
