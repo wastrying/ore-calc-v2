@@ -1823,6 +1823,13 @@ const ORE_MILESTONES_OVERRIDE = {
     return Math.pow(1.5, steps);},
     },
   ],
+  "Shatterstone": [
+    { level: 5, label: "Boost fragment gain by ×1.5", display: "×", formula: 1.5  },
+    { level: 10, label: "×1.25 forging speed and ×1.25 smelting efficiency", display: "×", formula: (oreLvl) => Math.pow(1.1, (oreLvl-4)) },
+    { level: 20, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "×", formula: (lvl) => {const steps = Math.max(0, Math.floor((lvl - 9) / 5) + 1);
+    return Math.pow(1.5, steps);},
+    },
+  ],
 };
 
 
