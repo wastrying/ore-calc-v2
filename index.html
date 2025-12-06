@@ -65,33 +65,31 @@ html[data-theme="dark"]{
 .res-L{ color: var(--c-L); }
 .res-gamma{ color: var(--c-gamma); }
 .res-psi{ color: var(--c-psi); }
-/* =========================
-   Ore Mastery Gallery
-   ========================= */
+
 /* =========================
    Ore Mastery Gallery
    ========================= */
 .ore-gallery{
+  --ore-cols: 6; /* ✅ JS will read this */
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr)); /* ✅ 6 per row */
+  grid-template-columns: repeat(var(--ore-cols), minmax(0, 1fr));
   gap: 10px;
   margin-top: 14px;
 }
 
-/* Nice responsive fallbacks */
+/* Responsive fallbacks (also update --ore-cols) */
 @media (max-width: 1200px){
-  .ore-gallery{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ore-gallery{ --ore-cols: 4; }
 }
 @media (max-width: 900px){
-  .ore-gallery{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ore-gallery{ --ore-cols: 3; }
 }
 @media (max-width: 600px){
-  .ore-gallery{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ore-gallery{ --ore-cols: 2; }
 }
 @media (max-width: 380px){
-  .ore-gallery{ grid-template-columns: 1fr; }
+  .ore-gallery{ --ore-cols: 1; }
 }
-
 
 .ore-card{
   border: 1px solid var(--border-soft);
@@ -103,6 +101,129 @@ html[data-theme="dark"]{
   box-shadow: var(--shadow-sm);
   text-align: center;
 }
+.ore-open-btn{
+  margin-top: 8px;
+  width: 100%;
+  border: 1px solid rgba(47,143,107,0.22);
+  background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+  color: var(--accent-dark);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform .08s, box-shadow .15s, filter .15s;
+}
+.ore-open-btn:hover{ box-shadow: var(--shadow-sm); filter: saturate(1.05); }
+.ore-open-btn:active{ transform: translateY(1px); }
+/* =========================
+   Ore Sliding Drawer
+   ========================= */
+.ore-drawer-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(2px);
+  z-index: 50;
+}
+html[data-theme="dark"] .ore-drawer-backdrop{
+  background: rgba(0,0,0,0.45);
+}
+
+.ore-drawer{
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: min(360px, 92vw);
+  background: var(--panel);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-md);
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 18px;
+  transition: transform .22s ease, opacity .22s ease;
+  opacity: 1;
+}
+
+/* Start off-screen based on side */
+.ore-drawer.from-right{
+  right: 0;
+  transform: translateX(100%);
+  border-left-width: 1px;
+  border-right-width: 0;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+.ore-drawer.from-left{
+  left: 0;
+  transform: translateX(-100%);
+  border-right-width: 1px;
+  border-left-width: 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+/* Open state */
+.ore-drawer.open.from-right{ transform: translateX(0); }
+.ore-drawer.open.from-left{ transform: translateX(0); }
+
+.ore-drawer-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--border-soft);
+}
+
+.ore-drawer-title{
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+}
+
+.ore-drawer-close{
+  border: 1px solid var(--border-soft);
+  background: var(--panel);
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-weight: 800;
+}
+.ore-drawer-close:hover{
+  box-shadow: var(--shadow-sm);
+}
+
+.ore-drawer-body{
+  padding-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.ore-drawer-img{
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px dashed var(--border-soft);
+  background: rgba(0,0,0,0.02);
+}
+html[data-theme="dark"] .ore-drawer-img{
+  background: rgba(255,255,255,0.03);
+}
+
+.ore-drawer-text{
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.hidden{ display: none !important; }
 
 .ore-img{
   width: 100%;
@@ -1100,7 +1221,25 @@ html[data-theme="dark"] .ore-img{
   Click an ore to see its details.
 </div>
 <div id="oreGallery" class="ore-gallery"></div>
+<div id="oreDrawerBackdrop" class="ore-drawer-backdrop hidden"></div>
 
+<aside id="oreDrawer"
+       class="ore-drawer from-right"
+       role="dialog"
+       aria-modal="true"
+       aria-hidden="true">
+  <div class="ore-drawer-header">
+    <div class="ore-drawer-title" id="oreDrawerTitle">Ore</div>
+    <button class="ore-drawer-close" type="button" id="oreDrawerClose" aria-label="Close">
+      ✕
+    </button>
+  </div>
+
+  <div class="ore-drawer-body">
+    <img id="oreDrawerImg" class="ore-drawer-img" alt="" />
+    <div id="oreDrawerBody" class="ore-drawer-text"></div>
+  </div>
+</aside>
           </section>
 
           <!-- PICKAXE -->
@@ -1494,9 +1633,62 @@ const ORE_TEXT_MAP = {
   "Plutonium": "Rare and powerful—usually gated by progression."
 };
 
+function getOreCols(host){
+  if(!host) return 6;
+  const v = getComputedStyle(host).getPropertyValue("--ore-cols").trim();
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : 6;
+}
+
+function openOreDrawer({ name, src, side }){
+  const drawer = document.getElementById("oreDrawer");
+  const backdrop = document.getElementById("oreDrawerBackdrop");
+  const title = document.getElementById("oreDrawerTitle");
+  const body = document.getElementById("oreDrawerBody");
+  const img = document.getElementById("oreDrawerImg");
+
+  if(!drawer || !backdrop) return;
+
+  // side class swap
+  drawer.classList.remove("from-left", "from-right", "open");
+  drawer.classList.add(side === "left" ? "from-left" : "from-right");
+
+  if(title) title.textContent = name;
+  if(img){
+    img.src = src;
+    img.alt = name;
+  }
+  if(body){
+    body.textContent = ORE_TEXT_MAP[name] ?? `You selected ${name}.`;
+  }
+
+  backdrop.classList.remove("hidden");
+  drawer.setAttribute("aria-hidden", "false");
+
+  // small rAF so transition applies reliably
+  requestAnimationFrame(() => {
+    drawer.classList.add("open");
+  });
+}
+
+function closeOreDrawer(){
+  const drawer = document.getElementById("oreDrawer");
+  const backdrop = document.getElementById("oreDrawerBackdrop");
+  if(!drawer || !backdrop) return;
+
+  drawer.classList.remove("open");
+  drawer.setAttribute("aria-hidden", "true");
+
+  // hide backdrop after transition ends
+  const onEnd = () => {
+    backdrop.classList.add("hidden");
+    drawer.removeEventListener("transitionend", onEnd);
+  };
+  drawer.addEventListener("transitionend", onEnd);
+}
+
 function renderOreGallery(){
   const host = document.getElementById("oreGallery");
-  const info = document.getElementById("oreInfo");
   if(!host) return;
 
   host.innerHTML = "";
@@ -1504,38 +1696,61 @@ function renderOreGallery(){
   ORE_MASTERY_IMAGES.forEach((src, i) => {
     const card = document.createElement("div");
     card.className = "ore-card";
+    card.setAttribute("role", "button");
     card.tabIndex = 0;
 
-    // label derived from filename for convenience
     const file = src.split("/").pop() || `ore_${i+1}`;
     const name = file.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ");
 
+    // ✅ add a button inside (you can click image/card too)
     card.innerHTML = `
       <img class="ore-img" src="${src}" alt="${name}" loading="lazy"
            onerror="this.style.opacity=0.35; this.alt='Missing ore image';" />
       <div class="ore-name">${name}</div>
+      <button class="ore-open-btn" type="button">Details</button>
     `;
 
-    const showInfo = () => {
-      // optional selected styling
-      host.querySelectorAll(".ore-card.selected").forEach(c => c.classList.remove("selected"));
-      card.classList.add("selected");
+    const activate = () => {
+      const cols = getOreCols(host);
+      const col = (i % cols) + 1;
 
-      const msg = ORE_TEXT_MAP[name] ?? `You selected: ${name}`;
-      if(info) info.textContent = msg;
+      // ✅ Your rule:
+      // first half (e.g., 1–3 of 6) => from RIGHT
+      // last half  (e.g., 4–6 of 6) => from LEFT
+      const half = Math.ceil(cols / 2);
+      const side = col <= half ? "right" : "left";
+
+      openOreDrawer({ name, src, side });
     };
 
-    card.addEventListener("click", showInfo);
+    card.addEventListener("click", (e) => {
+      // allow button click too without double weirdness
+      activate();
+    });
+
     card.addEventListener("keydown", (e) => {
       if(e.key === "Enter" || e.key === " "){
         e.preventDefault();
-        showInfo();
+        activate();
       }
     });
 
     host.appendChild(card);
   });
 }
+    // ✅ Drawer close wiring
+const oreDrawerBackdrop = document.getElementById("oreDrawerBackdrop");
+const oreDrawerClose = document.getElementById("oreDrawerClose");
+
+if(oreDrawerBackdrop){
+  oreDrawerBackdrop.addEventListener("click", closeOreDrawer);
+}
+if(oreDrawerClose){
+  oreDrawerClose.addEventListener("click", closeOreDrawer);
+}
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape") closeOreDrawer();
+});
 
     const PICKAXE_OPTIONS = [
       { id: "normalp", name: "Normal Pickaxe", img: "images/pickaxe/normal_pickaxe.png" },
