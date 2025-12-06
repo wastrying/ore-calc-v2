@@ -1867,7 +1867,7 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Steel": [
     { level: 5, label: "Boost smelting efficiency by +0.2× for every level starting at ×1", display: "×", formula: (oreLvl) => 1+oreLvl*0.2},
-    { level: 10, label: "If you gain any raw material, you'll get a small amount of its smelted counterpart. The amount for the raw material is not deducted.", display: "×", formula: (oreLvl) => Math.min(100, Math.max(0, (oreLvl-9) * 1)),suffix: "%"},
+    { level: 10, label: "If you gain any raw material, you'll get a small amount of its smelted counterpart. The amount for the raw material is not deducted.", display: "×", formula: (oreLvl) => Math.min(50, Math.max(0, (oreLvl-9) * 5)),suffix: "%"},
   ],
   "Gold Ingot": [
     { level: 1, label: "Boost ₹ gain by +0.1× every level", display: "×", formula: (oreLvl) => 1+oreLvl*0.1},
@@ -1882,11 +1882,11 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 5, label: "Ores respawn 0.1s faster every level starting from level 5 (up to 1s)", display: "×", formula: (oreLvl) => Math.min(1, Math.max(0,(oreLvl-4)*0.1)),suffix: "s"},
   ],
   "Emerald": [
-    { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: (oreLvl) => 1+oreLvl*0.2},
+    { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: (oreLvl) => oreLvl*0.2},
     { level: 5, label: "Poison does more damage based on Poison time", display: "×",formula: () => 1},
   ],
   "Diamond": [
-    { level: 1, label: "+10% ore and fragment gain every level", display: "+", formula: (oreLvl) => 1+oreLvl*0.1,suffix:"%"},
+    { level: 1, label: "+10% ore and fragment gain every level", display: "+", formula: (oreLvl) =>oreLvl*0.1,suffix:"%"},
     { level: 5, label: "Boost Ψ gain by +0.05× every level after level 4", display: "×", formula: (oreLvl) => 1+(oreLvl-4)*0.05},
   ],
 };
