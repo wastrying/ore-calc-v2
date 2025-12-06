@@ -1879,7 +1879,7 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Sapphire": [
     { level: 1, label: "Freeze effect decays +10% slower per level (up to 150%)", display: "×", formula: (oreLvl) => Math.min(150, Math.max(0,oreLvl*10)),suffix: "%"},
-    { level: 5, label: "Ores respawn 0.1s faster every level starting from level 5 (up to 1s)", display: "×", formula: (oreLvl) => Math.min(1, Math.max(0,(oreLvl-4)*0.1)),suffix: "s"},
+    { level: 5, label: "Ores respawn 0.1s faster every level starting from level 5 (up to 1s)", display: "", formula: (oreLvl) => Math.min(1, Math.max(0,(oreLvl-4)*0.1)),suffix: "s"},
   ],
   "Emerald": [
     { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: (oreLvl) => oreLvl*0.2},
