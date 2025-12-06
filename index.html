@@ -1848,8 +1848,18 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 10, label: "Boost AXP gain by +0.05× every level starting from level 9", display: "×", formula: (oreLvl) => 1 + (oreLvl-9) * 0.05},
   ],
   "Aluminum": [
-    { level: 5, label: "Boost fire occurrence on pickaxes WITH enchant Flame by +4% for each level after 5 (max +60%)", display: "×", formula: (oreLvl) => (oreLvl) => Math.min(60, Math.max(0, (oreLvl-5) * 4)),suffix: "%"},
-    { level: 10, label: "Boost the chance of stacking fire on pickaxes WITH enchant Flame by +4% for each level after level 10 (max 60%)", display: "×", formula: (oreLvl) => Math.min(60, Math.max(0, (oreLvl-10) * 4)),suffix: "%"},
+    { level: 5, label: "Boost fire occurrence on pickaxes WITH enchant Flame by +4% for each level after 5 (max +60%)", display: "+", formula: (oreLvl) => Math.min(60, Math.max(0, (oreLvl-5) * 4)),suffix: "%"},
+    { level: 10, label: "Boost the chance of stacking fire on pickaxes WITH enchant Flame by +4% for each level after level 10 (max 60%)", display: "+", formula: (oreLvl) => Math.min(60, Math.max(0, (oreLvl-10) * 4)),suffix: "%"},
+  ],
+  "Iron_Ingot": [
+    { level: 1, label: "Boost Depth gain by ×2 every level compounding", display: "×", formula: (oreLvl) => Math.pow(2, oreLvl)},
+    { level: 5, label: "Boost pickaxe damage by Depth", display: "×", formula: () => 1},
+  ],
+  "Tin_Ingot": [
+    { level: 1, label: "Boost pickaxe critical chance by +1% (max 20%) for each level", display: "+", formula: (oreLvl) => Math.min(20, Math.max(0,oreLvl*1)),suffix: "%"},
+    { level: 5, label: "Boost pickaxe critical power by ×1.25 compounding every 3 levels, starting from level 5", display: "×", formula: (oreLvl) => {const steps = Math.max(0, Math.floor((lvl - 5) / 3) + 1);
+    return Math.pow(1.25, steps);},
+    },
   ],
 };
 
