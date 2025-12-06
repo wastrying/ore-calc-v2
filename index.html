@@ -1686,6 +1686,18 @@ html[data-theme="dark"] .ore-img{
 
   <script>
     const STORAGE_KEY = "remblyx_mini_settings_v1";
+    // ✅ tiny helper so your existing .fach calls work
+if(!NodeList.prototype.fach){
+  NodeList.prototype.fach = function(cb){
+    Array.prototype.forEach.call(this, cb);
+  };
+}
+if(!Array.prototype.fach){
+  Array.prototype.fach = function(cb){
+    Array.prototype.forEach.call(this, cb);
+  };
+}
+
 
     const DEFAULT_PROMPTS = {
       elvl1: "",
@@ -2320,17 +2332,18 @@ document.addEventListener("keydown", (e) => {
     setRouteById(state.defaultSection);
 
     // SETTINGS refs
-    const profileName = document.getElementById("profileName");
-    const defaultSection = document.getElementById("defaultSection");
-    const uiScale = document.getElementById("uiScale");
-    const showHints = document.getElementById("showHints");
-    const hardc = document.getElementById("hardc");
+const profileName = document.getElementById("profileName");
+const defaultSection = document.getElementById("defaultSection");
+const uiScale = document.getElementById("uiScale");
+const showHints = document.getElementById("showHints");
+const hardcore = document.getElementById("hardcore"); // ✅ correct id
 
-    if(profileName) profileName.value = state.profileName;
-    if(defaultSection) defaultSection.value = state.defaultSection;
-    if(uiScale) uiScale.value = state.uiScale;
-    if(showHints) showHints.checked = !!state.showHints;
-    if(hardc) hardc.checked = !!state.hardc;
+if(profileName) profileName.value = state.profileName;
+if(defaultSection) defaultSection.value = state.defaultSection;
+if(uiScale) uiScale.value = state.uiScale;
+if(showHints) showHints.checked = !!state.showHints;
+if(hardcore) hardcore.checked = !!state.hardcore;
+
 
     document.querySelectorAll('input[name="theme"]').fach(r => { r.checked = (r.value === state.theme); });
     document.querySelectorAll('input[name="notation"]').fach(r => { r.checked = (r.value === state.notation); });
@@ -2358,17 +2371,18 @@ document.addEventListener("keydown", (e) => {
     const resetBtn = document.getElementById("resetSettings");
 
     function collectStateFromUI(){
-      state.profileName = profileName?.value ?? "";
-      state.defaultSection = defaultSection?.value ?? "r-upgrades";
-      state.uiScale = uiScale?.value ?? "comfortable";
-      state.showHints = showHints?.checked ?? true;
-      state.hardc = hardc?.checked ?? false;
+  state.profileName = profileName?.value ?? "";
+  state.defaultSection = defaultSection?.value ?? "r-upgrades";
+  state.uiScale = uiScale?.value ?? "comfortable";
+  state.showHints = showHints?.checked ?? true;
+  state.hardcore = hardcore?.checked ?? false; // ✅
 
-      const themeSel = document.querySelector('input[name="theme"]:checked');
-      const notationSel = document.querySelector('input[name="notation"]:checked');
-      state.theme = themeSel?.value ?? "system";
-      state.notation = notationSel?.value ?? "suffix";
-    }
+  const themeSel = document.querySelector('input[name="theme"]:checked');
+  const notationSel = document.querySelector('input[name="notation"]:checked');
+  state.theme = themeSel?.value ?? "system";
+  state.notation = notationSel?.value ?? "suffix";
+}
+
 
     if(saveBtn){
       saveBtn.addEventListener("click", () => {
@@ -2468,7 +2482,7 @@ document.addEventListener("keydown", (e) => {
       {
         id: 9,
         level: 9,
-        label: " gain",
+        label: "Ore gain",
         formula: (elvl) => Math.pow(1.15, (elvl - 8)),                    // placeholder
       },
       {
