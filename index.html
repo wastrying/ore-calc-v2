@@ -1507,7 +1507,7 @@ html[data-theme="dark"]{
       r.addEventListener("change", () => {
         state.notation = r.value;
         updateNumberDisplays(state.notation);
-        renderElvlMilestoneList(); // keep list in sync with notation style
+        ElvlMilestoneList(); // keep list in sync with notation style
       });
     });
 
@@ -1533,7 +1533,7 @@ html[data-theme="dark"]{
         saveSettingsObj(state);
         applyTheme(state.theme);
         updateNumberDisplays(state.notation);
-        renderElvlMilestoneList();
+        ElvlMilestoneList();
         saveBtn.textContent = "Saved";
         window.setTimeout(() => saveBtn.textContent = "Save Settings", 700);
       });
@@ -1732,38 +1732,35 @@ function colorizeLabel(label){
       }
     }
 
-    /* ✅ NEW LIST RENDER */
     function renderElvlMilestoneList(){
-      const host = document.getElementById("elvlMilestoneList");
-      if(!host) return;
+  const host = document.getElementById("elvlMilestoneList");
+  if(!host) return;
 
-      const lvl = getCurrentElvl();
-      const rows = getSortedElvlMilestones();
+  const lvl = getCurrentElvl();
+  const rows = getSortedElvlMilestones();
 
-      host.innerHTML = "";
+  host.innerHTML = "";
 
-      rows.forEach(m => {
-        const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
-        const labelHTML = colorizeLabel(m.label); // ✅ added
+  rows.forEach(m => {
+    const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
+    const labelHTML = colorizeLabel(m.label);
 
-        const item = document.createElement("div");
-        item.className = "elvl-item";
+    const item = document.createElement("div");
+    item.className = "elvl-item";
 
-        // We use data-num so your notation toggle (K/M/B etc.) also applies here.
-        item.innerHTML = `
-          ${value == null
-            ? `×— ${m.label}`
-            : `×<span data-num="${value}"></span> ${m.label}`
-          }
-          <small>Milestone Lv${m.level}</small>
-        `;
+    item.innerHTML = `
+      ${value == null
+        ? `×— ${labelHTML}`
+        : `×<span data-num="${value}"></span> ${labelHTML}`
+      }
+      <small>Milestone Lv${m.level}</small>
+    `;
 
-        host.appendChild(item);
-      });
+    host.appendChild(item);
+  });
 
-      updateNumberDisplays(state.notation);
-    }
-
+  updateNumberDisplays(state.notation);
+}
     // --- Pickaxe followups limiter ---
     function getAllowedPickaxeFollowups(){
       return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
