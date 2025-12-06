@@ -1776,6 +1776,10 @@ const ORE_META = {
   "Uranium": { desc: "Late-game resource with special crafting uses." },
   "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
+function shatterstoneM2Bonus(lvl){
+  const steps = Math.max(0, Math.floor((lvl - 15) / 3));
+  return steps * 0.1;
+}
 
 /** Default milestones shown for every ore (edit freely) */
 const ORE_DEFAULT_MILESTONES = [
@@ -1813,7 +1817,17 @@ const ORE_DEFAULT_MILESTONES = [
     suffix: "%", 
   },
 ];
+function shatterstoneM2Base(lvl){
+  return 1.25;
+}
+function shatterstoneM2Bonus(lvl){
+  const steps = Math.max(0, Math.floor((lvl - 15) / 3));
+  return steps * 0.1;
+}
 
+function shatterstoneM2Total(lvl){
+  return shatterstoneM2Base(lvl) + shatterstoneM2Bonus(lvl);
+}
 /** Optional: override milestones per ore */
 const ORE_MILESTONES_OVERRIDE = {
   "Stone": [
@@ -1825,10 +1839,8 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Shatterstone": [
     { level: 5, label: "Boost fragment gain by ×1.5", display: "×", formula: () => 1.5},
-    { level: 10, label: "×1.25 forging speed and ×1.25 smelting efficiency", display: "×", formula: (oreLvl) => Math.pow(1.1, (oreLvl-4)) },
-    { level: 20, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "×", formula: (lvl) => {const steps = Math.max(0, Math.floor((lvl - 9) / 5) + 1);
-    return Math.pow(1.5, steps);},
-    },
+    { level: 10, label: "×1.25 forging speed and ×1.25 smelting efficiency", display: "×", formula: (lvl) => shatterstoneM2Total(lvl)},
+    { level: 20, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "×", formula: (lvl) => shatterstoneM2Bonus(lvl)},
   ],
 };
 
@@ -1862,17 +1874,22 @@ function getOreMilestones(name){
   return ORE_MILESTONES_OVERRIDE[name] ?? ORE_DEFAULT_MILESTONES;
 }
 
-// ✅ safe compute (never NaN)
 function computeOreMilestoneValue(m, oreLevel){
   if(typeof m.formula !== "function") return null;
   try{
     const v = Number(m.formula(oreLevel));
     if(!Number.isFinite(v)) return null;
-    return Math.max(1, v); // ✅ min 1
+
+    // if it's an additive milestone, allow 0+
+    if(m.display === "+") return Math.max(0, v);
+
+    // otherwise treat as multiplier
+    return Math.max(1, v);
   }catch{
     return null;
   }
 }
+
 
 
 function renderOreDrawerBody(name){
