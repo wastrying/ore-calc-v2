@@ -1869,13 +1869,17 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 5, label: "Boost smelting efficiency by +0.2× for every level starting at ×1", display: "×", formula: (oreLvl) => 1+oreLvl*0.2},
     { level: 10, label: "If you gain any raw material, you'll get a small amount of its smelted counterpart. The amount for the raw material is not deducted.", display: "×", formula: (oreLvl) => Math.min(100, Math.max(0, (oreLvl-9) * 1)),suffix: "%"},
   ],
+  "Gold Ingot": [
+    { level: 1, label: "Boost ₹ gain by +0.1× every level", display: "×", formula: (oreLvl) => 1+oreLvl*0.1},
+    { level: 10, label: "Boost τ gain by +0.05× every level after level 4", display: "×", formula: (oreLvl) => 1+(oreLvl-4)*0.05},
+  ],
   "Ruby": [
     { level: 1, label: "Fire effect lasts 0.15 seconds longer every level, up to 2.4 seconds.", display: "×", formula: (oreLvl) => Math.min(2.4, Math.max(0,oreLvl*0.15)),suffix: "s"},
     { level: 5, label: "Fire deals +65% more damage every level, up to 1300%", display: "×", formula: (oreLvl) => Math.min(1300, Math.max(0,oreLvl*65)),suffix: "%"},
   ],
   "Sapphire": [
     { level: 1, label: "Freeze effect decays +10% slower per level (up to 150%)", display: "×", formula: (oreLvl) => Math.min(150, Math.max(0,oreLvl*10)),suffix: "%"},
-    { level: 5, label: "Ores respawn 0.1s faster every level starting from level 5 (up to 1s)", display: "×", formula: Math.min(1, Math.max(0,(oreLvl-4)*0.1)),suffix: "s"},
+    { level: 5, label: "Ores respawn 0.1s faster every level starting from level 5 (up to 1s)", display: "×", formula: (oreLvl) => Math.min(1, Math.max(0,(oreLvl-4)*0.1)),suffix: "s"},
   ],
   "Emerald": [
     { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: (oreLvl) => 1+oreLvl*0.2},
