@@ -1882,8 +1882,8 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 5, label: "Ores respawn 0.1s faster every level starting from level 5 (up to 1s)", display: "", formula: (oreLvl) => Math.min(1, Math.max(0,(oreLvl-4)*0.1)),suffix: "s"},
   ],
   "Emerald": [
-    { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: (oreLvl) => oreLvl*0.2},
-    { level: 5, label: "Poison does more damage based on Poison time", display: "×",formula: () => null},
+    { level: 1, label: "Poison deals +20% more damage per level", display: "+", formula: oreLvl*20,suffix:"%"},
+    { level: 5, label: "Poison does more damage based on Poison time", display: "",formula: () => },
   ],
   "Diamond": [
     { level: 1, label: "+10% ore and fragment gain every level", display: "+", formula: (oreLvl) =>oreLvl*0.1,suffix:"%"},
