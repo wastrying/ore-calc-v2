@@ -1820,7 +1820,7 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 1, label: "Boost ₽ by ×1.1 per level compounding", display: "×", formula: (oreLvl) => Math.pow(1.1, oreLvl) },
     { level: 5, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (oreLvl) => Math.pow(1.1, (oreLvl-4)) },
     { level: 10, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (lvl) => {const steps = Math.max(0, Math.floor((lvl - 9) / 5) + 1);
-    return Math.pow(1.5, steps);},
+    return Math.pow(1.5, steps);},}']
   "Shatterstone": [
     {
       level: 5,
@@ -1849,7 +1849,7 @@ const ORE_MILESTONES_OVERRIDE = {
 
         // Interpretation A (most literal to your text):
         // "+0.1 to the multiplier"
-        return base + extra;}},
+        return base + extra;},},
   ],
 };
 
