@@ -1909,8 +1909,6 @@ function computeOreMilestoneValue(m, oreLevel){
   }
 }
 
-
-
 function renderOreDrawerBody(name){
   const body = document.getElementById("oreDrawerBody");
   if(!body) return;
@@ -1939,35 +1937,35 @@ function renderOreDrawerBody(name){
     </div>
 
     <div class="ore-milestones">
-      ${milestones.map(m => {
-        const unlocked = level >= m.level;
-        const value = computeOreMilestoneValue(m, level);
+  ${milestones.map((m, idx) => {
+    const unlocked = level >= m.level;
+    const value = computeOreMilestoneValue(m, level);
 
-        // ✅ value display string using your formatter
-        const valueHTML = (value == null)
-          ? ""
-          : `
-            <span class="ore-ms-value">
-              ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
-            </span>
-          `;
+    const valueHTML = (value == null)
+      ? ""
+      : `
+        <span class="ore-ms-value" data-ms-idx="${idx}">
+          ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
+        </span>
+      `;
 
-        return `
-          <div class="ore-ms-row">
-            <div class="ore-ms-left">
-              <span class="ore-ms-lv">Lv${m.level}</span>
-              <span class="ore-ms-label">${m.label}</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              ${valueHTML}
-              <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
-                ${unlocked ? "Unlocked" : "Locked"}
-              </span>
-            </div>
-          </div>
-        `;
-      }).join("")}
-    </div>
+    return `
+      <div class="ore-ms-row" data-ms-idx="${idx}" data-ms-level="${m.level}">
+        <div class="ore-ms-left">
+          <span class="ore-ms-lv">Lv${m.level}</span>
+          <span class="ore-ms-label">${m.label}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          ${valueHTML}
+          <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
+            ${unlocked ? "Unlocked" : "Locked"}
+          </span>
+        </div>
+      </div>
+    `;
+  }).join("")}
+</div>
+
   `;
 
   // ✅ apply your global number formatting if available
@@ -1975,24 +1973,55 @@ function renderOreDrawerBody(name){
     updateNumberDisplays(state?.notation ?? "suffix");
   }catch{}
 
-  // Wire input live update
-  const input = document.getElementById("oreLevelInput");
-  if(input){
-    input.addEventListener("input", () => {
-  setOreLevel(name, input.value);
+ const input = document.getElementById("oreLevelInput");
+if(input){
+  input.addEventListener("input", () => {
+    const lvl = Math.max(0, Math.floor(Number(input.value) || 0));
 
-  // re-render drawer UI
-  renderOreDrawerBody(name);
+    setOreLevel(name, lvl);
 
-  // ✅ update all matching cards (handles duplicates)
-  refreshOreCardLevelChips(name);
-
-  // ✅ keep info box consistent
-  updateOreInfoBox(name);
-});
-
-  }
+    // ✅ update UI without rebuilding input
+    updateOreDrawerMilestones(name, lvl);
+    refreshOreCardLevelChips(name);
+    updateOreInfoBox(name);
+  });
 }
+
+}
+    function updateOreDrawerMilestones(name, levelOverride){
+  const body = document.getElementById("oreDrawerBody");
+  if(!body) return;
+
+  const level = levelOverride ?? getOreLevel(name);
+  const milestones = getOreMilestones(name);
+
+  milestones.forEach((m, idx) => {
+    const row = body.querySelector(`.ore-ms-row[data-ms-idx="${idx}"]`);
+    if(!row) return;
+
+    const unlocked = level >= m.level;
+
+    const status = row.querySelector(".ore-ms-status");
+    if(status){
+      status.classList.toggle("unlocked", unlocked);
+      status.textContent = unlocked ? "Unlocked" : "Locked";
+    }
+
+    const valueWrap = row.querySelector(`.ore-ms-value[data-ms-idx="${idx}"]`);
+    if(valueWrap){
+      const v = computeOreMilestoneValue(m, level);
+      const numNode = valueWrap.querySelector("[data-num]");
+      if(numNode){
+        numNode.setAttribute("data-num", v ?? 1);
+      }
+    }
+  });
+
+  try{
+    updateNumberDisplays(state?.notation ?? "suffix");
+  }catch{}
+}
+
 function cssEscapeSafe(str){
   if(window.CSS && CSS.escape) return CSS.escape(str);
   return String(str).replace(/["\\]/g, "\\$&");
