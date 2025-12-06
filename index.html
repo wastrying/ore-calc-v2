@@ -1820,36 +1820,8 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 1, label: "Boost ₽ by ×1.1 per level compounding", display: "×", formula: (oreLvl) => Math.pow(1.1, oreLvl) },
     { level: 5, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (oreLvl) => Math.pow(1.1, (oreLvl-4)) },
     { level: 10, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (lvl) => {const steps = Math.max(0, Math.floor((lvl - 9) / 5) + 1);
-    return Math.pow(1.5, steps);},],
-  "Shatterstone": [
-    {
-      level: 5,
-      label: "Boost fragment gain",
-      display: "×",
-      formula: () => 1.5,
+    return Math.pow(1.5, steps);},
     },
-    {
-      level: 10,
-      label: "Forging speed & smelting efficiency",
-      display: "×",
-      formula: () => 1.25,
-    },
-    {
-      level: 20,
-      label: "Improves Lv10 mastery boost every 3 levels starting at 15",
-      display: "×",
-      formula: (l) => {
-        const base = 1.25;
-
-        // counts 15, 18, 21, 24, ...
-        const stepsFrom15 = l >= 15 ? (Math.floor((l - 15) / 3) + 1) : 0;
-
-        // if you want this scaling to only "turn on" once Lv20 is reached:
-        const extra = l >= 20 ? 0.1 * stepsFrom15 : 0;
-
-        // Interpretation A (most literal to your text):
-        // "+0.1 to the multiplier"
-        return base + extra;},},
   ],
 };
 
