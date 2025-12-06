@@ -1840,7 +1840,12 @@ const ORE_MILESTONES_OVERRIDE = {
   "Shatterstone": [
     { level: 5, label: "Boost fragment gain by ×1.5", display: "×", formula: () => 1.5},
     { level: 10, label: "×1.25 forging speed and ×1.25 smelting efficiency", display: "×", formula: (lvl) => shatterstoneM2Total(lvl)},
-    { level: 20, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "×", formula: (lvl) => shatterstoneM2Bonus(lvl)},
+    { level: 20, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "+", formula: (lvl) => shatterstoneM2Bonus(lvl)},
+  ],
+  "Coal": [
+    { level: 1, label: "Boost forging speed by +0.1× every level", display: "×", formula: (oreLvl) => 1 + oreLvl * 0.1},
+    { level: 5, label: "×1.25 forging speed and ×1.25 smelting efficiency", display: "×", formula: (oreLvl) => Math.pow(1.2, (oreLvl-4))},
+    { level: 10, label: "+0.1 to Shatterstone's level 10 mastery boost every 3 levels starting at 15", display: "×", formula: (oreLvl) => 1 + oreLvl * 0.05},
   ],
 };
 
