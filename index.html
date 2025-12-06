@@ -1816,10 +1816,10 @@ const ORE_DEFAULT_MILESTONES = [
 
 /** Optional: override milestones per ore */
 const ORE_MILESTONES_OVERRIDE = {
-  // "Diamond": [
-  //   { level: 1, label: "Gem synergy", display: "×", formula: (l) => 1.2 + l*0.01 },
-  //   { level: 20, label: "Socket unlock chance", display: "+", formula: (l) => l*0.2, suffix:"%" },
-  // ],
+  "Stone": [
+    { level: 1, label: "Boost ₽ by ×1.1 per level compounding", display: "×", formula: (oreLvl) => Math.pow(1.1, oreLvl) },
+    { level: 5, label: "Boost pickaxe damage by ×1.1 per level compounding, starting from level 4", display: "×", formula: (oreLvl) => Math.pow(1.1, (oreLvl-4)) },
+  ],
 };
 
 
