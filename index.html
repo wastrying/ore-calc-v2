@@ -1648,7 +1648,7 @@ html[data-theme="dark"]{
       },
     ];
     const RESOURCE_TOKENS = [
-  // longer tokens first to avoid partial replacements
+  // keep longer tokens first
   { key: "₱X", cls: "res-px" },
   { key: "AXP", cls: "res-axp" },
   { key: "XP", cls: "res-xp" },
@@ -1661,17 +1661,23 @@ html[data-theme="dark"]{
   { key: "Λ", cls: "res-L" },
 ];
 
+const TOKEN_MAP = Object.fromEntries(RESOURCE_TOKENS.map(t => [t.key, t.cls]));
+
+function escapeRegex(s){
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const TOKEN_REGEX = new RegExp(
+  RESOURCE_TOKENS.map(t => escapeRegex(t.key)).join("|"),
+  "g"
+);
+
 function colorizeLabel(label){
   if(!label) return "";
-  let out = String(label);
-
-  for(const t of RESOURCE_TOKENS){
-    out = out.replaceAll(
-      t.key,
-      `<span class="res ${t.cls}">${t.key}</span>`
-    );
-  }
-  return out;
+  return String(label).replace(TOKEN_REGEX, (match) => {
+    const cls = TOKEN_MAP[match] || "";
+    return `<span class="res ${cls}">${match}</span>`;
+  });
 }
 
     function getSortedElvlMilestones(){
