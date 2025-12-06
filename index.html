@@ -5,6 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Upgrades Hub</title>
   <style>
+    /* =========================
+   ELVL resource colors
+   ========================= */
+:root{
+  --c-xp: #1f9d74;
+  --c-axp: #2563eb;
+  --c-peso: #f59e0b;
+  --c-px: #f97316;       /* ₱X */
+  --c-lambda: #8b5cf6;   /* λ */
+  --c-rupee: #ef4444;    /* ₹ */
+  --c-bit: #06b6d4;      /* Ƀ */
+  --c-sun: #fbbf24;      /* ☉ */
+  --c-tau: #22c55e;      /* τ */
+  --c-L: #10b981;        /* Λ */
+}
+
+html[data-theme="dark"]{
+  --c-xp: #4bd6a2;
+  --c-axp: #60a5fa;
+  --c-peso: #fbbf24;
+  --c-px: #fb923c;
+  --c-lambda: #c4b5fd;
+  --c-rupee: #f87171;
+  --c-bit: #67e8f9;
+  --c-sun: #fde68a;
+  --c-tau: #86efac;
+  --c-L: #6ee7b7;
+}
+
+.res{
+  font-weight: 900;
+}
+
+.res-xp{ color: var(--c-xp); }
+.res-axp{ color: var(--c-axp); }
+.res-peso{ color: var(--c-peso); }
+.res-px{ color: var(--c-px); }
+.res-lambda{ color: var(--c-lambda); }
+.res-rupee{ color: var(--c-rupee); }
+.res-bit{ color: var(--c-bit); }
+.res-sun{ color: var(--c-sun); }
+.res-tau{ color: var(--c-tau); }
+.res-L{ color: var(--c-L); }
+
     :root{
       --bg: #f6f8f7;
       --panel: #ffffff;
@@ -1603,6 +1647,32 @@
         formula: (elvl) => Math.pow(1.25, (elvl - 12)),                    // placeholder
       },
     ];
+    const RESOURCE_TOKENS = [
+  // longer tokens first to avoid partial replacements
+  { key: "₱X", cls: "res-px" },
+  { key: "AXP", cls: "res-axp" },
+  { key: "XP", cls: "res-xp" },
+  { key: "₱", cls: "res-peso" },
+  { key: "λ", cls: "res-lambda" },
+  { key: "₹", cls: "res-rupee" },
+  { key: "Ƀ", cls: "res-bit" },
+  { key: "☉", cls: "res-sun" },
+  { key: "τ", cls: "res-tau" },
+  { key: "Λ", cls: "res-L" },
+];
+
+function colorizeLabel(label){
+  if(!label) return "";
+  let out = String(label);
+
+  for(const t of RESOURCE_TOKENS){
+    out = out.replaceAll(
+      t.key,
+      `<span class="res ${t.cls}">${t.key}</span>`
+    );
+  }
+  return out;
+}
 
     function getSortedElvlMilestones(){
       return [...ELVL_MILESTONES].sort((a,b) => a.level - b.level);
@@ -1674,6 +1744,7 @@
 
       rows.forEach(m => {
         const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
+        const labelHTML = colorizeLabel(m.label); // ✅ added
 
         const item = document.createElement("div");
         item.className = "elvl-item";
