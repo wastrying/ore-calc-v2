@@ -65,6 +65,48 @@ html[data-theme="dark"]{
 .res-L{ color: var(--c-L); }
 .res-gamma{ color: var(--c-gamma); }
 .res-psi{ color: var(--c-psi); }
+/* =========================
+   Ore Mastery Gallery
+   ========================= */
+.ore-gallery{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ore-card{
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(47,143,107,0.06), transparent 45%),
+    var(--panel);
+  padding: 10px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.ore-img{
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px dashed var(--border-soft);
+  background: rgba(0,0,0,0.02);
+}
+
+html[data-theme="dark"] .ore-img{
+  background: rgba(255,255,255,0.03);
+}
+
+.ore-name{
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
     :root{
       --bg: #f6f8f7;
@@ -1005,23 +1047,16 @@ html[data-theme="dark"]{
 
           <!-- ORE MASTERY -->
           <section class="page" id="page-ore">
-            <div class="section-head">
-              <div>
-                <div class="section-title">Ore Mastery</div>
-                <div class="section-sub">Track mastery tiers, bonuses, and unlock paths.</div>
-              </div>
-              <span class="pill">Ore Mastery</span>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Ore Type</th><th>Tier</th><th>XP Required</th><th>Bonus</th><th>Unlocks</th><th class="muted">Notes</th></tr></thead>
-                <tbody>
-                  <tr><td>Iron</td><td><span class="pill">I</span></td><td><span data-num="0"></span></td><td>+<span data-num="0"></span>%</td><td>Base mining</td><td class="muted">Starter</td></tr>
-                  <tr><td>Gold</td><td><span class="pill">II</span></td><td><span data-num="500"></span></td><td>+<span data-num="5"></span>% yield</td><td>Improved smelt</td><td class="muted">Example row</td></tr>
-                  <tr><td>Mythic Ore</td><td><span class="pill">V</span></td><td><span data-num="10000"></span></td><td>+<span data-num="25"></span>% yield</td><td>Special crafts</td><td class="muted">Endgame</td></tr>
-                </tbody>
-              </table>
-            </div>
+            <div class="section-head" style="margin-top:16px;">
+  <div>
+    <div class="section-title" style="font-size:18px;">Ore Visual Library</div>
+    <div class="section-sub">All mastery ore icons (including duplicates).</div>
+  </div>
+  <span class="pill">Gallery</span>
+</div>
+
+<div id="oreGallery" class="ore-gallery"></div>
+
           </section>
 
           <!-- PICKAXE -->
@@ -1363,6 +1398,73 @@ html[data-theme="dark"]{
       hardcore: false,
       prompts: { ...DEFAULT_PROMPTS }
     };
+    /* =========================
+   Ore Mastery Images (37 total)
+   ========================= */
+const ORE_MASTERY_IMAGES = [
+  // 31 unique examples
+  "images/ore/StoneOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/ShatterstoneOre.png",
+  "images/ore/CoalOre.png",
+  "images/ore/AluminumOre.png",
+  "images/ore/Iron_ingotOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/Copper_ingotOre.png",
+  "images/ore/SteelOre.png",
+  "images/ore/Gold_ingotOre.png",
+  "images/ore/RubyOre.png",
+  "images/ore/SapphireOre.png",
+  "images/ore/EmeraldOre.png",
+  "images/ore/DiamondOre.png",
+  "images/ore/UraniumOre.png",
+  "images/ore/PlutoniumOre.png",
+  "images/ore/AmethystOre.png",
+  "images/ore/AventurineOre.png",
+  "images/ore/TitaniumOre.png",
+  "images/ore/HeartstoneOre.png",
+  "images/ore/BismuthOre.png",
+  "images/ore/GarnetOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/PrismastoneOre.png",
+  "images/ore/DragonstoneOre.png",
+  "images/ore/ObsidianOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/TinOre.png",
+  "images/ore/IsolyteOre.png",
+  "images/ore/StarglassOre.png",
+  "images/ore/AmbrosiaOre.png",
+  "images/ore/SubspacializineOre.png",
+  "images/ore/TetratyxOre.png",
+  "images/ore/AdrenalineOre.png",
+  "images/ore/Cosmic_SteelOre.png",
+];
+
+function renderOreGallery(){
+  const host = document.getElementById("oreGallery");
+  if(!host) return;
+
+  host.innerHTML = "";
+
+  ORE_MASTERY_IMAGES.forEach((src, i) => {
+    const card = document.createElement("div");
+    card.className = "ore-card";
+
+    // label derived from filename for convenience
+    const file = src.split("/").pop() || `ore_${i+1}`;
+    const name = file.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ");
+
+    card.innerHTML = `
+      <img class="ore-img" src="${src}" alt="${name}" loading="lazy"
+           onerror="this.style.opacity=0.35; this.alt='Missing ore image';" />
+      <div class="ore-name">${name}</div>
+    `;
+
+    host.appendChild(card);
+  });
+}
 
     const PICKAXE_OPTIONS = [
       { id: "normalp", name: "Normal Pickaxe", img: "images/pickaxe/normal_pickaxe.png" },
@@ -1619,7 +1721,7 @@ html[data-theme="dark"]{
       r.addEventListener("change", () => {
         state.notation = r.value;
         updateNumberDisplays(state.notation);
-        ElvlMilestoneList(); // keep list in sync with notation style
+        renderElvlMilestoneList();
       });
     });
 
@@ -1645,7 +1747,7 @@ html[data-theme="dark"]{
         saveSettingsObj(state);
         applyTheme(state.theme);
         updateNumberDisplays(state.notation);
-        ElvlMilestoneList();
+        renderElvlMilestoneList();
         saveBtn.textContent = "Saved";
         window.setTimeout(() => saveBtn.textContent = "Save Settings", 700);
       });
@@ -2044,6 +2146,7 @@ function colorizeLabel(label){
 
     loadPromptsToUI();
     wirePromptAutosave();
+    renderOreGallery();
 
     if(resetBtn){
       resetBtn.addEventListener("click", () => {
