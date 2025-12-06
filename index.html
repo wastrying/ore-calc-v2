@@ -382,6 +382,21 @@ html[data-theme="dark"] .ore-img{
   background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
   white-space: nowrap;
 }
+.ore-level-chip{
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  border: 1px solid rgba(47,143,107,0.22);
+  background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+}
 
     :root{
       --bg: #f6f8f7;
@@ -1349,7 +1364,7 @@ html[data-theme="dark"] .ore-img{
 
   <div class="ore-drawer-body">
     <img id="oreDrawerImg" class="ore-drawer-img" alt="" />
-    <div id="oreDrawerBody" class="ore-drawer-text"></div>
+    <div id="oreDrawerBody"></div>
   </div>
 </aside>
           </section>
@@ -1906,9 +1921,45 @@ function renderOreDrawerBody(name){
   const input = document.getElementById("oreLevelInput");
   if(input){
     input.addEventListener("input", () => {
-      setOreLevel(name, input.value);
-      renderOreDrawerBody(name); // re-render milestones live
-    });
+  setOreLevel(name, input.value);
+
+  // re-render drawer UI
+  renderOreDrawerBody(name);
+
+  // ✅ update all matching cards (handles duplicates)
+  refreshOreCardLevelChips(name);
+
+  // ✅ keep info box consistent
+  updateOreInfoBox(name);
+});
+
+  }
+}
+function cssEscapeSafe(str){
+  if(window.CSS && CSS.escape) return CSS.escape(str);
+  return String(str).replace(/["\\]/g, "\\$&");
+}
+
+function refreshOreCardLevelChips(name){
+  const lvl = getOreLevel(name);
+  const safe = cssEscapeSafe(name);
+  document.querySelectorAll(`.ore-card[data-ore-name="${safe}"] .ore-level-chip`)
+    .forEach(node => node.textContent = `Lv ${lvl}`);
+}
+
+function updateOreInfoBox(name){
+  const box = document.getElementById("oreInfo");
+  if(!box) return;
+
+  const lvl = getOreLevel(name);
+  const milestones = getOreMilestones(name).slice().sort((a,b) => a.level - b.level);
+  const next = milestones.find(m => lvl < m.level);
+
+  if(next){
+    const diff = next.level - lvl;
+    box.innerHTML = `<strong>${name}</strong> — Lv ${lvl}. Next milestone: Lv${next.level} (${diff} to go).`;
+  }else{
+    box.innerHTML = `<strong>${name}</strong> — Lv ${lvl}. All milestones cleared.`;
   }
 }
 
@@ -1980,31 +2031,44 @@ function renderOreGallery(){
     const file = src.split("/").pop() || `ore_${i+1}`;
     const name = file.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ");
 
-    // ✅ add a button inside (you can click image/card too)
+    // ✅ store name for multi-duplicate updates (Tin etc.)
+    card.dataset.oreName = name;
+
     card.innerHTML = `
       <img class="ore-img" src="${src}" alt="${name}" loading="lazy"
            onerror="this.style.opacity=0.35; this.alt='Missing ore image';" />
       <div class="ore-name">${name}</div>
+      <div class="ore-level-chip">Lv ${getOreLevel(name)}</div>
       <button class="ore-open-btn" type="button">Details</button>
     `;
 
     const activate = () => {
+      // ✅ selected highlight
+      document.querySelectorAll(".ore-card.selected")
+        .forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+
+      // ✅ info box update
+      updateOreInfoBox(name);
+
       const cols = getOreCols(host);
       const col = (i % cols) + 1;
-
-      // ✅ Your rule:
-      // first half (e.g., 1–3 of 6) => from RIGHT
-      // last half  (e.g., 4–6 of 6) => from LEFT
       const half = Math.ceil(cols / 2);
       const side = col <= half ? "right" : "left";
 
       openOreDrawer({ name, src, side });
     };
 
-    card.addEventListener("click", (e) => {
-      // allow button click too without double weirdness
-      activate();
-    });
+    // ✅ button should not double-trigger card click
+    const btn = card.querySelector(".ore-open-btn");
+    if(btn){
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activate();
+      });
+    }
+
+    card.addEventListener("click", activate);
 
     card.addEventListener("keydown", (e) => {
       if(e.key === "Enter" || e.key === " "){
@@ -2016,6 +2080,7 @@ function renderOreGallery(){
     host.appendChild(card);
   });
 }
+
     // ✅ Drawer close wiring
 const oreDrawerBackdrop = document.getElementById("oreDrawerBackdrop");
 const oreDrawerClose = document.getElementById("oreDrawerClose");
@@ -2230,13 +2295,13 @@ document.addEventListener("keydown", (e) => {
     }
 
     function updateNumberDisplays(mode){
-      document.querySelectorAll("[data-num]").forEach(node => {
+      document.querySelectorAll("[data-num]").fach(node => {
         const n = Number(node.getAttribute("data-num"));
         const out = formatNumber(n, mode);
         if(out.html) node.innerHTML = out.html; else node.textContent = out.text ?? String(n);
       });
 
-      document.querySelectorAll("[data-demo]").forEach(node => {
+      document.querySelectorAll("[data-demo]").fach(node => {
         const n = Number(node.getAttribute("data-demo"));
         const out = formatNumber(n, mode);
         if(out.html) node.innerHTML = out.html; else node.textContent = out.text ?? String(n);
@@ -2259,21 +2324,21 @@ document.addEventListener("keydown", (e) => {
     const defaultSection = document.getElementById("defaultSection");
     const uiScale = document.getElementById("uiScale");
     const showHints = document.getElementById("showHints");
-    const hardcore = document.getElementById("hardcore");
+    const hardc = document.getElementById("hardc");
 
     if(profileName) profileName.value = state.profileName;
     if(defaultSection) defaultSection.value = state.defaultSection;
     if(uiScale) uiScale.value = state.uiScale;
     if(showHints) showHints.checked = !!state.showHints;
-    if(hardcore) hardcore.checked = !!state.hardcore;
+    if(hardc) hardc.checked = !!state.hardc;
 
-    document.querySelectorAll('input[name="theme"]').forEach(r => { r.checked = (r.value === state.theme); });
-    document.querySelectorAll('input[name="notation"]').forEach(r => { r.checked = (r.value === state.notation); });
+    document.querySelectorAll('input[name="theme"]').fach(r => { r.checked = (r.value === state.theme); });
+    document.querySelectorAll('input[name="notation"]').fach(r => { r.checked = (r.value === state.notation); });
 
     updateNumberDisplays(state.notation);
 
     // THEME listeners
-    document.querySelectorAll('input[name="theme"]').forEach(r => {
+    document.querySelectorAll('input[name="theme"]').fach(r => {
       r.addEventListener("change", () => {
         state.theme = r.value;
         applyTheme(state.theme);
@@ -2281,7 +2346,7 @@ document.addEventListener("keydown", (e) => {
     });
 
     // NOTATION listeners
-    document.querySelectorAll('input[name="notation"]').forEach(r => {
+    document.querySelectorAll('input[name="notation"]').fach(r => {
       r.addEventListener("change", () => {
         state.notation = r.value;
         updateNumberDisplays(state.notation);
@@ -2297,7 +2362,7 @@ document.addEventListener("keydown", (e) => {
       state.defaultSection = defaultSection?.value ?? "r-upgrades";
       state.uiScale = uiScale?.value ?? "comfortable";
       state.showHints = showHints?.checked ?? true;
-      state.hardcore = hardcore?.checked ?? false;
+      state.hardc = hardc?.checked ?? false;
 
       const themeSel = document.querySelector('input[name="theme"]:checked');
       const notationSel = document.querySelector('input[name="notation"]:checked');
@@ -2403,7 +2468,7 @@ document.addEventListener("keydown", (e) => {
       {
         id: 9,
         level: 9,
-        label: "ore gain",
+        label: " gain",
         formula: (elvl) => Math.pow(1.15, (elvl - 8)),                    // placeholder
       },
       {
@@ -2527,7 +2592,7 @@ function colorizeLabel(label){
 
   host.innerHTML = "";
 
-  rows.forEach(m => {
+  rows.fach(m => {
     const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
     const labelHTML = colorizeLabel(m.label);
 
@@ -2566,7 +2631,7 @@ function colorizeLabel(label){
 
       const allowed = getAllowedPickaxeFollowups();
 
-      pickaxeFollowups.querySelectorAll("[data-extra-idx]").forEach(field => {
+      pickaxeFollowups.querySelectorAll("[data-extra-idx]").fach(field => {
         const idx = Number(field.getAttribute("data-extra-idx"));
         field.classList.toggle("hidden", idx > allowed);
       });
@@ -2607,7 +2672,7 @@ function colorizeLabel(label){
 
       pickaxeGrid.innerHTML = "";
 
-      PICKAXE_OPTIONS.forEach(opt => {
+      PICKAXE_OPTIONS.fach(opt => {
         const card = document.createElement("div");
         card.className = "pickaxe-card" + (opt.id === selectedId ? " selected" : "");
         card.setAttribute("role", "option");
@@ -2695,7 +2760,7 @@ function colorizeLabel(label){
         updateElvlSidebarMilestone();
       };
 
-      inputs.forEach(el => {
+      inputs.fach(el => {
         el.addEventListener("input", handler);
         el.addEventListener("change", handler);
       });
