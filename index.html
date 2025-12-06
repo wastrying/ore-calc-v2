@@ -19,6 +19,8 @@
   --c-sun: #fbbf24;      /* ☉ */
   --c-tau: #22c55e;      /* τ */
   --c-L: #10b981;        /* Λ */
+  --c-gamma: #e879f9;    /* γ */
+  --c-psi: #38bdf8;      /* ψ */
 }
 
 html[data-theme="dark"]{
@@ -32,6 +34,8 @@ html[data-theme="dark"]{
   --c-sun: #fde68a;
   --c-tau: #86efac;
   --c-L: #6ee7b7;
+  --c-gamma: #f0abfc;
+  --c-psi: #7dd3fc;
 }
 
 .res{
@@ -48,6 +52,8 @@ html[data-theme="dark"]{
 .res-sun{ color: var(--c-sun); }
 .res-tau{ color: var(--c-tau); }
 .res-L{ color: var(--c-L); }
+.res-gamma{ color: var(--c-gamma); }
+.res-psi{ color: var(--c-psi); }
 
     :root{
       --bg: #f6f8f7;
@@ -1631,7 +1637,7 @@ html[data-theme="dark"]{
       {
         id: 10,
         level: 10,
-        label: "qubit gain",
+        label: "ψ gain",
         formula: (elvl) => Math.pow(1.25, (elvl - 10)),                    // placeholder
       },
       {
@@ -1643,7 +1649,7 @@ html[data-theme="dark"]{
       {
         id: 12,
         level: 12,
-        label: "gamma gain",
+        label: "γ gain",
         formula: (elvl) => Math.pow(1.25, (elvl - 12)),                    // placeholder
       },
     ];
@@ -1659,6 +1665,8 @@ html[data-theme="dark"]{
   { key: "☉", cls: "res-sun" },
   { key: "τ", cls: "res-tau" },
   { key: "Λ", cls: "res-L" },
+  { key: "γ", cls: "res-gamma" },
+  { key: "ψ", cls: "res-psi" },
 ];
 
 const TOKEN_MAP = Object.fromEntries(RESOURCE_TOKENS.map(t => [t.key, t.cls]));
