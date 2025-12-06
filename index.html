@@ -371,6 +371,17 @@ html[data-theme="dark"] .ore-img{
     linear-gradient(180deg, var(--mint-200), transparent 45%),
     var(--panel);
 }
+.ore-ms-value{
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--accent-dark);
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(47,143,107,0.22);
+  background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+  white-space: nowrap;
+}
 
     :root{
       --bg: #f6f8f7;
@@ -1739,24 +1750,51 @@ const ORE_META = {
   "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
 
-/** Default milestones shown for every ore (you can edit freely) */
+/** Default milestones shown for every ore (edit freely) */
 const ORE_DEFAULT_MILESTONES = [
-  { level: 1,  label: "Unlock ore tracking" },
-  { level: 5,  label: "+5% yield for this ore" },
-  { level: 10, label: "+10% crit chance on this ore" },
-  { level: 25, label: "Unlock refined variant" },
-  { level: 50, label: "Passive generation +1/sec" },
+  {
+    level: 1,
+    label: "Yield multiplier",
+    display: "×",
+    formula: (oreLvl) => Math.pow(1.05, oreLvl), // example scaling
+  },
+  {
+    level: 5,
+    label: "Crit chance bonus",
+    display: "+",
+    formula: (oreLvl) => Math.min(50, oreLvl * 0.3), // example % bonus
+    suffix: "%", // optional suffix display
+  },
+  {
+    level: 10,
+    label: "Refine efficiency",
+    display: "×",
+    formula: (oreLvl) => 1 + oreLvl * 0.02,
+  },
+  {
+    level: 25,
+    label: "Passive generation",
+    display: "+",
+    formula: (oreLvl) => Math.max(1, Math.floor(oreLvl / 5)),
+    suffix: "/sec",
+  },
+  {
+    level: 50,
+    label: "Rare find chance",
+    display: "+",
+    formula: (oreLvl) => Math.min(25, oreLvl * 0.15),
+    suffix: "%", 
+  },
 ];
 
-/** Optional: override milestones for specific ores */
+/** Optional: override milestones per ore */
 const ORE_MILESTONES_OVERRIDE = {
-  // مثال:
   // "Diamond": [
-  //   { level: 1, label: "Unlock diamond tracking" },
-  //   { level: 10, label: "Unlock gem socketing" },
-  //   { level: 30, label: "+25% gem synergy" },
+  //   { level: 1, label: "Gem synergy", display: "×", formula: (l) => 1.2 + l*0.01 },
+  //   { level: 20, label: "Socket unlock chance", display: "+", formula: (l) => l*0.2, suffix:"%" },
   // ],
 };
+
 
 function loadOreLevels(){
   try{
@@ -1787,7 +1825,19 @@ function getOreMilestones(name){
   return ORE_MILESTONES_OVERRIDE[name] ?? ORE_DEFAULT_MILESTONES;
 }
 
-/** Builds the drawer HTML with a level prompt + milestone list */
+// ✅ safe compute (never NaN)
+function computeOreMilestoneValue(m, oreLevel){
+  if(typeof m.formula !== "function") return null;
+  try{
+    const v = Number(m.formula(oreLevel));
+    if(!Number.isFinite(v)) return null;
+    return v;
+  }catch{
+    return null;
+  }
+}
+
+
 function renderOreDrawerBody(name){
   const body = document.getElementById("oreDrawerBody");
   if(!body) return;
@@ -1818,31 +1868,50 @@ function renderOreDrawerBody(name){
     <div class="ore-milestones">
       ${milestones.map(m => {
         const unlocked = level >= m.level;
+        const value = computeOreMilestoneValue(m, level);
+
+        // ✅ value display string using your formatter
+        const valueHTML = (value == null)
+          ? ""
+          : `
+            <span class="ore-ms-value">
+              ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
+            </span>
+          `;
+
         return `
           <div class="ore-ms-row">
             <div class="ore-ms-left">
               <span class="ore-ms-lv">Lv${m.level}</span>
               <span class="ore-ms-label">${m.label}</span>
             </div>
-            <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
-              ${unlocked ? "Unlocked" : "Locked"}
-            </span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              ${valueHTML}
+              <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
+                ${unlocked ? "Unlocked" : "Locked"}
+              </span>
+            </div>
           </div>
         `;
       }).join("")}
     </div>
   `;
 
+  // ✅ apply your global number formatting if available
+  try{
+    updateNumberDisplays(state?.notation ?? "suffix");
+  }catch{}
+
   // Wire input live update
   const input = document.getElementById("oreLevelInput");
   if(input){
     input.addEventListener("input", () => {
       setOreLevel(name, input.value);
-      // re-render milestones live
-      renderOreDrawerBody(name);
+      renderOreDrawerBody(name); // re-render milestones live
     });
   }
 }
+
 
 function getOreCols(host){
   if(!host) return 6;
