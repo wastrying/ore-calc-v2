@@ -1848,8 +1848,8 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 10, label: "Boost AXP gain by +0.05× every level starting from level 9", display: "×", formula: (oreLvl) => 1 + (oreLvl-9) * 0.05},
   ],
   "Aluminum": [
-    { level: 5, label: "Boost fire occurrence on pickaxes WITH enchant Flame by +4% for each level after 5 (max +60%)", display: "×", formula: (oreLvl) => Math.max(60,oreLvl*4),suffix: "%"},
-    { level: 10, label: "Boost the chance of stacking fire on pickaxes WITH enchant Flame by +4% for each level after level 10 (max 60%)", display: "×", formula: (oreLvl) => Math.max(60,(oreLvl-10)*4),suffix: "%"},
+    { level: 5, label: "Boost fire occurrence on pickaxes WITH enchant Flame by +4% for each level after 5 (max +60%)", display: "×", formula: (oreLvl) => (oreLvl) => Math.min(60, Math.max(0, (oreLvl-5) * 4)),suffix: "%"},
+    { level: 10, label: "Boost the chance of stacking fire on pickaxes WITH enchant Flame by +4% for each level after level 10 (max 60%)", display: "×", formula: (oreLvl) => Math.min(60, Math.max(0, (oreLvl-10) * 4)),suffix: "%"},
   ],
 };
 
