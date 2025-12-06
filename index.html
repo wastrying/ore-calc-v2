@@ -68,12 +68,30 @@ html[data-theme="dark"]{
 /* =========================
    Ore Mastery Gallery
    ========================= */
+/* =========================
+   Ore Mastery Gallery
+   ========================= */
 .ore-gallery{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr)); /* ✅ 6 per row */
   gap: 10px;
   margin-top: 14px;
 }
+
+/* Nice responsive fallbacks */
+@media (max-width: 1200px){
+  .ore-gallery{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 900px){
+  .ore-gallery{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px){
+  .ore-gallery{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 380px){
+  .ore-gallery{ grid-template-columns: 1fr; }
+}
+
 
 .ore-card{
   border: 1px solid var(--border-soft);
@@ -98,6 +116,20 @@ html[data-theme="dark"]{
 html[data-theme="dark"] .ore-img{
   background: rgba(255,255,255,0.03);
 }
+/* ✅ Ore click info box */
+.ore-info{
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(47,143,107,0.06), transparent 45%),
+    var(--panel);
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 10px;
+}
 
 .ore-name{
   margin-top: 6px;
@@ -106,6 +138,16 @@ html[data-theme="dark"] .ore-img{
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+/* ✅ Selected ore highlight */
+.ore-card.selected{
+  border-color: rgba(47,143,107,0.5);
+  box-shadow:
+    0 0 0 1px rgba(47,143,107,0.12),
+    var(--shadow-sm);
+  background:
+    linear-gradient(180deg, var(--mint-200), transparent 45%),
+    var(--panel);
 }
 
     :root{
@@ -1054,7 +1096,9 @@ html[data-theme="dark"] .ore-img{
   </div>
   <span class="pill">Gallery</span>
 </div>
-
+<div id="oreInfo" class="ore-info">
+  Click an ore to see its details.
+</div>
 <div id="oreGallery" class="ore-gallery"></div>
 
           </section>
@@ -1441,9 +1485,18 @@ const ORE_MASTERY_IMAGES = [
   "images/ores/Adrenaline.png",
   "images/ores/Cosmic_Steel.png",
 ];
+// ✅ Optional: custom text per ore name (expand as you like)
+const ORE_TEXT_MAP = {
+  "Stone": "Basic starter ore. Reliable early-game fuel.",
+  "Coal": "Useful for smelting chains and mid-tier upgrades.",
+  "Diamond": "High-value ore often tied to milestone unlocks.",
+  "Uranium": "Late-game resource with special crafting uses.",
+  "Plutonium": "Rare and powerful—usually gated by progression."
+};
 
 function renderOreGallery(){
   const host = document.getElementById("oreGallery");
+  const info = document.getElementById("oreInfo");
   if(!host) return;
 
   host.innerHTML = "";
@@ -1451,6 +1504,7 @@ function renderOreGallery(){
   ORE_MASTERY_IMAGES.forEach((src, i) => {
     const card = document.createElement("div");
     card.className = "ore-card";
+    card.tabIndex = 0;
 
     // label derived from filename for convenience
     const file = src.split("/").pop() || `ore_${i+1}`;
@@ -1461,6 +1515,23 @@ function renderOreGallery(){
            onerror="this.style.opacity=0.35; this.alt='Missing ore image';" />
       <div class="ore-name">${name}</div>
     `;
+
+    const showInfo = () => {
+      // optional selected styling
+      host.querySelectorAll(".ore-card.selected").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+
+      const msg = ORE_TEXT_MAP[name] ?? `You selected: ${name}`;
+      if(info) info.textContent = msg;
+    };
+
+    card.addEventListener("click", showInfo);
+    card.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        showInfo();
+      }
+    });
 
     host.appendChild(card);
   });
