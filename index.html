@@ -119,6 +119,107 @@ html[data-theme="dark"]{
 .ore-open-btn:hover{ box-shadow: var(--shadow-sm); filter: saturate(1.05); }
 .ore-open-btn:active{ transform: translateY(1px); }
 /* =========================
+   Ore Drawer: Level + Milestones UI
+   ========================= */
+.ore-level-box{
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background:
+    linear-gradient(180deg, rgba(47,143,107,0.06), transparent 45%),
+    var(--panel);
+  display: grid;
+  gap: 8px;
+}
+
+.ore-level-label{
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ore-level-input{
+  width: 100%;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 650;
+  outline: none;
+  background: var(--panel);
+  color: var(--text);
+}
+html[data-theme="dark"] .ore-level-input{
+  border-color: rgba(255,255,255,0.12);
+}
+
+.ore-level-input:focus{
+  border-color: rgba(47,143,107,0.5);
+  box-shadow: 0 0 0 4px rgba(47,143,107,0.12);
+}
+
+.ore-milestones{
+  border: 1px dashed var(--border-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.ore-ms-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.ore-ms-row:last-child{ border-bottom: none; }
+
+.ore-ms-left{
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ore-ms-lv{
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.9;
+}
+
+.ore-ms-label{
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ore-ms-status{
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  color: var(--muted);
+  background: rgba(0,0,0,0.03);
+}
+html[data-theme="dark"] .ore-ms-status{
+  background: rgba(255,255,255,0.05);
+}
+
+.ore-ms-status.unlocked{
+  color: var(--accent-dark);
+  border-color: rgba(47,143,107,0.3);
+  background: linear-gradient(180deg, var(--mint-200), var(--mint-100));
+}
+
+/* =========================
    Ore Sliding Drawer
    ========================= */
 .ore-drawer-backdrop{
@@ -1624,14 +1725,124 @@ const ORE_MASTERY_IMAGES = [
   "images/ores/Adrenaline.png",
   "images/ores/Cosmic_Steel.png",
 ];
-// ✅ Optional: custom text per ore name (expand as you like)
-const ORE_TEXT_MAP = {
-  "Stone": "Basic starter ore. Reliable early-game fuel.",
-  "Coal": "Useful for smelting chains and mid-tier upgrades.",
-  "Diamond": "High-value ore often tied to milestone unlocks.",
-  "Uranium": "Late-game resource with special crafting uses.",
-  "Plutonium": "Rare and powerful—usually gated by progression."
+/* =========================
+   Ore Level + Milestones System
+   ========================= */
+const ORE_LEVELS_KEY = "ore_levels_v1";
+
+/** Optional: per-ore descriptions (fallback included) */
+const ORE_META = {
+  "Stone": { desc: "Basic starter ore. Reliable early-game fuel." },
+  "Coal": { desc: "Useful for smelting chains and mid-tier upgrades." },
+  "Diamond": { desc: "High-value ore often tied to milestone unlocks." },
+  "Uranium": { desc: "Late-game resource with special crafting uses." },
+  "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
+
+/** Default milestones shown for every ore (you can edit freely) */
+const ORE_DEFAULT_MILESTONES = [
+  { level: 1,  label: "Unlock ore tracking" },
+  { level: 5,  label: "+5% yield for this ore" },
+  { level: 10, label: "+10% crit chance on this ore" },
+  { level: 25, label: "Unlock refined variant" },
+  { level: 50, label: "Passive generation +1/sec" },
+];
+
+/** Optional: override milestones for specific ores */
+const ORE_MILESTONES_OVERRIDE = {
+  // مثال:
+  // "Diamond": [
+  //   { level: 1, label: "Unlock diamond tracking" },
+  //   { level: 10, label: "Unlock gem socketing" },
+  //   { level: 30, label: "+25% gem synergy" },
+  // ],
+};
+
+function loadOreLevels(){
+  try{
+    const raw = localStorage.getItem(ORE_LEVELS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch{
+    return {};
+  }
+}
+
+function saveOreLevels(obj){
+  localStorage.setItem(ORE_LEVELS_KEY, JSON.stringify(obj));
+}
+
+function getOreLevel(name){
+  const store = loadOreLevels();
+  const n = Number(store[name]);
+  return Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+}
+
+function setOreLevel(name, level){
+  const store = loadOreLevels();
+  store[name] = Math.max(0, Math.floor(Number(level) || 0));
+  saveOreLevels(store);
+}
+
+function getOreMilestones(name){
+  return ORE_MILESTONES_OVERRIDE[name] ?? ORE_DEFAULT_MILESTONES;
+}
+
+/** Builds the drawer HTML with a level prompt + milestone list */
+function renderOreDrawerBody(name){
+  const body = document.getElementById("oreDrawerBody");
+  if(!body) return;
+
+  const level = getOreLevel(name);
+  const meta = ORE_META[name] ?? { desc: `Set your mastery level for ${name}.` };
+  const milestones = getOreMilestones(name);
+
+  body.innerHTML = `
+    <div class="ore-drawer-text">${meta.desc}</div>
+
+    <div class="ore-level-box">
+      <div class="ore-level-label">Your ${name} mastery level</div>
+      <input
+        class="ore-level-input"
+        id="oreLevelInput"
+        type="number"
+        min="0"
+        step="1"
+        value="${level}"
+        placeholder="Enter level..."
+      />
+      <div class="ore-drawer-text">
+        This is saved per ore and will persist on refresh.
+      </div>
+    </div>
+
+    <div class="ore-milestones">
+      ${milestones.map(m => {
+        const unlocked = level >= m.level;
+        return `
+          <div class="ore-ms-row">
+            <div class="ore-ms-left">
+              <span class="ore-ms-lv">Lv${m.level}</span>
+              <span class="ore-ms-label">${m.label}</span>
+            </div>
+            <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
+              ${unlocked ? "Unlocked" : "Locked"}
+            </span>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  // Wire input live update
+  const input = document.getElementById("oreLevelInput");
+  if(input){
+    input.addEventListener("input", () => {
+      setOreLevel(name, input.value);
+      // re-render milestones live
+      renderOreDrawerBody(name);
+    });
+  }
+}
 
 function getOreCols(host){
   if(!host) return 6;
@@ -1644,12 +1855,10 @@ function openOreDrawer({ name, src, side }){
   const drawer = document.getElementById("oreDrawer");
   const backdrop = document.getElementById("oreDrawerBackdrop");
   const title = document.getElementById("oreDrawerTitle");
-  const body = document.getElementById("oreDrawerBody");
   const img = document.getElementById("oreDrawerImg");
 
   if(!drawer || !backdrop) return;
 
-  // side class swap
   drawer.classList.remove("from-left", "from-right", "open");
   drawer.classList.add(side === "left" ? "from-left" : "from-right");
 
@@ -1658,18 +1867,18 @@ function openOreDrawer({ name, src, side }){
     img.src = src;
     img.alt = name;
   }
-  if(body){
-    body.textContent = ORE_TEXT_MAP[name] ?? `You selected ${name}.`;
-  }
+
+  // ✅ NEW: render level + milestones UI
+  renderOreDrawerBody(name);
 
   backdrop.classList.remove("hidden");
   drawer.setAttribute("aria-hidden", "false");
 
-  // small rAF so transition applies reliably
   requestAnimationFrame(() => {
     drawer.classList.add("open");
   });
 }
+
 
 function closeOreDrawer(){
   const drawer = document.getElementById("oreDrawer");
