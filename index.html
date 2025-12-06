@@ -11,7 +11,7 @@
 :root{
   --c-xp: #1f9d74;
   --c-axp: #2563eb;
-  --c-peso: #f59e0b;
+  --c-peso: #ffffff;
   --c-px: #f97316;       /* ₱X */
   --c-lambda: #8b5cf6;   /* λ */
   --c-rupee: #ef4444;    /* ₹ */
@@ -21,12 +21,14 @@
   --c-L: #10b981;        /* Λ */
   --c-gamma: #e879f9;    /* γ */
   --c-psi: #38bdf8;      /* ψ */
+  --res-outline: rgba(0,0,0,0.22);
+  --res-stroke-w: 0.6px;
 }
 
 html[data-theme="dark"]{
   --c-xp: #4bd6a2;
   --c-axp: #60a5fa;
-  --c-peso: #fbbf24;
+  --c-peso: #ffffff;
   --c-px: #fb923c;
   --c-lambda: #c4b5fd;
   --c-rupee: #f87171;
@@ -36,10 +38,19 @@ html[data-theme="dark"]{
   --c-L: #6ee7b7;
   --c-gamma: #f0abfc;
   --c-psi: #7dd3fc;
+  --res-outline: rgba(0,0,0,0.75);
 }
 
 .res{
   font-weight: 900;
+  -webkit-text-stroke: var(--res-stroke-w) var(--res-outline);
+
+  /* fallback outline using multi-direction shadow */
+  text-shadow:
+    -0.6px  0      0 var(--res-outline),
+     0.6px  0      0 var(--res-outline),
+     0     -0.6px  0 var(--res-outline),
+     0      0.6px  0 var(--res-outline);
 }
 
 .res-xp{ color: var(--c-xp); }
