@@ -1791,6 +1791,31 @@ const ORE_META = {
   "Uranium": { desc: "Late-game resource with special crafting uses." },
   "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
+function buildOreValueHTML(m, level){
+  const value = computeOreMilestoneValue(m, level);
+  if(value == null) return "";
+
+  if(Array.isArray(value)){
+    const displays = Array.isArray(m.display) ? m.display : [m.display ?? "×"];
+    const labels = Array.isArray(m.valueLabels) ? m.valueLabels : [];
+
+    return value.map((v, i) => `
+      <span class="ore-ms-value">
+        ${(displays[i] ?? displays[0] ?? "×")}
+        <span data-num="${v}"></span>
+        ${labels[i] ? ` ${labels[i]}` : ""}
+        ${m.suffix ? ` ${m.suffix}` : ""}
+      </span>
+    `).join("");
+  }
+
+  return `
+    <span class="ore-ms-value">
+      ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
+    </span>
+  `;
+}
+
 function shatterstoneM2Bonus(lvl){
   const steps = Math.max(0, Math.floor((lvl - 15) / 3));
   return steps * 0.1;
@@ -2105,9 +2130,6 @@ if(Array.isArray(value)){
     </span>
   `;
 }
-
-
-
     return `
       <div class="ore-ms-row" data-ms-idx="${idx}" data-ms-level="${m.level}">
         <div class="ore-ms-left">
@@ -2115,11 +2137,14 @@ if(Array.isArray(value)){
           <span class="ore-ms-label">${m.label}</span>
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
-          ${valueHTML}
-          <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
-            ${unlocked ? "Unlocked" : "Locked"}
-          </span>
-        </div>
+  <span class="ore-ms-values" data-ms-idx="${idx}">
+    ${valueHTML}
+  </span>
+  <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
+    ${unlocked ? "Unlocked" : "Locked"}
+  </span>
+</div>
+
       </div>
     `;
   }).join("")}
@@ -2139,47 +2164,13 @@ if(input){
 
     setOreLevel(name, lvl);
 
-    // ✅ update UI without rebuilding input
-    renderOreDrawerBody(name);
+    // ✅ update only milestones + chips, keep input focused
+    updateOreDrawerMilestones(name, lvl);
 
     refreshOreCardLevelChips(name);
     updateOreInfoBox(name);
   });
 }
-
-}
-    function updateOreDrawerMilestones(name, levelOverride){
-  const body = document.getElementById("oreDrawerBody");
-  if(!body) return;
-
-  const level = levelOverride ?? getOreLevel(name);
-  const milestones = getOreMilestones(name);
-
-  milestones.forEach((m, idx) => {
-    const row = body.querySelector(`.ore-ms-row[data-ms-idx="${idx}"]`);
-    if(!row) return;
-
-    const unlocked = level >= m.level;
-
-    const status = row.querySelector(".ore-ms-status");
-    if(status){
-      status.classList.toggle("unlocked", unlocked);
-      status.textContent = unlocked ? "Unlocked" : "Locked";
-    }
-
-    const valueWrap = row.querySelector(`.ore-ms-value[data-ms-idx="${idx}"]`);
-    if(valueWrap){
-      const v = computeOreMilestoneValue(m, level);
-      const numNode = valueWrap.querySelector("[data-num]");
-      if(numNode){
-        numNode.setAttribute("data-num", v ?? 1);
-      }
-    }
-  });
-
-  try{
-    updateNumberDisplays(state?.notation ?? "suffix");
-  }catch{}
 }
 
 function cssEscapeSafe(str){
