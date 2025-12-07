@@ -584,6 +584,46 @@ html[data-theme="dark"] .ore-img{
     .content{
       padding: 26px 22px 60px;
     }
+    /* Style for the table */
+#alvl-table, #elvl-table, #mlvl-table {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;  /* Adjust the column sizes as needed */
+  gap: 10px;
+  padding: 20px;
+  background-color: #2e2e2e;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+/* Styling each milestone row */
+.milestone-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;  /* 3 columns: level, label, value */
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #666; /* Add a border between rows */
+  background-color: #333;
+}
+
+/* Style for the cells in each milestone row */
+.milestone-cell {
+  padding: 8px;
+  text-align: center;  /* Center the content */
+  color: #fff;
+}
+
+.milestone-level {
+  font-weight: bold;  /* Make the level bold */
+}
+
+.milestone-label {
+  font-size: 16px;  /* Adjust the font size for labels */
+}
+
+.milestone-formula {
+  font-size: 16px;
+  color: #ff9;  /* Color for the formula values */
+}
 
     .main{
       background: var(--panel);
@@ -2872,32 +2912,41 @@ function renderMilestonesTable(milestones, tableId) {
   const table = document.getElementById(tableId);
   if (!table) return;
 
-  table.innerHTML = ""; // Clear the table
+  table.innerHTML = ""; // Clear the table before rendering new data
 
   milestones.forEach(m => {
     const row = document.createElement('div');
-    row.classList.add('milestone-row');
+    row.classList.add('milestone-row');  // Class for styling the row
+
+    // HTML structure for each milestone
     row.innerHTML = `
-      <div class="milestone-level">Lv${m.level}</div>
-      <div class="milestone-label">${m.label}</div>
-      <div class="milestone-formula">${m.formula(1)}</div> <!-- example formula calculation -->
+      <div class="milestone-cell milestone-level">
+        Lv${m.level}  <!-- Display Level -->
+      </div>
+      <div class="milestone-cell milestone-label">
+        ${m.label}  <!-- Display Label -->
+      </div>
+      <div class="milestone-cell milestone-formula">
+        ${formatFormula(m.formula)}  <!-- Display Formula Value -->
+      </div>
     `;
+
+    // Append the row to the table
     table.appendChild(row);
   });
 }
 
-// Call the function to render the milestone tables
-renderMilestonesTable(ALVL_MILESTONES, 'alvl-table');
-renderMilestonesTable(ELVL_MILESTONES, 'elvl-table');
-renderMilestonesTable(MLVL_MILESTONES, 'mlvl-table');
-function escapeRegex(s){
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// A helper function to format the formula output correctly
+function formatFormula(formula) {
+  try {
+    // Assuming the formula is a function that can be executed with the level.
+    const value = formula(1);  // You can adjust this to pass the actual level
+    return value.toFixed(2);  // Rounding to 2 decimal places for better readability
+  } catch (e) {
+    return "Invalid Formula";
+  }
 }
 
-const TOKEN_REGEX = new RegExp(
-  RESOURCE_TOKENS.map(t => escapeRegex(t.key)).join("|"),
-  "g"
-);
 
 function colorizeLabel(label){
   if(!label) return "";
