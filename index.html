@@ -1979,7 +1979,7 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 10, label: "×4 ₹ Gain", display: "×", formula: () => 4},
     { level: 15, label: "+0.5× ₹ gain for every level, starting at level 15", display: "×", formula: (oreLvl) =>1+(oreLvl-14)*0.5},
     { level: 20, label: "×1.05 ฿ gain for every level, starting at level 15", display: "×", formula: (oreLvl) =>Math.pow(1.05, (oreLvl-14))},
-    { level: 25, label: "+0.1× ore gain and +0.05× fragment gain from enchanted ores every level, starting at level 20", display: ["×","×"],valueLabels: ["ore", "fragment"], formula: (lvl) => return[subm6oreValue(lvl), subm6fragValue(lvl)];},
+    { level: 25, label: "+0.1× ore gain and +0.05× fragment gain from enchanted ores every level, starting at level 20", display: ["×","×"],valueLabels: ["ore", "fragment"], formula: (lvl) => [subm6oreValue(lvl), subm6fragValue(lvl)];},
   ],
   "Tetratyx": [
     { level: 5, label: "+5% ore gain every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.05},
@@ -2076,26 +2076,30 @@ function renderOreDrawerBody(name){
     <div class="ore-milestones">
   ${milestones.map((m, idx) => {
     const unlocked = level >= m.level;
-    const values = computeOreMilestoneValues(m, level);
+    const value = computeOreMilestoneValue(m, level);
 
-const valueHTML = (values.length === 0)
-  ? ""
-  : `
-    <div class="ore-ms-multi">
-      ${values.map((val, idx) => {
-        const disp = Array.isArray(m.display) ? m.display[idx] : (m.display ?? "×");
-        const suf  = Array.isArray(m.suffix)  ? m.suffix[idx]  : (m.suffix ?? "");
-        const part = Array.isArray(m.valueLabels) ? m.valueLabels[idx] : null;
+let valueHTML = "";
 
-        return `
-          <span class="ore-ms-value">
-            ${disp}<span data-num="${val}"></span>${suf ? ` ${suf}` : ""}
-            ${part ? `<span class="ore-ms-part">${part}</span>` : ""}
-          </span>
-        `;
-      }).join("")}
-    </div>
+if(Array.isArray(value)){
+  const displays = Array.isArray(m.display) ? m.display : [m.display ?? "×"];
+  const labels = Array.isArray(m.valueLabels) ? m.valueLabels : [];
+
+  valueHTML = value.map((v, idx) => `
+    <span class="ore-ms-value">
+      ${(displays[idx] ?? displays[0] ?? "×")}
+      <span data-num="${v}"></span>
+      ${labels[idx] ? ` ${labels[idx]}` : ""}
+      ${m.suffix ? ` ${m.suffix}` : ""}
+    </span>
+  `).join("");
+} else if(value != null){
+  valueHTML = `
+    <span class="ore-ms-value">
+      ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
+    </span>
   `;
+}
+
 
 
     return `
