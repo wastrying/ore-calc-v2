@@ -2076,6 +2076,60 @@ function computeOreMilestoneValue(m, oreLevel){
   if(!arr.length) return null;
   return Array.isArray(m.display) || Array.isArray(m.valueLabels) ? arr : arr[0];
 }
+function buildOreValueHTML(m, level){
+  const value = computeOreMilestoneValue(m, level);
+  if(value == null) return "";
+
+  if(Array.isArray(value)){
+    const displays = Array.isArray(m.display) ? m.display : [m.display ?? "×"];
+    const labels = Array.isArray(m.valueLabels) ? m.valueLabels : [];
+
+    return value.map((v, i) => `
+      <span class="ore-ms-value">
+        ${(displays[i] ?? displays[0] ?? "×")}
+        <span data-num="${v}"></span>
+        ${labels[i] ? ` ${labels[i]}` : ""}
+        ${m.suffix ? ` ${m.suffix}` : ""}
+      </span>
+    `).join("");
+  }
+
+  return `
+    <span class="ore-ms-value">
+      ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
+    </span>
+  `;
+}
+
+function updateOreDrawerMilestones(name, levelOverride){
+  const body = document.getElementById("oreDrawerBody");
+  if(!body) return;
+
+  const level = levelOverride ?? getOreLevel(name);
+  const milestones = getOreMilestones(name);
+
+  milestones.forEach((m, idx) => {
+    const row = body.querySelector(`.ore-ms-row[data-ms-idx="${idx}"]`);
+    if(!row) return;
+
+    const unlocked = level >= m.level;
+
+    const status = row.querySelector(".ore-ms-status");
+    if(status){
+      status.classList.toggle("unlocked", unlocked);
+      status.textContent = unlocked ? "Unlocked" : "Locked";
+    }
+
+    const valueHost = row.querySelector(`.ore-ms-values[data-ms-idx="${idx}"]`);
+    if(valueHost){
+      valueHost.innerHTML = buildOreValueHTML(m, level);
+    }
+  });
+
+  try{
+    updateNumberDisplays(state?.notation ?? "suffix");
+  }catch{}
+}
 
 function renderOreDrawerBody(name){
   const body = document.getElementById("oreDrawerBody");
