@@ -1552,24 +1552,73 @@ html[data-theme="dark"] .ore-img{
           </section>
 
           <!-- ✅ ELVL (NEW LIST DISPLAY) -->
-          <section class="page" id="page-elvl">
-            <div class="section-head">
-              <div>
-                <div class="section-title">ELvl</div>
-                <div class="section-sub">Enter your ELvl to compute your milestone multipliers.</div>
-              </div>
-              <span class="pill">ELvl</span>
-            </div>
+          <!-- ELVL Panel -->
+<section class="page" id="page-elvl">
+  <input class="dest-route" type="radio" name="dest" id="d-alvl" checked />
+  <input class="dest-route" type="radio" name="dest" id="d-elvl" />
+  <input class="dest-route" type="radio" name="dest" id="d-mlvl" />
 
-            <div class="form-grid" style="margin-bottom: 14px;">
-              <div class="field">
-                <label>Current ELvl</label>
-                <input type="number" id="elvlPrompt1" placeholder="Enter level..." min="0" step="1" />
-              </div>
-            </div>
+  <div class="section-head">
+    <div>
+      <div class="section-title">ELvl Destinations</div>
+      <div class="section-sub">Pick a destination to view its milestones.</div>
+    </div>
+    <span class="pill">Destinations</span>
+  </div>
 
-            <div id="elvlMilestoneList" class="elvl-list"></div>
-          </section>
+  <!-- ELVL Destinations Bar -->
+<div class="dest-bar" role="tablist" aria-label="ELvl Destinations">
+  <label class="dest-pill" for="d-alvl" role="tab"><span>ALVL</span><span class="mini">A</span></label>
+  <label class="dest-pill" for="d-elvl" role="tab"><span>ELVL</span><span class="mini">E</span></label>
+  <label class="dest-pill" for="d-mlvl" role="tab"><span>MLVL</span><span class="mini">M</span></label>
+</div>
+
+
+  <div class="dest-content">
+    <!-- ALVL Panel -->
+    <div class="dest-panel" id="panel-alvl">
+      <div class="section-head">
+        <div>
+          <div class="section-title" style="font-size:18px;">ALVL Milestones</div>
+          <div class="section-sub">Replace these rows with your ALVL data.</div>
+        </div>
+        <span class="pill">A</span>
+      </div>
+      <div class="table-wrap">
+        <!-- Your ALVL milestones data here -->
+      </div>
+    </div>
+
+    <!-- ELVL Panel -->
+    <div class="dest-panel" id="panel-elvl">
+      <div class="section-head">
+        <div>
+          <div class="section-title" style="font-size:18px;">ELVL Milestones</div>
+          <div class="section-sub">Replace these rows with your ELVL data.</div>
+        </div>
+        <span class="pill">E</span>
+      </div>
+      <div class="table-wrap">
+        <!-- Your ELVL milestones data here -->
+      </div>
+    </div>
+
+    <!-- MLVL Panel -->
+    <div class="dest-panel" id="panel-mlvl">
+      <div class="section-head">
+        <div>
+          <div class="section-title" style="font-size:18px;">MLVL Milestones</div>
+          <div class="section-sub">Replace these rows with your MLVL data.</div>
+        </div>
+        <span class="pill">M</span>
+      </div>
+      <div class="table-wrap">
+        <!-- Your MLVL milestones data here -->
+      </div>
+    </div>
+  </div>
+</section>
+
 
           <!-- CARDS -->
           <section class="page" id="page-cards">
