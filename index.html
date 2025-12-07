@@ -1849,7 +1849,7 @@ function shatterstoneM2Total(lvl){
   return shatterstoneM2Base(lvl) + shatterstoneM2Bonus(lvl);
 }
 function adrenalinewalkspeed(lvl){
-  return (lvl-9)/5
+  return Math.min(5,(lvl-9)/5)
 }
 /** Optional: override milestones per ore */
 const ORE_MILESTONES_OVERRIDE = {
@@ -1973,7 +1973,7 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 5, label: "×1.035 Ore HP per level compounding, starting at level 5", display: "×", formula: (oreLvl) => Math.pow(1.035, (oreLvl-4))},
     { level: 10, label: "×1.035 Ore Defense per level compounding, starting at level 10", display: "×", formula: (oreLvl) => Math.pow(1.035, (oreLvl-9))},
   ],
-  "Subscializine": [
+  "Subspacializine": [
     { level: 1, label: "×20 XP Gain", display: "×", formula: () =>20},
     { level: 5, label: "+0.5× XP gain for every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.5},
     { level: 10, label: "×4 ₹ Gain", display: "×", formula: () => 4},
@@ -1984,7 +1984,7 @@ const ORE_MILESTONES_OVERRIDE = {
   "Tetratyx": [
     { level: 5, label: "+5% ore gain every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.05},
     { level: 15, label: "Allows you to equip one additional card.", display: "+", formula: () => 1},
-    { level: 20, label: "×1.1 MXP gain per level starting at 15", display: "×", formula: (oreLvl) =>(oreLvl-4)*1.1},
+    { level: 20, label: "×1.1 MXP gain per level starting at 15", display: "×", formula: (oreLvl) =>Math.pow(1.1, (oreLvl-4))},
   ],
   "Adrenaline": [
     { level: 5, label: "+1 Fusion Challenge Slot", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
