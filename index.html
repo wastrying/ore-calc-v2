@@ -1912,7 +1912,7 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Heartstone": [
     { level: 1, label: "Boost dummy efficiency by +0.08× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.08},
-    { level: 5, label: "Reduce the hiring cost of dummies by ×1.2 compounding every level starting from level 4", display: "÷", formula: (oreLvl) => Math.pow(1.2, (oreLvl-3))},
+    { level: 5, label: "Reduce the hiring cost of dummies by ×1.2 compounding every level starting from level 4", display: "÷", formula: (oreLvl) => Math.pow(1.2, (oreLvl-4))},
   ],
   "Bismuth": [
     { level: 1, label: "Boost dummy xp gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
@@ -1934,7 +1934,7 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Obsidian": [
     { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "×", formula: () => 1},
+    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
   ],
 };
 
