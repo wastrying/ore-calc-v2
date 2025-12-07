@@ -2046,6 +2046,12 @@ function computeOreMilestoneValues(m, oreLevel){
     return [];
   }
 }
+function computeOreMilestoneValue(m, oreLevel){
+  const arr = computeOreMilestoneValues(m, oreLevel);
+  if(!arr.length) return null;
+  return Array.isArray(m.display) || Array.isArray(m.valueLabels) ? arr : arr[0];
+}
+
 function renderOreDrawerBody(name){
   const body = document.getElementById("oreDrawerBody");
   if(!body) return;
@@ -2134,7 +2140,8 @@ if(input){
     setOreLevel(name, lvl);
 
     // ✅ update UI without rebuilding input
-    updateOreDrawerMilestones(name, lvl);
+    renderOreDrawerBody(name);
+
     refreshOreCardLevelChips(name);
     updateOreInfoBox(name);
   });
