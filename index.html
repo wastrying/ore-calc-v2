@@ -1979,7 +1979,7 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 10, label: "×4 ₹ Gain", display: "×", formula: () => 4},
     { level: 15, label: "+0.5× ₹ gain for every level, starting at level 15", display: "×", formula: (oreLvl) =>1+(oreLvl-14)*0.5},
     { level: 20, label: "×1.05 ฿ gain for every level, starting at level 15", display: "×", formula: (oreLvl) =>Math.pow(1.05, (oreLvl-14))},
-    { level: 25, label: "+0.1× ore gain and +0.05× fragment gain from enchanted ores every level, starting at level 20", display: ["×","×"],valueLabels: ["ore", "fragment"], formula: (lvl) => [subm6oreValue(lvl), subm6fragValue(lvl)},
+    { level: 25, label: "+0.1× ore gain and +0.05× fragment gain from enchanted ores every level, starting at level 20", display: ["×","×"],valueLabels: ["ore", "fragment"], formula: (lvl) => [subm6oreValue(lvl), subm6fragValue(lvl)]},
   ],
   "Tetratyx": [
     { level: 5, label: "+5% ore gain every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.05},
