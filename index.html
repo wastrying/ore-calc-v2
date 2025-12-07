@@ -139,6 +139,21 @@ html[data-theme="dark"]{
   text-transform: uppercase;
   color: var(--muted);
 }
+.ore-ms-multi{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.ore-ms-part{
+  margin-left: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.9;
+}
 
 .ore-level-input{
   width: 100%;
@@ -1824,9 +1839,17 @@ function shatterstoneM2Bonus(lvl){
   const steps = Math.max(0, Math.floor((lvl - 15) / 3));
   return steps * 0.1;
 }
-
+function subm6oreValue(lvl){
+  return 1+(lvl-19)*0.1
+}
+function sub6fragValue(lvl){
+  return 1+(lvl-19)*0.05)
+}
 function shatterstoneM2Total(lvl){
   return shatterstoneM2Base(lvl) + shatterstoneM2Bonus(lvl);
+}
+function adrenalinewalkspeed(lvl){
+  return (lvl-9)/5
 }
 /** Optional: override milestones per ore */
 const ORE_MILESTONES_OVERRIDE = {
@@ -1924,7 +1947,7 @@ const ORE_MILESTONES_OVERRIDE = {
   ],
   "Prismastone": [
     { level: 1, label: "Boost enchanting luck by +0.4× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.4},
-    { level: 5, label: "Boost enchanting luck by ×1.25 for every level compounding, starting at level 5", display: "×", formula: (oreLvl) => Math.pow(1.25, (oreLvl-4  ))},
+    { level: 5, label: "Boost enchanting luck by ×1.25 for every level compounding, starting at level 5", display: "×", formula: (oreLvl) => Math.pow(1.25, (oreLvl-4))},
     { level: 10, label: "Subtract 0.25 seconds from ore respawn time", display: "-", formula: () => 0.25,suffix:"s"},
   ],
   "Dragonstone": [
@@ -1937,32 +1960,41 @@ const ORE_MILESTONES_OVERRIDE = {
     { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
   ],
   "Isolyte": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 10, label: "Increase τ gain by +0.1× per level, starting at level 10", display: "×", formula: (oreLvl) =>1+(oreLvl-9)*0.1},
+    { level: 20, label: "Passive τ generation lasts twice as long", display: "×", formula: () => 2},
   ],
   "Starglass": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 1, label: "Unlocks Cosmic Steel in the forge...", display: ""},
+    { level: 10, label: "+0.1× constellation distance factor, starting at level 10", display: "×", formula: (oreLvl) =>1+(oreLvl-9)*0.1},
+    { level: 20, label: "+0.5× star mass, starting at level 20", display: "×", formula: (oreLvl) =>1+(oreLvl-19)*0.5},
   ],
   "Ambrosia": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 1, label: "×1.05 Ore Gain per level compounding", display: "×", formula: (oreLvl) =>Math.pow(1.05,oreLvl)},
+    { level: 5, label: "×1.035 Ore HP per level compounding, starting at level 5", display: "×", formula: (oreLvl) => Math.pow(1.035, (oreLvl-4))},
+    { level: 10, label: "×1.035 Ore Defense per level compounding, starting at level 10", display: "×", formula: (oreLvl) => Math.pow(1.035, (oreLvl-9))},
   ],
   "Subscializine": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 1, label: "×20 XP Gain", display: "×", formula: () =>20},
+    { level: 5, label: "+0.5× XP gain for every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.5},
+    { level: 10, label: "×4 ₹ Gain", display: "×", formula: () => 4},
+    { level: 15, label: "+0.5× ₹ gain for every level, starting at level 15", display: "×", formula: (oreLvl) =>1+(oreLvl-14)*0.5},
+    { level: 20, label: "×1.05 ฿ gain for every level, starting at level 15", display: "×", formula: (oreLvl) =>Math.pow(1.05, (oreLvl-14))},
+    { level: 25, label: "+0.1× ore gain and +0.05× fragment gain from enchanted ores every level, starting at level 20", display: ["×","×"],valueLabels: ["ore", "fragment"], formula: (lvl) => [subm6oreValue(lvl), subm6fragValue(lvl)},
   ],
   "Tetratyx": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 5, label: "+5% ore gain every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.05},
+    { level: 15, label: "Allows you to equip one additional card.", display: "+", formula: () => 1},
+    { level: 20, label: "×1.1 MXP gain per level starting at 15", display: "×", formula: (oreLvl) =>(oreLvl-4)*1.1},
   ],
   "Adrenaline": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 5, label: "+1 Fusion Challenge Slot", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
+    { level: 10, label: "Boost Dummy Efficiency by ×(1 + walkspeed / 30)", display: "+", formula: () => 1},
+    { level: 15, label: "+1 Walkspeed every 5 levels, starting at level 10 (up to +5)", display: "+", formula: (lvl) => adrenalinewalkspeed(lvl)},
   ],
   "Cosmic Steel": [
-    { level: 1, label: "Boost γ gain by +0.25× every level", display: "×", formula: (oreLvl) =>1+oreLvl*0.25},
-    { level: 5, label: "Allows you to form one additional constellation", display: "+", formula: () => 1},
+    { level: 5, label: "+1 Constellation star limit", display: "+", formula: () =>1},
+    { level: 10, label: "All 5 booster upgrades' max level is increased by 5", display: "+", formula: () => 5},
+    { level: 20, label: "Boost gamma based on mastery level and total stardust", display: "×"},
   ],
 };
 
@@ -1996,22 +2028,24 @@ function getOreMilestones(name){
   return ORE_MILESTONES_OVERRIDE[name] ?? ORE_DEFAULT_MILESTONES;
 }
 
-function computeOreMilestoneValue(m, oreLevel){
-  if(typeof m.formula !== "function") return null;
+function computeOreMilestoneValues(m, oreLevel){
+  if(typeof m.formula !== "function") return [];
+
   try{
-    const v = Number(m.formula(oreLevel));
-    if(!Number.isFinite(v)) return null;
+    const raw = m.formula(oreLevel);
 
-    // if it's an additive milestone, allow 0+
-    if(m.display === "+") return Math.max(0, v);
+    const arr = Array.isArray(raw)
+      ? raw
+      : (raw == null ? [] : [raw]);
 
-    // otherwise treat as multiplier
-    return Math.max(1, v);
+    return arr
+      .map(v => Number(v))
+      .filter(v => Number.isFinite(v))
+      .map(v => Math.max(1, v));
   }catch{
-    return null;
+    return [];
   }
 }
-
 function renderOreDrawerBody(name){
   const body = document.getElementById("oreDrawerBody");
   if(!body) return;
@@ -2042,15 +2076,27 @@ function renderOreDrawerBody(name){
     <div class="ore-milestones">
   ${milestones.map((m, idx) => {
     const unlocked = level >= m.level;
-    const value = computeOreMilestoneValue(m, level);
+    const values = computeOreMilestoneValues(m, level);
 
-    const valueHTML = (value == null)
-      ? ""
-      : `
-        <span class="ore-ms-value" data-ms-idx="${idx}">
-          ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
-        </span>
-      `;
+const valueHTML = (values.length === 0)
+  ? ""
+  : `
+    <div class="ore-ms-multi">
+      ${values.map((val, idx) => {
+        const disp = Array.isArray(m.display) ? m.display[idx] : (m.display ?? "×");
+        const suf  = Array.isArray(m.suffix)  ? m.suffix[idx]  : (m.suffix ?? "");
+        const part = Array.isArray(m.valueLabels) ? m.valueLabels[idx] : null;
+
+        return `
+          <span class="ore-ms-value">
+            ${disp}<span data-num="${val}"></span>${suf ? ` ${suf}` : ""}
+            ${part ? `<span class="ore-ms-part">${part}</span>` : ""}
+          </span>
+        `;
+      }).join("")}
+    </div>
+  `;
+
 
     return `
       <div class="ore-ms-row" data-ms-idx="${idx}" data-ms-level="${m.level}">
