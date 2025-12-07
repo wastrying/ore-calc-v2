@@ -1867,28 +1867,6 @@ document.querySelectorAll('.dest-pill').forEach(tab => {
     switchTab(tab.getAttribute('for').split('-')[1]); // Extract the destination name (alvl, elvl, mlvl)
   });
 });
-function renderMilestonesTable(milestones, tableId) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
-
-  table.innerHTML = ""; // Clear the table
-
-  milestones.forEach(m => {
-    const row = document.createElement('div');
-    row.classList.add('milestone-row');
-    row.innerHTML = `
-      <div class="milestone-level">Lv${m.level}</div>
-      <div class="milestone-label">${m.label}</div>
-      <div class="milestone-formula">${m.formula(1)}</div> <!-- example formula calculation -->
-    `;
-    table.appendChild(row);
-  });
-}
-
-// Call the function to render the milestone tables
-renderMilestonesTable(ALVL_MILESTONES, 'alvl-table');
-renderMilestonesTable(ELVL_MILESTONES, 'elvl-table');
-renderMilestonesTable(MLVL_MILESTONES, 'mlvl-table');
 
 function getMilestoneValueCount(m){
   const dLen = Array.isArray(m.display) ? m.display.length : 0;
@@ -2887,7 +2865,28 @@ if(hardcore) hardcore.checked = !!state.hardcore;
 ];
 
 const TOKEN_MAP = Object.fromEntries(RESOURCE_TOKENS.map(t => [t.key, t.cls]));
+function renderMilestonesTable(milestones, tableId) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
 
+  table.innerHTML = ""; // Clear the table
+
+  milestones.forEach(m => {
+    const row = document.createElement('div');
+    row.classList.add('milestone-row');
+    row.innerHTML = `
+      <div class="milestone-level">Lv${m.level}</div>
+      <div class="milestone-label">${m.label}</div>
+      <div class="milestone-formula">${m.formula(1)}</div> <!-- example formula calculation -->
+    `;
+    table.appendChild(row);
+  });
+}
+
+// Call the function to render the milestone tables
+renderMilestonesTable(ALVL_MILESTONES, 'alvl-table');
+renderMilestonesTable(ELVL_MILESTONES, 'elvl-table');
+renderMilestonesTable(MLVL_MILESTONES, 'mlvl-table');
 function escapeRegex(s){
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
