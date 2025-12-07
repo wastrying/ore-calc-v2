@@ -584,46 +584,6 @@ html[data-theme="dark"] .ore-img{
     .content{
       padding: 26px 22px 60px;
     }
-    /* Style for the table */
-#alvl-table, #elvl-table, #mlvl-table {
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr;  /* Adjust the column sizes as needed */
-  gap: 10px;
-  padding: 20px;
-  background-color: #2e2e2e;
-  border-radius: 8px;
-  border: 1px solid #444;
-}
-
-/* Styling each milestone row */
-.milestone-row {
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr;  /* 3 columns: level, label, value */
-  gap: 10px;
-  padding: 10px;
-  border-bottom: 1px solid #666; /* Add a border between rows */
-  background-color: #333;
-}
-
-/* Style for the cells in each milestone row */
-.milestone-cell {
-  padding: 8px;
-  text-align: center;  /* Center the content */
-  color: #fff;
-}
-
-.milestone-level {
-  font-weight: bold;  /* Make the level bold */
-}
-
-.milestone-label {
-  font-size: 16px;  /* Adjust the font size for labels */
-}
-
-.milestone-formula {
-  font-size: 16px;
-  color: #ff9;  /* Color for the formula values */
-}
 
     .main{
       background: var(--panel);
@@ -1592,76 +1552,24 @@ html[data-theme="dark"] .ore-img{
           </section>
 
           <!-- ✅ ELVL (NEW LIST DISPLAY) -->
-          <!-- ELVL Panel -->
-<section class="page" id="page-elvl">
-  <input class="dest-route" type="radio" name="dest" id="d-alvl" checked />
-  <input class="dest-route" type="radio" name="dest" id="d-elvl" />
-  <input class="dest-route" type="radio" name="dest" id="d-mlvl" />
+          <section class="page" id="page-elvl">
+            <div class="section-head">
+              <div>
+                <div class="section-title">ELvl</div>
+                <div class="section-sub">Enter your ELvl to compute your milestone multipliers.</div>
+              </div>
+              <span class="pill">ELvl</span>
+            </div>
 
-  <div class="section-head">
-    <div>
-      <div class="section-title">ELvl Destinations</div>
-      <div class="section-sub">Pick a destination to view its milestones.</div>
-    </div>
-    <span class="pill">Destinations</span>
-  </div>
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="field">
+                <label>Current ELvl</label>
+                <input type="number" id="elvlPrompt1" placeholder="Enter level..." min="0" step="1" />
+              </div>
+            </div>
 
-  <!-- ELVL Destinations Bar -->
-  <div class="dest-bar" role="tablist" aria-label="ELvl Destinations">
-    <label class="dest-pill" for="d-alvl" role="tab"><span>ALVL</span><span class="mini">A</span></label>
-    <label class="dest-pill" for="d-elvl" role="tab"><span>ELVL</span><span class="mini">E</span></label>
-    <label class="dest-pill" for="d-mlvl" role="tab"><span>MLVL</span><span class="mini">M</span></label>
-  </div>
-
-  <div class="dest-content">
-    <!-- ALVL Panel -->
-    <div class="dest-panel" id="panel-alvl">
-      <div class="section-head">
-        <div>
-          <div class="section-title" style="font-size:18px;">ALVL Milestones</div>
-          <div class="section-sub">Replace these rows with your ALVL data.</div>
-        </div>
-        <span class="pill">A</span>
-      </div>
-      <div class="table-wrap">
-        <!-- Add the ALVL table here -->
-        <div id="alvl-table"></div> <!-- Where the ALVL table will be displayed -->
-      </div>
-    </div>
-
-    <!-- ELVL Panel -->
-    <div class="dest-panel" id="panel-elvl">
-      <div class="section-head">
-        <div>
-          <div class="section-title" style="font-size:18px;">ELVL Milestones</div>
-          <div class="section-sub">Replace these rows with your ELVL data.</div>
-        </div>
-        <span class="pill">E</span>
-      </div>
-      <div class="table-wrap">
-        <!-- Add the ELVL table here -->
-        <div id="elvl-table"></div> <!-- Where the ELVL table will be displayed -->
-      </div>
-    </div>
-
-    <!-- MLVL Panel -->
-    <div class="dest-panel" id="panel-mlvl">
-      <div class="section-head">
-        <div>
-          <div class="section-title" style="font-size:18px;">MLVL Milestones</div>
-          <div class="section-sub">Replace these rows with your MLVL data.</div>
-        </div>
-        <span class="pill">M</span>
-      </div>
-      <div class="table-wrap">
-        <!-- Add the MLVL table here -->
-        <div id="mlvl-table"></div> <!-- Where the MLVL table will be displayed -->
-      </div>
-    </div>
-  </div>
-</section>
-
-
+            <div id="elvlMilestoneList" class="elvl-list"></div>
+          </section>
 
           <!-- CARDS -->
           <section class="page" id="page-cards">
@@ -1883,34 +1791,6 @@ const ORE_META = {
   "Uranium": { desc: "Late-game resource with special crafting uses." },
   "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
-// Function to handle the tab switching
-function switchTab(destination) {
-  // Hide all panels
-  document.querySelectorAll('.dest-panel').forEach(panel => {
-    panel.style.display = 'none';
-  });
-
-  // Show the selected panel
-  const selectedPanel = document.getElementById(`panel-${destination}`);
-  if (selectedPanel) {
-    selectedPanel.style.display = 'block';
-  }
-}
-
-// Adding event listeners to each destination tab
-document.querySelectorAll('.dest-pill').forEach(tab => {
-  tab.addEventListener('click', (e) => {
-    // Remove active class from all tabs
-    document.querySelectorAll('.dest-pill').forEach(tab => tab.classList.remove('active'));
-
-    // Add active class to the clicked tab
-    tab.classList.add('active');
-
-    // Switch to the corresponding panel
-    switchTab(tab.getAttribute('for').split('-')[1]); // Extract the destination name (alvl, elvl, mlvl)
-  });
-});
-
 function getMilestoneValueCount(m){
   const dLen = Array.isArray(m.display) ? m.display.length : 0;
   const lLen = Array.isArray(m.valueLabels) ? m.valueLabels.length : 0;
@@ -2791,32 +2671,19 @@ if(hardcore) hardcore.checked = !!state.hardcore;
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
-    function getCurrentElvl(levelType = 'elvl'){
-  const raw = (document.getElementById(`${levelType}Prompt1`)?.value ?? "").trim();
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
-  return Math.max(0, Math.floor(n));
-}
+    function getCurrentElvl(){
+      const raw = (elvlPrompt1?.value ?? "").trim();
+      const n = Number(raw);
+      if(!Number.isFinite(n)) return null;
+      return Math.max(0, Math.floor(n));
+    }
 
-
-    const ALVL_MILESTONES = [
-  { id: 1, level: 1, label: "XP Gain", formula: (lvl) => Math.pow(1.25, lvl) },
-  // Add more milestones as needed
-];
-    const MLVL_MILESTONES = [
-  { id: 1, level: 5, label: "Pickaxe damage: ×1.5", formula: () => 1.5},
-  { id: 2, level: 10, label: "Pickaxe speed: ×1.35", formula: () =>1.35},
-  { id: 3, level: 15, label: "Respawn rate: ×1.25", formula: () => 1.25},
-  { id: 4, level: 20, label: "Mining XP: ×2", formula: () => 2},
-  { id: 5, level: 25, label: "Mastery XP: ×2", formula: () => 2},
-  { id: 6, level: 30, label: "×3₽", formula: () => 3},
-  { id: 7, level: 35, label: "×2.65 ore gain", formula: () => 2.65},
-  { id: 8, level: 40, label: "×3.25 €", formula: () => 3.25},
-  { id: 9, level: 45, label: "×4 depth gain", formula: () => 4},
-  { id: 10, level: 50, label: "×2 Ψ", formula: () => 2},
-  { id: 11, level: 55, label: "×5 τ", formula: () => 5},
-  { id: 12, level: 60, label: "×3 Λ", formula: () => 3},
-];
+    /* ============================================================
+       ✅ EDIT YOUR 14 MILESTONES HERE
+       - level: used for sidebar "next milestone" logic
+       - label: what shows in your list (like your screenshot)
+       - formula: returns the raw multiplier value
+       ============================================================ */
     const ELVL_MILESTONES = [
       {
         id: 1,
@@ -2908,45 +2775,15 @@ if(hardcore) hardcore.checked = !!state.hardcore;
 ];
 
 const TOKEN_MAP = Object.fromEntries(RESOURCE_TOKENS.map(t => [t.key, t.cls]));
-function renderMilestonesTable(milestones, tableId) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
 
-  table.innerHTML = ""; // Clear the table before rendering new data
-
-  milestones.forEach(m => {
-    const row = document.createElement('div');
-    row.classList.add('milestone-row');  // Class for styling the row
-
-    // HTML structure for each milestone
-    row.innerHTML = `
-      <div class="milestone-cell milestone-level">
-        Lv${m.level}  <!-- Display Level -->
-      </div>
-      <div class="milestone-cell milestone-label">
-        ${m.label}  <!-- Display Label -->
-      </div>
-      <div class="milestone-cell milestone-formula">
-        ${formatFormula(m.formula)}  <!-- Display Formula Value -->
-      </div>
-    `;
-
-    // Append the row to the table
-    table.appendChild(row);
-  });
+function escapeRegex(s){
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// A helper function to format the formula output correctly
-function formatFormula(formula) {
-  try {
-    // Assuming the formula is a function that can be executed with the level.
-    const value = formula(1);  // You can adjust this to pass the actual level
-    return value.toFixed(2);  // Rounding to 2 decimal places for better readability
-  } catch (e) {
-    return "Invalid Formula";
-  }
-}
-
+const TOKEN_REGEX = new RegExp(
+  RESOURCE_TOKENS.map(t => escapeRegex(t.key)).join("|"),
+  "g"
+);
 
 function colorizeLabel(label){
   if(!label) return "";
