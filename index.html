@@ -1791,7 +1791,30 @@ const ORE_META = {
   "Uranium": { desc: "Late-game resource with special crafting uses." },
   "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
-function buildOreValueHTML(m, level){
+function getMilestoneValueCount(m){
+  const dLen = Array.isArray(m.display) ? m.display.length : 0;
+  const lLen = Array.isArray(m.valueLabels) ? m.valueLabels.length : 0;
+  return Math.max(dLen, lLen, 1);
+}
+
+function buildOreValueHTML(m, level, unlocked){
+  // ✅ LOCKED: always show 0
+  if(!unlocked){
+    const count = getMilestoneValueCount(m);
+    const displays = Array.isArray(m.display) ? m.display : [m.display ?? "×"];
+    const labels = Array.isArray(m.valueLabels) ? m.valueLabels : [];
+
+    return Array.from({ length: count }, (_, i) => `
+      <span class="ore-ms-value">
+        ${(displays[i] ?? displays[0] ?? "×")}
+        <span data-num="0"></span>
+        ${labels[i] ? ` ${labels[i]}` : ""}
+        ${m.suffix ? ` ${m.suffix}` : ""}
+      </span>
+    `).join("");
+  }
+
+  // ✅ UNLOCKED: use real computed values (no clamp to 1)
   const value = computeOreMilestoneValue(m, level);
   if(value == null) return "";
 
@@ -2053,54 +2076,6 @@ function getOreMilestones(name){
   return ORE_MILESTONES_OVERRIDE[name] ?? ORE_DEFAULT_MILESTONES;
 }
 
-function computeOreMilestoneValues(m, oreLevel){
-  if(typeof m.formula !== "function") return [];
-
-  try{
-    const raw = m.formula(oreLevel);
-
-    const arr = Array.isArray(raw)
-      ? raw
-      : (raw == null ? [] : [raw]);
-
-    return arr
-      .map(v => Number(v))
-      .filter(v => Number.isFinite(v))
-      .map(v => Math.max(1, v));
-  }catch{
-    return [];
-  }
-}
-function computeOreMilestoneValue(m, oreLevel){
-  const arr = computeOreMilestoneValues(m, oreLevel);
-  if(!arr.length) return null;
-  return Array.isArray(m.display) || Array.isArray(m.valueLabels) ? arr : arr[0];
-}
-function buildOreValueHTML(m, level){
-  const value = computeOreMilestoneValue(m, level);
-  if(value == null) return "";
-
-  if(Array.isArray(value)){
-    const displays = Array.isArray(m.display) ? m.display : [m.display ?? "×"];
-    const labels = Array.isArray(m.valueLabels) ? m.valueLabels : [];
-
-    return value.map((v, i) => `
-      <span class="ore-ms-value">
-        ${(displays[i] ?? displays[0] ?? "×")}
-        <span data-num="${v}"></span>
-        ${labels[i] ? ` ${labels[i]}` : ""}
-        ${m.suffix ? ` ${m.suffix}` : ""}
-      </span>
-    `).join("");
-  }
-
-  return `
-    <span class="ore-ms-value">
-      ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
-    </span>
-  `;
-}
-
 function updateOreDrawerMilestones(name, levelOverride){
   const body = document.getElementById("oreDrawerBody");
   if(!body) return;
@@ -2122,7 +2097,7 @@ function updateOreDrawerMilestones(name, levelOverride){
 
     const valueHost = row.querySelector(`.ore-ms-values[data-ms-idx="${idx}"]`);
     if(valueHost){
-      valueHost.innerHTML = buildOreValueHTML(m, level);
+      valueHost.innerHTML = buildOreValueHTML(m, level, unlocked);
     }
   });
 
@@ -2130,7 +2105,6 @@ function updateOreDrawerMilestones(name, levelOverride){
     updateNumberDisplays(state?.notation ?? "suffix");
   }catch{}
 }
-
 function renderOreDrawerBody(name){
   const body = document.getElementById("oreDrawerBody");
   if(!body) return;
@@ -2178,12 +2152,10 @@ if(Array.isArray(value)){
     </span>
   `).join("");
 } else if(value != null){
-  valueHTML = `
-    <span class="ore-ms-value">
-      ${m.display ?? "×"}<span data-num="${value}"></span>${m.suffix ? ` ${m.suffix}` : ""}
-    </span>
-  `;
-}
+  valueHTML =   ${milestones.map((m, idx) => {
+    const unlocked = level >= m.level;
+    const valueHTML = buildOreValueHTML(m, level, unlocked);
+
     return `
       <div class="ore-ms-row" data-ms-idx="${idx}" data-ms-level="${m.level}">
         <div class="ore-ms-left">
@@ -2191,16 +2163,14 @@ if(Array.isArray(value)){
           <span class="ore-ms-label">${m.label}</span>
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
-  <span class="ore-ms-values" data-ms-idx="${idx}">
-    ${valueHTML}
-  </span>
-  <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
-    ${unlocked ? "Unlocked" : "Locked"}
-  </span>
-</div>
-
+          <span class="ore-ms-values" data-ms-idx="${idx}">
+            ${valueHTML}
+          </span>
+          <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
+            ${unlocked ? "Unlocked" : "Locked"}
+          </span>
+        </div>
       </div>
-    `;
   }).join("")}
 </div>
 
