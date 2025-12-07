@@ -1840,6 +1840,56 @@ const ORE_META = {
   "Uranium": { desc: "Late-game resource with special crafting uses." },
   "Plutonium": { desc: "Rare and powerful—usually gated by progression." },
 };
+// Function to handle the tab switching
+function switchTab(destination) {
+  // Hide all panels
+  document.querySelectorAll('.dest-panel').forEach(panel => {
+    panel.style.display = 'none';
+  });
+
+  // Show the selected panel
+  const selectedPanel = document.getElementById(`panel-${destination}`);
+  if (selectedPanel) {
+    selectedPanel.style.display = 'block';
+  }
+}
+
+// Adding event listeners to each destination tab
+document.querySelectorAll('.dest-pill').forEach(tab => {
+  tab.addEventListener('click', (e) => {
+    // Remove active class from all tabs
+    document.querySelectorAll('.dest-pill').forEach(tab => tab.classList.remove('active'));
+
+    // Add active class to the clicked tab
+    tab.classList.add('active');
+
+    // Switch to the corresponding panel
+    switchTab(tab.getAttribute('for').split('-')[1]); // Extract the destination name (alvl, elvl, mlvl)
+  });
+});
+function renderMilestonesTable(milestones, tableId) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  table.innerHTML = ""; // Clear the table
+
+  milestones.forEach(m => {
+    const row = document.createElement('div');
+    row.classList.add('milestone-row');
+    row.innerHTML = `
+      <div class="milestone-level">Lv${m.level}</div>
+      <div class="milestone-label">${m.label}</div>
+      <div class="milestone-formula">${m.formula(1)}</div> <!-- example formula calculation -->
+    `;
+    table.appendChild(row);
+  });
+}
+
+// Call the function to render the milestone tables
+renderMilestonesTable(ALVL_MILESTONES, 'alvl-table');
+renderMilestonesTable(ELVL_MILESTONES, 'elvl-table');
+renderMilestonesTable(MLVL_MILESTONES, 'mlvl-table');
+
 function getMilestoneValueCount(m){
   const dLen = Array.isArray(m.display) ? m.display.length : 0;
   const lLen = Array.isArray(m.valueLabels) ? m.valueLabels.length : 0;
