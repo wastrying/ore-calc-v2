@@ -2671,19 +2671,32 @@ if(hardcore) hardcore.checked = !!state.hardcore;
       if(!state.prompts) state.prompts = { ...DEFAULT_PROMPTS };
     }
 
-    function getCurrentElvl(){
-      const raw = (elvlPrompt1?.value ?? "").trim();
-      const n = Number(raw);
-      if(!Number.isFinite(n)) return null;
-      return Math.max(0, Math.floor(n));
-    }
+    function getCurrentElvl(levelType = 'elvl'){
+  const raw = (document.getElementById(`${levelType}Prompt1`)?.value ?? "").trim();
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return Math.max(0, Math.floor(n));
+}
 
-    /* ============================================================
-       ✅ EDIT YOUR 14 MILESTONES HERE
-       - level: used for sidebar "next milestone" logic
-       - label: what shows in your list (like your screenshot)
-       - formula: returns the raw multiplier value
-       ============================================================ */
+
+    const ALVL_MILESTONES = [
+  { id: 1, level: 1, label: "XP Gain", formula: (lvl) => Math.pow(1.25, lvl) },
+  // Add more milestones as needed
+];
+    const MLVL_MILESTONES = [
+  { id: 1, level: 5, label: "Pickaxe damage: ×1.5", formula: () => 1.5},
+  { id: 2, level: 10, label: "Pickaxe speed: ×1.35", formula: () =>1.35},
+  { id: 3, level: 15, label: "Respawn rate: ×1.25", formula: () => 1.25},
+  { id: 4, level: 20, label: "Mining XP: ×2", formula: () => 2},
+  { id: 5, level: 25, label: "Mastery XP: ×2", formula: () => 2},
+  { id: 6, level: 30, label: "×3₽", formula: () => 3},
+  { id: 7, level: 35, label: "×2.65 ore gain", formula: () => 2.65},
+  { id: 8, level: 40, label: "×3.25 €", formula: () => 3.25},
+  { id: 9, level: 45, label: "×4 depth gain", formula: () => 4},
+  { id: 10, level: 50, label: "×2 Ψ", formula: () => 2},
+  { id: 11, level: 55, label: "×5 τ", formula: () => 5},
+  { id: 12, level: 60, label: "×3 Λ", formula: () => 3},
+];
     const ELVL_MILESTONES = [
       {
         id: 1,
