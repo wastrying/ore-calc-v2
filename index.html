@@ -1796,6 +1796,31 @@ function getMilestoneValueCount(m){
   const lLen = Array.isArray(m.valueLabels) ? m.valueLabels.length : 0;
   return Math.max(dLen, lLen, 1);
 }
+function computeOreMilestoneValues(m, oreLevel){
+  if(typeof m.formula !== "function") return [];
+
+  try{
+    const raw = m.formula(oreLevel);
+    const arr = Array.isArray(raw)
+      ? raw
+      : (raw == null ? [] : [raw]);
+
+    return arr.map(v => Number(v)).filter(v => Number.isFinite(v));
+  }catch{
+    return [];
+  }
+}
+
+function computeOreMilestoneValue(m, oreLevel){
+  const arr = computeOreMilestoneValues(m, oreLevel);
+  if(!arr.length) return null;
+
+  // If milestone is designed as multi-output, return full array
+  if(Array.isArray(m.display) || Array.isArray(m.valueLabels)) return arr;
+
+  // Otherwise return single number
+  return arr[0];
+}
 
 function buildOreValueHTML(m, level, unlocked){
   // ✅ LOCKED: always show 0
@@ -2133,68 +2158,47 @@ function renderOreDrawerBody(name){
     </div>
 
     <div class="ore-milestones">
-  ${milestones.map((m, idx) => {
-    const unlocked = level >= m.level;
-    const value = computeOreMilestoneValue(m, level);
+      ${milestones.map((m, idx) => {
+        const unlocked = level >= m.level;
+        const valueHTML = buildOreValueHTML(m, level, unlocked);
 
-let valueHTML = "";
-
-if(Array.isArray(value)){
-  const displays = Array.isArray(m.display) ? m.display : [m.display ?? "×"];
-  const labels = Array.isArray(m.valueLabels) ? m.valueLabels : [];
-
-  valueHTML = value.map((v, idx) => `
-    <span class="ore-ms-value">
-      ${(displays[idx] ?? displays[0] ?? "×")}
-      <span data-num="${v}"></span>
-      ${labels[idx] ? ` ${labels[idx]}` : ""}
-      ${m.suffix ? ` ${m.suffix}` : ""}
-    </span>
-  `).join("");
-} else if(value != null){
-  valueHTML =   ${milestones.map((m, idx) => {
-    const unlocked = level >= m.level;
-    const valueHTML = buildOreValueHTML(m, level, unlocked);
-
-    return `
-      <div class="ore-ms-row" data-ms-idx="${idx}" data-ms-level="${m.level}">
-        <div class="ore-ms-left">
-          <span class="ore-ms-lv">Lv${m.level}</span>
-          <span class="ore-ms-label">${m.label}</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span class="ore-ms-values" data-ms-idx="${idx}">
-            ${valueHTML}
-          </span>
-          <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
-            ${unlocked ? "Unlocked" : "Locked"}
-          </span>
-        </div>
-      </div>
-  }).join("")}
-</div>
-
+        return `
+          <div class="ore-ms-row" data-ms-idx="${idx}" data-ms-level="${m.level}">
+            <div class="ore-ms-left">
+              <span class="ore-ms-lv">Lv${m.level}</span>
+              <span class="ore-ms-label">${m.label}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="ore-ms-values" data-ms-idx="${idx}">
+                ${valueHTML}
+              </span>
+              <span class="ore-ms-status ${unlocked ? "unlocked" : ""}">
+                ${unlocked ? "Unlocked" : "Locked"}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
   `;
 
-  // ✅ apply your global number formatting if available
   try{
     updateNumberDisplays(state?.notation ?? "suffix");
   }catch{}
 
- const input = document.getElementById("oreLevelInput");
-if(input){
-  input.addEventListener("input", () => {
-    const lvl = Math.max(0, Math.floor(Number(input.value) || 0));
+  const input = document.getElementById("oreLevelInput");
+  if(input){
+    input.addEventListener("input", () => {
+      const lvl = Math.max(0, Math.floor(Number(input.value) || 0));
 
-    setOreLevel(name, lvl);
+      setOreLevel(name, lvl);
 
-    // ✅ update only milestones + chips, keep input focused
-    updateOreDrawerMilestones(name, lvl);
-
-    refreshOreCardLevelChips(name);
-    updateOreInfoBox(name);
-  });
-}
+      // ✅ update only milestone rows + chips
+      updateOreDrawerMilestones(name, lvl);
+      refreshOreCardLevelChips(name);
+      updateOreInfoBox(name);
+    });
+  }
 }
 
 function cssEscapeSafe(str){
