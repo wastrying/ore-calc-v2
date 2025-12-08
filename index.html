@@ -1614,81 +1614,90 @@ html[data-theme="dark"] .ore-img{
           </section>
 
           <!-- ✅ ELVL WITH 3 TAB SYSTEM (ALL AS LIST VIEWS) -->
-          <section class="page" id="page-elvl">
+          <!-- Updated ELvl section with ALvl first -->
+<section class="page" id="page-elvl">
+    <div class="section-head">
+        <div>
+            <div class="section-title">Levels</div>
+            <div class="section-sub">Enter your ELvl, ALvl, and MLvl to compute milestone multipliers.</div>
+        </div>
+        <span class="pill">Tabs</span>
+    </div>
+
+    <!-- Three separate level inputs -->
+    <div class="form-grid" style="margin-bottom: 14px;">
+        <div class="field">
+            <label>Current ELvl</label>
+            <input type="number" id="elvlPrompt1" placeholder="Enter ELvl..." min="0" step="1" />
+        </div>
+        <div class="field">
+            <label>Current ALvl</label>
+            <input type="number" id="alvlPrompt1" placeholder="Enter ALvl..." min="0" step="1" />
+        </div>
+        <div class="field">
+            <label>Current MLvl</label>
+            <input type="number" id="mlvlPrompt1" placeholder="Enter MLvl..." min="0" step="1" />
+        </div>
+    </div>
+
+    <!-- ELvl Tab Navigation - REORDERED: ALvl first, then ELvl, then MLvl -->
+    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-base" checked />
+    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-milestones" />
+    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-unlocks" />
+
+    <div class="elvl-tab-bar" role="tablist" aria-label="ELvl Sections">
+        <label class="elvl-tab-pill" for="elvl-tab-base" role="tab">
+            <span>ALvl Base Stats</span>
+            <span class="mini">ALvl</span>
+        </label>
+        <label class="elvl-tab-pill" for="elvl-tab-milestones" role="tab">
+            <span>ELvl Milestones</span>
+            <span class="mini">ELvl</span>
+        </label>
+        <label class="elvl-tab-pill" for="elvl-tab-unlocks" role="tab">
+            <span>MLvl Unlocks</span>
+            <span class="mini">MLvl</span>
+        </label>
+    </div>
+
+    <div class="elvl-tab-content">
+        <!-- Tab 1: ALvl Base Stats (uses ALvl) - NOW FIRST -->
+        <div class="elvl-tab-panel" id="panel-base">
             <div class="section-head">
-              <div>
-                <div class="section-title">ELvl</div>
-                <div class="section-sub">Enter your ELvl to compute your milestone multipliers across different tabs.</div>
-              </div>
-              <span class="pill">Tabs</span>
-            </div>
-
-            <!-- ELvl Level Input -->
-            <div class="form-grid" style="margin-bottom: 14px;">
-              <div class="field">
-                <label>Current ELvl</label>
-                <input type="number" id="elvlPrompt1" placeholder="Enter level..." min="0" step="1" />
-              </div>
-            </div>
-
-            <!-- ELvl Tab Navigation -->
-            <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-milestones" checked />
-            <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-base" />
-            <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-unlocks" />
-
-            <div class="elvl-tab-bar" role="tablist" aria-label="ELvl Sections">
-              <label class="elvl-tab-pill" for="elvl-tab-milestones" role="tab">
-                <span>Milestones</span>
-                <span class="mini">MS</span>
-              </label>
-              <label class="elvl-tab-pill" for="elvl-tab-base" role="tab">
-                <span>Base Stats</span>
-                <span class="mini">BS</span>
-              </label>
-              <label class="elvl-tab-pill" for="elvl-tab-unlocks" role="tab">
-                <span>Unlocks</span>
-                <span class="mini">UL</span>
-              </label>
-            </div>
-
-            <div class="elvl-tab-content">
-              <!-- Tab 1: Milestones (Original List View) -->
-              <div class="elvl-tab-panel" id="panel-milestones">
-                <div class="section-head">
-                  <div>
-                    <div class="section-title" style="font-size:18px;">Milestone Multipliers</div>
-                    <div class="section-sub">Resource multipliers based on your ELvl.</div>
-                  </div>
-                  <span class="pill">Multipliers</span>
+                <div>
+                    <div class="section-title" style="font-size:18px;">ALvl Base Statistics</div>
+                    <div class="section-sub">Core stats and bonuses per ALvl.</div>
                 </div>
-                <div id="elvlMilestoneList" class="elvl-list"></div>
-              </div>
-
-              <!-- Tab 2: Base Stats (Same List View Style) -->
-              <div class="elvl-tab-panel" id="panel-base">
-                <div class="section-head">
-                  <div>
-                    <div class="section-title" style="font-size:18px;">Base Statistics</div>
-                    <div class="section-sub">Core stats and bonuses per ELvl bracket.</div>
-                  </div>
-                  <span class="pill">Statistics</span>
-                </div>
-                <div id="elvlBaseList" class="elvl-list"></div>
-              </div>
-
-              <!-- Tab 3: Unlocks (Same List View Style) -->
-              <div class="elvl-tab-panel" id="panel-unlocks">
-                <div class="section-head">
-                  <div>
-                    <div class="section-title" style="font-size:18px;">Unlock Thresholds</div>
-                    <div class="section-sub">Features and abilities unlocked at specific ELvls.</div>
-                  </div>
-                  <span class="pill">Features</span>
-                </div>
-                <div id="elvlUnlockList" class="elvl-list"></div>
-              </div>
+                <span class="pill">ALvl Statistics</span>
             </div>
-          </section>
+            <div id="AlvlMilestoneList" class="elvl-list"></div>
+        </div>
+
+        <!-- Tab 2: ELvl Milestones (uses ELvl) - NOW SECOND -->
+        <div class="elvl-tab-panel" id="panel-milestones">
+            <div class="section-head">
+                <div>
+                    <div class="section-title" style="font-size:18px;">ELvl Milestones</div>
+                    <div class="section-sub">ELvl-based resource multipliers.</div>
+                </div>
+                <span class="pill">ELvl Multipliers</span>
+            </div>
+            <div id="elvlMilestoneList" class="elvl-list"></div>
+        </div>
+
+        <!-- Tab 3: MLvl Unlocks (uses MLvl) - NOW THIRD -->
+        <div class="elvl-tab-panel" id="panel-unlocks">
+            <div class="section-head">
+                <div>
+                    <div class="section-title" style="font-size:18px;">MLvl Unlock Thresholds</div>
+                    <div class="section-sub">Features and abilities unlocked at specific MLvls.</div>
+                </div>
+                <span class="pill">MLvl Features</span>
+            </div>
+            <div id="MlvlMilestoneList" class="elvl-list"></div>
+        </div>
+    </div>
+</section>
 
           <!-- CARDS -->
           <section class="page" id="page-cards">
@@ -1835,6 +1844,8 @@ if(!Array.prototype.fach){
 
     const DEFAULT_PROMPTS = {
       elvl1: "",
+      alvl1: "",
+      mlvl1: "",
       pickaxeChoice: "",
       pickaxeDropdown1: "",
       pickaxePrompt2: "",
@@ -2795,23 +2806,25 @@ if(hardcore) hardcore.checked = !!state.hardcore;
     }
 
     function getCurrentElvl(){
-      const raw = (elvlPrompt1?.value ?? "").trim();
-      const n = Number(raw);
-      if(!Number.isFinite(n)) return null;
-      return Math.max(0, Math.floor(n));
-    }
-    function getCurrentAlvl(){
-      const raw = (AlvlPrompt1?.value ?? "").trim();
-      const n = Number(raw);
-      if(!Number.isFinite(n)) return null;
-      return Math.max(0, Math.floor(n));
-    }
-    function getCurrentMlvl(){
-      const raw = (MlvlPrompt1?.value ?? "").trim();
-      const n = Number(raw);
-      if(!Number.isFinite(n)) return null;
-      return Math.max(0, Math.floor(n));
-    }
+    const raw = (elvlPrompt1?.value ?? "").trim();
+    const n = Number(raw);
+    if(!Number.isFinite(n)) return null;
+    return Math.max(0, Math.floor(n));
+}
+
+function getCurrentAlvl(){
+    const raw = (alvlPrompt1?.value ?? "").trim();
+    const n = Number(raw);
+    if(!Number.isFinite(n)) return null;
+    return Math.max(0, Math.floor(n));
+}
+
+function getCurrentMlvl(){
+    const raw = (mlvlPrompt1?.value ?? "").trim();
+    const n = Number(raw);
+    if(!Number.isFinite(n)) return null;
+    return Math.max(0, Math.floor(n));
+}
 
     /* ============================================================
        ✅ TAB 1: Milestones Data (Original)
@@ -3349,8 +3362,8 @@ function colorizeLabel(label){
       const p = state.prompts;
 
       if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
-      if(AlvlPrompt1) AlvlPrompt1.value = p.elvl1 ?? "";
-      if(MlvlPrompt1) MlvlPrompt1.value = p.elvl1 ?? "";
+      if(alvlPrompt1) alvlPrompt1.value = p.alvl1 ?? "";
+      if(mlvlPrompt1) mlvlPrompt1.value = p.mlvl1 ?? "";
 
       renderPickaxeChooser(p.pickaxeChoice ?? "");
       if(pickaxeDropdown1) pickaxeDropdown1.value = p.pickaxeDropdown1 ?? "";
@@ -3370,8 +3383,8 @@ function colorizeLabel(label){
 
       updatePickaxeFollowupsUI();
       renderElvlMilestoneList();
-      renderElvlBaseList();
-      renderElvlUnlockList();
+      renderAlvlMilestoneList();
+      renderMlvlMilestoneList();
       updateElvlSidebarMilestone();
     }
 
@@ -3389,8 +3402,8 @@ function colorizeLabel(label){
     function wirePromptAutosave(){
       const inputs = [
         elvlPrompt1,
-        AlvlPrompt1,
-        MlvlPrompt1,
+        alvlPrompt1,
+        mlvlPrompt1,
         pickaxeDropdown1,
         pickaxePrompt2,
         pickaxePrompt3,
@@ -3405,8 +3418,8 @@ function colorizeLabel(label){
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
         renderElvlMilestoneList();
-        renderElvlBaseList();
-        renderElvlUnlockList();
+        renderAlvlMilestoneList();
+        renderMlvlMilestoneList();
         updateElvlSidebarMilestone();
       };
 
