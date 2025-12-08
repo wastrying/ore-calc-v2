@@ -1056,21 +1056,23 @@ html[data-theme="dark"] .ore-img{
 
     .elvl-tab-bar .elvl-tab-pill{ opacity: .55; }
 
-    #elvl-tab-milestones:checked ~ .elvl-tab-bar label[for="elvl-tab-milestones"],
-    #elvl-tab-base:checked ~ .elvl-tab-bar label[for="elvl-tab-base"],
-    #elvl-tab-unlocks:checked ~ .elvl-tab-bar label[for="elvl-tab-unlocks"]{
-      opacity: 1;
-      box-shadow: inset 0 0 0 1px rgba(47,143,107,0.22), var(--shadow-sm);
-      filter: saturate(1.15);
-    }
+/* NEW: Updated for ALvl, ELvl, MLvl tabs */
+#elvl-tab-alvl:checked ~ .elvl-tab-bar label[for="elvl-tab-alvl"],
+#elvl-tab-elvl:checked ~ .elvl-tab-bar label[for="elvl-tab-elvl"],
+#elvl-tab-mlvl:checked ~ .elvl-tab-bar label[for="elvl-tab-mlvl"]{
+    opacity: 1;
+    box-shadow: inset 0 0 0 1px rgba(47,143,107,0.22), var(--shadow-sm);
+    filter: saturate(1.15);
+}
 
-    .elvl-tab-panel{ display:none; }
+.elvl-tab-panel{ display:none; }
 
-    #elvl-tab-milestones:checked ~ .elvl-tab-content #panel-milestones,
-    #elvl-tab-base:checked ~ .elvl-tab-content #panel-base,
-    #elvl-tab-unlocks:checked ~ .elvl-tab-content #panel-unlocks{
-      display:block;
-    }
+/* NEW: Updated for ALvl, ELvl, MLvl panels */
+#elvl-tab-alvl:checked ~ .elvl-tab-content #panel-alvl,
+#elvl-tab-elvl:checked ~ .elvl-tab-content #panel-elvl,
+#elvl-tab-mlvl:checked ~ .elvl-tab-content #panel-mlvl{
+    display:block;
+}
 
     /* ELvl List Style (Used by all 3 tabs) */
     .elvl-list{
@@ -1613,56 +1615,39 @@ html[data-theme="dark"] .ore-img{
             </div>
           </section>
 
-          <!-- ✅ ELVL WITH 3 TAB SYSTEM (ALL AS LIST VIEWS) -->
-          <!-- Updated ELvl section with ALvl first -->
+<!-- Updated ELvl section with separate tabs for each level type -->
 <section class="page" id="page-elvl">
     <div class="section-head">
         <div>
             <div class="section-title">Levels</div>
-            <div class="section-sub">Enter your ELvl, ALvl, and MLvl to compute milestone multipliers.</div>
+            <div class="section-sub">Each tab shows different level-based calculations.</div>
         </div>
-        <span class="pill">Tabs</span>
+        <span class="pill">Level Types</span>
     </div>
 
-    <!-- Three separate level inputs -->
-    <div class="form-grid" style="margin-bottom: 14px;">
-        <div class="field">
-            <label>Current ELvl</label>
-            <input type="number" id="elvlPrompt1" placeholder="Enter ELvl..." min="0" step="1" />
-        </div>
-        <div class="field">
-            <label>Current ALvl</label>
-            <input type="number" id="alvlPrompt1" placeholder="Enter ALvl..." min="0" step="1" />
-        </div>
-        <div class="field">
-            <label>Current MLvl</label>
-            <input type="number" id="mlvlPrompt1" placeholder="Enter MLvl..." min="0" step="1" />
-        </div>
-    </div>
+    <!-- ELvl Tab Navigation - One tab for each level type -->
+    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-alvl" checked />
+    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-elvl" />
+    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-mlvl" />
 
-    <!-- ELvl Tab Navigation - REORDERED: ALvl first, then ELvl, then MLvl -->
-    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-base" checked />
-    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-milestones" />
-    <input class="dest-route" type="radio" name="elvl-tab" id="elvl-tab-unlocks" />
-
-    <div class="elvl-tab-bar" role="tablist" aria-label="ELvl Sections">
-        <label class="elvl-tab-pill" for="elvl-tab-base" role="tab">
-            <span>ALvl Base Stats</span>
+    <div class="elvl-tab-bar" role="tablist" aria-label="Level Sections">
+        <label class="elvl-tab-pill" for="elvl-tab-alvl" role="tab">
+            <span>ALvl Stats</span>
             <span class="mini">ALvl</span>
         </label>
-        <label class="elvl-tab-pill" for="elvl-tab-milestones" role="tab">
+        <label class="elvl-tab-pill" for="elvl-tab-elvl" role="tab">
             <span>ELvl Milestones</span>
             <span class="mini">ELvl</span>
         </label>
-        <label class="elvl-tab-pill" for="elvl-tab-unlocks" role="tab">
+        <label class="elvl-tab-pill" for="elvl-tab-mlvl" role="tab">
             <span>MLvl Unlocks</span>
             <span class="mini">MLvl</span>
         </label>
     </div>
 
     <div class="elvl-tab-content">
-        <!-- Tab 1: ALvl Base Stats (uses ALvl) - NOW FIRST -->
-        <div class="elvl-tab-panel" id="panel-base">
+        <!-- Tab 1: ALvl Base Stats (with ALvl input) -->
+        <div class="elvl-tab-panel" id="panel-alvl">
             <div class="section-head">
                 <div>
                     <div class="section-title" style="font-size:18px;">ALvl Base Statistics</div>
@@ -1670,11 +1655,20 @@ html[data-theme="dark"] .ore-img{
                 </div>
                 <span class="pill">ALvl Statistics</span>
             </div>
-            <div id="AlvlMilestoneList" class="elvl-list"></div>
+            
+            <!-- ALvl input inside this tab -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+                <div class="field">
+                    <label>Current ALvl</label>
+                    <input type="number" id="alvlPrompt1" placeholder="Enter ALvl..." min="0" step="1" />
+                </div>
+            </div>
+            
+            <div id="alvlBaseList" class="elvl-list"></div>
         </div>
 
-        <!-- Tab 2: ELvl Milestones (uses ELvl) - NOW SECOND -->
-        <div class="elvl-tab-panel" id="panel-milestones">
+        <!-- Tab 2: ELvl Milestones (with ELvl input) -->
+        <div class="elvl-tab-panel" id="panel-elvl">
             <div class="section-head">
                 <div>
                     <div class="section-title" style="font-size:18px;">ELvl Milestones</div>
@@ -1682,11 +1676,20 @@ html[data-theme="dark"] .ore-img{
                 </div>
                 <span class="pill">ELvl Multipliers</span>
             </div>
+            
+            <!-- ELvl input inside this tab -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+                <div class="field">
+                    <label>Current ELvl</label>
+                    <input type="number" id="elvlPrompt1" placeholder="Enter ELvl..." min="0" step="1" />
+                </div>
+            </div>
+            
             <div id="elvlMilestoneList" class="elvl-list"></div>
         </div>
 
-        <!-- Tab 3: MLvl Unlocks (uses MLvl) - NOW THIRD -->
-        <div class="elvl-tab-panel" id="panel-unlocks">
+        <!-- Tab 3: MLvl Unlocks (with MLvl input) -->
+        <div class="elvl-tab-panel" id="panel-mlvl">
             <div class="section-head">
                 <div>
                     <div class="section-title" style="font-size:18px;">MLvl Unlock Thresholds</div>
@@ -1694,7 +1697,16 @@ html[data-theme="dark"] .ore-img{
                 </div>
                 <span class="pill">MLvl Features</span>
             </div>
-            <div id="MlvlMilestoneList" class="elvl-list"></div>
+            
+            <!-- MLvl input inside this tab -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+                <div class="field">
+                    <label>Current MLvl</label>
+                    <input type="number" id="mlvlPrompt1" placeholder="Enter MLvl..." min="0" step="1" />
+                </div>
+            </div>
+            
+            <div id="mlvlUnlockList" class="elvl-list"></div>
         </div>
     </div>
 </section>
@@ -3266,7 +3278,80 @@ function colorizeLabel(label){
         host.appendChild(item);
       });
     }
+function renderAlvlBaseList(){
+    const host = document.getElementById("alvlBaseList");
+    if(!host) return;
 
+    const lvl = getCurrentAlvl();
+
+    host.innerHTML = "";
+
+    ELVL_BASE_STATS_LIST.forEach(m => {
+        const value = (lvl == null) ? null : m.formula(lvl);
+        const labelHTML = colorizeLabel(m.label);
+
+        const item = document.createElement("div");
+        item.className = "elvl-item";
+
+        // Check if current ALvl is in this range
+        const range = m.level.split("-").map(Number);
+        const inRange = lvl != null && lvl >= range[0] && (range[1] ? lvl <= range[1] : true);
+        const rangeClass = inRange ? 'style="background: rgba(47,143,107,0.15);"' : '';
+
+        item.innerHTML = `
+            <div ${rangeClass}>
+                ${value == null
+                    ? `— ${labelHTML}`
+                    : (typeof value === 'number' 
+                        ? `<span data-num="${value}"></span> ${labelHTML}`
+                        : `${value} ${labelHTML}`)
+                }
+                <small>ALvl ${m.level}</small>
+            </div>
+        `;
+
+        host.appendChild(item);
+    });
+
+    updateNumberDisplays(state.notation);
+}
+
+function renderMlvlUnlockList(){
+    const host = document.getElementById("mlvlUnlockList");
+    if(!host) return;
+
+    const lvl = getCurrentMlvl();
+
+    host.innerHTML = "";
+
+    ELVL_UNLOCKS_LIST.forEach(m => {
+        const value = (lvl == null) ? null : m.formula(lvl);
+        const labelHTML = colorizeLabel(m.label);
+        
+        // Determine status styling
+        let statusClass = "";
+        let statusText = "";
+        
+        if(value && typeof value === 'string') {
+            if(value.includes("✓") || value.includes("MAXED")) {
+                statusClass = 'style="background: rgba(47,143,107,0.2);"';
+            }
+            statusText = value;
+        }
+
+        const item = document.createElement("div");
+        item.className = "elvl-item";
+
+        item.innerHTML = `
+            <div ${statusClass}>
+                ${labelHTML}
+                <small>${statusText} • Unlocks at MLvl ${m.level}</small>
+            </div>
+        `;
+
+        host.appendChild(item);
+    });
+}
     // --- Pickaxe followups limiter ---
     function getAllowedPickaxeFollowups(){
       return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
@@ -3391,6 +3476,8 @@ function colorizeLabel(label){
     function collectPromptsFromUI(){
       ensurePrompts();
       state.prompts.elvl1 = elvlPrompt1?.value ?? "";
+      state.prompts.alvl1 = alvlPrompt1?.value ?? "";
+      state.prompts.mlvl1 = mlvlPrompt1?.value ?? "";
       state.prompts.pickaxeDropdown1 = pickaxeDropdown1?.value ?? "";
       state.prompts.pickaxePrompt2 = pickaxePrompt2?.value ?? "";
       state.prompts.pickaxePrompt3 = pickaxePrompt3?.value ?? "";
