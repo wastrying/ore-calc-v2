@@ -1646,54 +1646,56 @@ html[data-theme="dark"] .ore-img{
     </div>
 
     <div class="elvl-tab-content">
-<!-- Tab 1: ALvl Base Stats with single input -->
-<div class="elvl-tab-panel" id="panel-alvl">
-    <div class="section-head">
-        <div>
-            <div class="section-title" style="font-size:18px;">ALvl Base Statistics</div>
-            <div class="section-sub">Enter ALvl to see formula results.</div>
+        <!-- Tab 1: ALvl Base Stats (with ALvl input) -->
+        <div class="elvl-tab-panel" id="panel-alvl">
+            <div class="section-head">
+                <div>
+                    <div class="section-title" style="font-size:18px;">ALvl Base Statistics</div>
+                    <div class="section-sub">Core stats and bonuses per ALvl.</div>
+                </div>
+                <span class="pill">ALvl Statistics</span>
+
+
+
+
+
+
+
+
+
+
+            </div>
+            
+            <!-- ALvl input inside this tab -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+                <div class="field">
+                    <label>Current ALvl</label>
+                    <input type="number" id="alvlPrompt1" placeholder="Enter ALvl..." min="0" step="1" />
+                </div>
+            </div>
+            
+            <div id="alvlBaseList" class="elvl-list"></div>
         </div>
-        <span class="pill">ALvl Statistics</span>
-    </div>
-    
-    <!-- Single input layout -->
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 20px;">
-        <!-- Left side: ALvl input -->
-        <div style="border: 1px solid var(--border-soft); border-radius: var(--radius-md); 
-                    padding: 15px; background: linear-gradient(180deg, rgba(47,143,107,0.05), transparent);">
-            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; 
-                       text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">
-                Current ALvl
-            </div>
-            <input type="number" id="alvlPrompt1" placeholder="Enter ALvl..." 
-                   min="0" step="1" 
-                   style="width: 100%; padding: 12px; border-radius: 10px; 
-                          border: 1px solid var(--border-soft); background: var(--panel);
-                          font-size: 16px; font-weight: 600; text-align: center;" />
-            <div style="margin-top: 10px; font-size: 11px; color: var(--muted);">
-                Formula: 1.3^ceil(ALvl × 0.605)
-            </div>
-        </div>
-        
-        <!-- Right side: Formula results -->
-        <div style="border: 1px solid var(--border-soft); border-radius: var(--radius-md); 
-                    padding: 15px; background: linear-gradient(180deg, rgba(47,143,107,0.05), transparent);">
-            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; 
-                       text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">
-                Formula Results
-            </div>
-            <div id="alvlFormulaDisplay" 
-                 style="min-height: 100px; font-size: 14px; color: var(--text); 
-                       line-height: 1.6; font-family: 'Courier New', monospace;
-                       padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px;">
-                <div id="alvlCurrentResult">Enter ALvl to see current result</div>
-                <div id="alvlNextResults" style="margin-top: 10px; font-size: 13px;"></div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="alvlMilestoneList" class="elvl-list"></div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <!-- Tab 2: ELvl Milestones (with ELvl input) -->
         <div class="elvl-tab-panel" id="panel-elvl">
@@ -1704,7 +1706,7 @@ html[data-theme="dark"] .ore-img{
                 </div>
                 <span class="pill">ELvl Multipliers</span>
             </div>
-            
+
             <!-- ELvl input inside this tab -->
             <div class="form-grid" style="margin-bottom: 14px;">
                 <div class="field">
@@ -1712,7 +1714,7 @@ html[data-theme="dark"] .ore-img{
                     <input type="number" id="elvlPrompt1" placeholder="Enter ELvl..." min="0" step="1" />
                 </div>
             </div>
-            
+
             <div id="elvlMilestoneList" class="elvl-list"></div>
         </div>
 
@@ -1725,7 +1727,7 @@ html[data-theme="dark"] .ore-img{
                 </div>
                 <span class="pill">MLvl Features</span>
             </div>
-            
+
             <!-- MLvl input inside this tab -->
             <div class="form-grid" style="margin-bottom: 14px;">
                 <div class="field">
@@ -1733,7 +1735,7 @@ html[data-theme="dark"] .ore-img{
                     <input type="number" id="mlvlPrompt1" placeholder="Enter MLvl..." min="0" step="1" />
                 </div>
             </div>
-            
+
             <div id="mlvlUnlockList" class="elvl-list"></div>
         </div>
     </div>
@@ -2435,82 +2437,82 @@ function openOreDrawer({ name, src, side }){
   });
 }
 
-function updateAlvlFormulaDisplay() {
-    const currentDisplay = document.getElementById("alvlCurrentResult");
-    const nextDisplay = document.getElementById("alvlNextResults");
-    const lvl = getCurrentAlvl();
-    
-    if (!currentDisplay || !nextDisplay) return;
-    
-    if (lvl === null || lvl === 0) {
-        currentDisplay.textContent = "Enter ALvl to see current result";
-        nextDisplay.innerHTML = "";
-        return;
-    }
-    
-    // Calculate current: 1.3^ceil(ALvl × 0.605)
-    const currentExponent = Math.ceil(lvl * 0.605);
-    const currentResult = Math.pow(1.3, currentExponent);
-    
-    // Display current result
-    currentDisplay.innerHTML = `
-        <div style="font-weight: 700; color: var(--accent-dark); margin-bottom: 5px;">
-            Current ALvl ${lvl}: 1.3^ceil(${lvl} × 0.605)
-        </div>
-        <div>
-            = 1.3^ceil(${(lvl * 0.605).toFixed(3)})<br>
-            = 1.3^${currentExponent}<br>
-            = <span style="color: var(--accent); font-weight: 800;">${currentResult.toFixed(6)}</span>
-        </div>
-    `;
-    
-    // Check next 5 levels for higher results
-    let nextResults = [];
-    let hasHigher = false;
-    
-    for (let i = 1; i <= 5; i++) {
-        const nextLvl = lvl + i;
-        const nextExponent = Math.ceil(nextLvl * 0.605);
-        const nextResult = Math.pow(1.3, nextExponent);
-        
-        if (nextResult > currentResult) {
-            hasHigher = true;
-            nextResults.push({
-                level: nextLvl,
-                exponent: nextExponent,
-                result: nextResult
-            });
-        }
-    }
-    
-    // Display next level results
-    if (hasHigher) {
-        let html = `<div style="font-weight: 700; color: var(--muted); margin-top: 15px; margin-bottom: 8px;">
-                      Higher results in next 5 levels:
-                   </div>`;
-        
-        nextResults.forEach(item => {
-            html += `
-                <div style="margin-bottom: 5px; padding: 5px 8px; background: rgba(47,143,107,0.1); 
-                           border-radius: 6px; border-left: 3px solid var(--accent);">
-                    <span style="font-weight: 700;">ALvl ${item.level}:</span>
-                    1.3^${item.exponent} = 
-                    <span style="color: var(--accent); font-weight: 700;">${item.result.toFixed(6)}</span>
-                    (increase of ×${(item.result / currentResult).toFixed(3)})
-                </div>
-            `;
-        });
-        
-        nextDisplay.innerHTML = html;
-    } else {
-        nextDisplay.innerHTML = `
-            <div style="margin-top: 15px; padding: 8px; background: rgba(0,0,0,0.05); 
-                       border-radius: 6px; color: var(--muted); font-style: italic;">
-                No higher results in the next 5 levels.
-            </div>
-        `;
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function closeOreDrawer(){
   const drawer = document.getElementById("oreDrawer");
   const backdrop = document.getElementById("oreDrawerBackdrop");
@@ -3326,11 +3328,11 @@ function colorizeLabel(label){
       ELVL_UNLOCKS_LIST.forEach(m => {
         const value = (lvl == null) ? null : m.formula(lvl);
         const labelHTML = colorizeLabel(m.label);
-        
+
         // Determine status styling
         let statusClass = "";
         let statusText = "";
-        
+
         if(value && typeof value === 'string') {
           if(value.includes("✓") || value.includes("MAXED")) {
             statusClass = 'style="background: rgba(47,143,107,0.2);"';
@@ -3400,11 +3402,11 @@ function renderMlvlMilestoneList(){
     ELVL_UNLOCKS_LIST.forEach(m => {
         const value = (lvl == null) ? null : m.formula(lvl);
         const labelHTML = colorizeLabel(m.label);
-        
+
         // Determine status styling
         let statusClass = "";
         let statusText = "";
-        
+
         if(value && typeof value === 'string') {
             if(value.includes("✓") || value.includes("MAXED")) {
                 statusClass = 'style="background: rgba(47,143,107,0.2);"';
@@ -3544,7 +3546,7 @@ function renderMlvlMilestoneList(){
       renderAlvlMilestoneList();
       renderMlvlMilestoneList();
       updateElvlSidebarMilestone();
-      updateAlvlFormulaDisplay();
+
     }
 
     function collectPromptsFromUI(){
@@ -3582,7 +3584,7 @@ function renderMlvlMilestoneList(){
         renderAlvlMilestoneList();
         renderMlvlMilestoneList();
         updateElvlSidebarMilestone();
-        updateAlvlFormulaDisplay();
+
       };
 
       inputs.fach(el => {
