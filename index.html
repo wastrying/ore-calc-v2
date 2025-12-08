@@ -2936,6 +2936,16 @@ function getCurrentAlvl(){
     return Math.max(0, Math.floor(n));
 }
 
+function bestalvl(elvl) {
+  const base = Math.ceil(elvl * 0.605);
+
+  for (let k = 1; k <= 5; k++) {
+    const next = Math.ceil((elvl + k) * 0.605);
+    if (next > base) return elvl + k;
+  }
+
+  return elvl;
+}
 function getCurrentMlvl(){
     const raw = (mlvlPrompt1?.value ?? "").trim();
     const n = Number(raw);
@@ -3027,41 +3037,48 @@ function getCurrentMlvl(){
     const ELVL_BASE_STATS_LIST = [
       {
         id: 1,
+        level: "1",
+        label: "Is the ",
+        display: "÷",
+        formula: (elvl) => bestalvl(elvl)
+      },
+      {
+        id: 2,
         level: "0",
         label: "XP",
         display: "×",
         formula: (elvl) => 3+elvl*1.21*2,
       },
       {
-        id: 2,
+        id: 3,
         level: "1",
         label: "XP requirement",
         display: "÷",
         formula: (elvl) => Math.pow(1.3,Math.ceil((elvl*1.21)/2)),
       },
       {
-        id: 3,
+        id: 4,
         level: "3",
         label: "#2x's cost scaling is reduced",
         display: "÷",
         formula: () => null,
       },
       {
-        id: 4,
+        id: 5,
         level: "5",
         label: "☉",
         display: "×",
         formula: (elvl) => 1+elvl*1.21*0.5
       },
       {
-        id: 5,
+        id: 6,
         level: "7",
         label: "Point Upgrade Cost",
         display: "÷",
         formula: (elvl) => elvl*1.21-5
       },
       {
-        id: 6,
+        id: 7,
         level: "15",
         label: "Prestige Upgrade Cost",
         display: "÷",
