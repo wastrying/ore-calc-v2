@@ -1056,7 +1056,7 @@ html[data-theme="dark"] .ore-img{
 
     .elvl-tab-bar .elvl-tab-pill{ opacity: .55; }
 
-/* NEW: Updated for ALvl, ELvl, MLvl tabs */
+/* NEW: Updated for , ELvl, MLvl tabs */
 #elvl-tab-alvl:checked ~ .elvl-tab-bar label[for="elvl-tab-alvl"],
 #elvl-tab-elvl:checked ~ .elvl-tab-bar label[for="elvl-tab-elvl"],
 #elvl-tab-mlvl:checked ~ .elvl-tab-bar label[for="elvl-tab-mlvl"]{
@@ -3278,7 +3278,7 @@ function colorizeLabel(label){
         host.appendChild(item);
       });
     }
-function renderAlvlBaseList(){
+function renderAlvlMilestoneList(){
     const host = document.getElementById("alvlBaseList");
     if(!host) return;
 
@@ -3316,7 +3316,7 @@ function renderAlvlBaseList(){
     updateNumberDisplays(state.notation);
 }
 
-function renderMlvlUnlockList(){
+function renderMlvlMilestoneList(){
     const host = document.getElementById("mlvlUnlockList");
     if(!host) return;
 
