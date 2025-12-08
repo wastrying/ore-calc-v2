@@ -1009,7 +1009,7 @@ html[data-theme="dark"] .ore-img{
     }
 
     /* ============================================================
-       ✅ NEW ELVL TAB SYSTEM
+       ✅ NEW ELVL TAB SYSTEM - ALL TABS AS LIST VIEWS
        ============================================================ */
     .elvl-tab-bar{
       display:flex;
@@ -1072,7 +1072,7 @@ html[data-theme="dark"] .ore-img{
       display:block;
     }
 
-    /* ELvl List Style */
+    /* ELvl List Style (Used by all 3 tabs) */
     .elvl-list{
       display:flex;
       flex-direction: column;
@@ -1104,48 +1104,9 @@ html[data-theme="dark"] .ore-img{
       opacity: 0.9;
     }
 
-    /* ELvl Table Style */
-    .elvl-table-wrap{
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-md);
-      overflow: auto;
-      background: transparent;
-    }
-
-    .elvl-table{
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 640px;
-    }
-
-    .elvl-table thead th{
-      position: sticky;
-      top: 0;
-      background: var(--thead-bg);
-      text-align:left;
-      font-size: 11px;
-      color: var(--accent-dark);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 12px 12px;
-      border-bottom: 1px solid var(--border-soft);
-    }
-
-    .elvl-table tbody td{
-      padding: 11px 12px;
-      font-size: 13px;
-      border-bottom: 1px solid var(--border-soft);
-      color: var(--text);
-      vertical-align: top;
-    }
-
-    .elvl-table tbody tr:nth-child(odd){ background: var(--row-odd); }
-    .elvl-table tbody tr:hover{ background: var(--row-hover); }
-
     @media (max-width: 900px){
       :root{ --sidebar-w: 190px; }
       table{ min-width: 560px; }
-      .elvl-table{ min-width: 560px; }
     }
 
     @media (max-width: 820px){
@@ -1166,7 +1127,6 @@ html[data-theme="dark"] .ore-img{
       .nav-btn{ flex: 1 1 auto; justify-content:center; }
       .content{ padding: 18px 14px 50px; }
       table{ min-width: 520px; }
-      .elvl-table{ min-width: 520px; }
     }
   </style>
 </head>
@@ -1653,7 +1613,7 @@ html[data-theme="dark"] .ore-img{
             </div>
           </section>
 
-          <!-- ✅ ELVL WITH 3 TAB SYSTEM -->
+          <!-- ✅ ELVL WITH 3 TAB SYSTEM (ALL AS LIST VIEWS) -->
           <section class="page" id="page-elvl">
             <div class="section-head">
               <div>
@@ -1704,7 +1664,7 @@ html[data-theme="dark"] .ore-img{
                 <div id="elvlMilestoneList" class="elvl-list"></div>
               </div>
 
-              <!-- Tab 2: Base Stats (Table View) -->
+              <!-- Tab 2: Base Stats (Same List View Style) -->
               <div class="elvl-tab-panel" id="panel-base">
                 <div class="section-head">
                   <div>
@@ -1713,26 +1673,10 @@ html[data-theme="dark"] .ore-img{
                   </div>
                   <span class="pill">Statistics</span>
                 </div>
-                <div class="elvl-table-wrap">
-                  <table class="elvl-table">
-                    <thead>
-                      <tr>
-                        <th>ELvl Range</th>
-                        <th>Base Damage</th>
-                        <th>Health Bonus</th>
-                        <th>Speed Mod</th>
-                        <th>Resource Cap</th>
-                        <th class="muted">Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody id="elvlBaseStatsBody">
-                      <!-- Will be populated by JavaScript -->
-                    </tbody>
-                  </table>
-                </div>
+                <div id="elvlBaseList" class="elvl-list"></div>
               </div>
 
-              <!-- Tab 3: Unlocks (Table View) -->
+              <!-- Tab 3: Unlocks (Same List View Style) -->
               <div class="elvl-tab-panel" id="panel-unlocks">
                 <div class="section-head">
                   <div>
@@ -1741,23 +1685,7 @@ html[data-theme="dark"] .ore-img{
                   </div>
                   <span class="pill">Features</span>
                 </div>
-                <div class="elvl-table-wrap">
-                  <table class="elvl-table">
-                    <thead>
-                      <tr>
-                        <th>ELvl</th>
-                        <th>Feature</th>
-                        <th>Type</th>
-                        <th>Effect</th>
-                        <th>Requirement</th>
-                        <th class="muted">Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody id="elvlUnlocksBody">
-                      <!-- Will be populated by JavaScript -->
-                    </tbody>
-                  </table>
-                </div>
+                <div id="elvlUnlockList" class="elvl-list"></div>
               </div>
             </div>
           </section>
@@ -2809,8 +2737,8 @@ if(hardcore) hardcore.checked = !!state.hardcore;
         state.notation = r.value;
         updateNumberDisplays(state.notation);
         renderElvlMilestoneList();
-        renderElvlBaseStats();
-        renderElvlUnlocks();
+        renderElvlBaseList();
+        renderElvlUnlockList();
       });
     });
 
@@ -2838,8 +2766,8 @@ if(hardcore) hardcore.checked = !!state.hardcore;
         applyTheme(state.theme);
         updateNumberDisplays(state.notation);
         renderElvlMilestoneList();
-        renderElvlBaseStats();
-        renderElvlUnlocks();
+        renderElvlBaseList();
+        renderElvlUnlockList();
         saveBtn.textContent = "Saved";
         window.setTimeout(() => saveBtn.textContent = "Save Settings", 700);
       });
@@ -2874,112 +2802,237 @@ if(hardcore) hardcore.checked = !!state.hardcore;
     }
 
     /* ============================================================
-       ✅ EDIT YOUR 12 MILESTONES HERE
-       - level: used for sidebar "next milestone" logic
-       - label: what shows in your list (like your screenshot)
-       - formula: returns the raw multiplier value
+       ✅ TAB 1: Milestones Data (Original)
        ============================================================ */
     const ELVL_MILESTONES = [
       {
         id: 1,
         level: 1,
         label: "XP, AXP & ₱ gain",
-        formula: (elvl) => Math.pow(1.25, elvl),          // ✅ 1.25^elvl
+        formula: (elvl) => Math.pow(1.25, elvl),
       },
       {
         id: 2,
         level: 2,
         label: "λ gain",
-        formula: (elvl) => Math.pow(1.25, (elvl - 1)),    // ✅ 1.25^(elvl-1)
+        formula: (elvl) => Math.pow(1.25, (elvl - 1)),
       },
       {
         id: 3,
         level: 3,
         label: "₹ gain",
-        formula: (elvl) => Math.pow(1.15, (elvl - 2))                    // placeholder
+        formula: (elvl) => Math.pow(1.15, (elvl - 2))
       },
       {
         id: 4,
         level: 4,
         label: "Ƀ gain",
-        formula: (elvl) => Math.pow(1.2, (elvl - 3)),                    // placeholder
+        formula: (elvl) => Math.pow(1.2, (elvl - 3)),
       },
       {
         id: 5,
         level: 5,
         label: "₱X gain",
-        formula: (elvl) => Math.pow(1.2, (elvl - 4)),                    // placeholder
+        formula: (elvl) => Math.pow(1.2, (elvl - 4)),
       },
       {
         id: 6,
         level: 6,
         label: "☉ gain",
-        formula: (elvl) => Math.pow(1.2, (elvl - 5)),                    // placeholder
+        formula: (elvl) => Math.pow(1.2, (elvl - 5)),
       },
       {
         id: 7,
         level: 7,
         label: "τ gain",
-        formula: (elvl) => Math.pow(1.15, (elvl - 6)),                    // placeholder
+        formula: (elvl) => Math.pow(1.15, (elvl - 6)),
       },
       {
         id: 8,
         level: 8,
         label: "Λ gain",
-        formula: (elvl) => Math.pow(1.4, (elvl - 7)),                    // placeholder
+        formula: (elvl) => Math.pow(1.4, (elvl - 7)),
       },
       {
         id: 9,
         level: 9,
         label: "Ore gain",
-        formula: (elvl) => Math.pow(1.15, (elvl - 8)),                    // placeholder
+        formula: (elvl) => Math.pow(1.15, (elvl - 8)),
       },
       {
         id: 10,
         level: 10,
         label: "ψ gain",
-        formula: (elvl) => Math.pow(1.075, (elvl - 10)),                    // placeholder
+        formula: (elvl) => Math.pow(1.075, (elvl - 10)),
       },
       {
         id: 11,
         level: 11,
         label: "Foraging speed",
-        formula: (elvl) => Math.pow(1.1, (elvl - 11)),                    // placeholder
+        formula: (elvl) => Math.pow(1.1, (elvl - 11)),
       },
       {
         id: 12,
         level: 12,
         label: "γ gain",
-        formula: (elvl) => Math.pow(2, (elvl - 12)),                    // placeholder
+        formula: (elvl) => Math.pow(2, (elvl - 12)),
       },
     ];
 
     /* ============================================================
-       ✅ TAB 2: Base Stats Data
+       ✅ TAB 2: Base Stats Data (List View Style)
        ============================================================ */
-    const ELVL_BASE_STATS = [
-      { range: "1-5", damage: 10, health: 100, speed: 1.0, cap: 1000 },
-      { range: "6-10", damage: 25, health: 250, speed: 1.1, cap: 5000 },
-      { range: "11-15", damage: 50, health: 500, speed: 1.2, cap: 25000 },
-      { range: "16-20", damage: 100, health: 1000, speed: 1.3, cap: 100000 },
-      { range: "21-25", damage: 200, health: 2000, speed: 1.4, cap: 500000 },
-      { range: "26-30", damage: 400, health: 4000, speed: 1.5, cap: 2500000 },
-      { range: "31-40", damage: 800, health: 8000, speed: 1.6, cap: 10000000 },
-      { range: "41-50", damage: 1600, health: 16000, speed: 1.7, cap: 50000000 },
+    const ELVL_BASE_STATS_LIST = [
+      {
+        id: 1,
+        level: "1-5",
+        label: "Base Damage",
+        formula: (elvl) => Math.max(10, Math.floor(10 + (elvl - 1) * 3))
+      },
+      {
+        id: 2,
+        level: "1-5",
+        label: "Health Bonus",
+        formula: (elvl) => Math.max(100, Math.floor(100 + (elvl - 1) * 30))
+      },
+      {
+        id: 3,
+        level: "1-5",
+        label: "Speed Modifier",
+        formula: (elvl) => 1 + (elvl - 1) * 0.02
+      },
+      {
+        id: 4,
+        level: "6-10",
+        label: "Resource Capacity",
+        formula: (elvl) => Math.max(5000, Math.floor(1000 * Math.pow(1.5, elvl - 6)))
+      },
+      {
+        id: 5,
+        level: "6-10",
+        label: "Crit Chance",
+        formula: (elvl) => Math.min(15, (elvl - 6) * 0.5)
+      },
+      {
+        id: 6,
+        level: "11-15",
+        label: "Multi-target Damage",
+        formula: (elvl) => Math.max(1, 1 + (elvl - 11) * 0.05)
+      },
+      {
+        id: 7,
+        level: "11-15",
+        label: "Auto-collect Range",
+        formula: (elvl) => Math.max(1, 1 + (elvl - 11) * 0.1)
+      },
+      {
+        id: 8,
+        level: "16-20",
+        label: "Regeneration Rate",
+        formula: (elvl) => Math.max(1, Math.floor(1 + (elvl - 16) * 0.2))
+      },
+      {
+        id: 9,
+        level: "16-20",
+        label: "Damage Reduction",
+        formula: (elvl) => Math.min(25, (elvl - 16) * 1.5)
+      },
+      {
+        id: 10,
+        level: "21+",
+        label: "Passive Generation",
+        formula: (elvl) => Math.max(1, Math.floor(Math.pow(1.3, elvl - 21)))
+      },
+      {
+        id: 11,
+        level: "21+",
+        label: "Cooldown Reduction",
+        formula: (elvl) => Math.min(40, (elvl - 21) * 2)
+      },
+      {
+        id: 12,
+        level: "26+",
+        label: "Global Multiplier",
+        formula: (elvl) => Math.max(1, Math.pow(1.05, elvl - 26))
+      },
     ];
 
     /* ============================================================
-       ✅ TAB 3: Unlocks Data
+       ✅ TAB 3: Unlocks Data (List View Style)
        ============================================================ */
-    const ELVL_UNLOCKS = [
-      { level: 1, feature: "Basic Mining", type: "Core", effect: "Unlocks ore collection", requirement: "Start game" },
-      { level: 5, feature: "Auto-Smelter", type: "Automation", effect: "Automatically smelt ores", requirement: "ELvl 5 + 500 Ore" },
-      { level: 10, feature: "Pickaxe Enchants", type: "Enhancement", effect: "Unlock enchantment system", requirement: "ELvl 10 + Forge Lv2" },
-      { level: 15, feature: "Dimensional Storage", type: "Storage", effect: "×10 storage capacity", requirement: "ELvl 15 + Void Crystal" },
-      { level: 20, feature: "Time Warp", type: "Meta", effect: "Unlock time manipulation", requirement: "ELvl 20 + Temporal Essence" },
-      { level: 25, feature: "Constellation Crafting", type: "Crafting", effect: "Create star constellations", requirement: "ELvl 25 + Stardust" },
-      { level: 30, feature: "Parallel Universes", type: "Expansion", effect: "Access parallel mining zones", requirement: "ELvl 30 + Quantum Chip" },
-      { level: 40, feature: "Reality Forging", type: "Ultimate", effect: "Forge custom reality layers", requirement: "ELvl 40 + Reality Shard" },
+    const ELVL_UNLOCKS_LIST = [
+      {
+        id: 1,
+        level: 1,
+        label: "Basic Mining",
+        formula: (elvl) => elvl >= 1 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 2,
+        level: 5,
+        label: "Auto-Smelter",
+        formula: (elvl) => elvl >= 5 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 3,
+        level: 10,
+        label: "Pickaxe Enchants",
+        formula: (elvl) => elvl >= 10 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 4,
+        level: 15,
+        label: "Dimensional Storage",
+        formula: (elvl) => elvl >= 15 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 5,
+        level: 20,
+        label: "Time Warp",
+        formula: (elvl) => elvl >= 20 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 6,
+        level: 25,
+        label: "Constellation Crafting",
+        formula: (elvl) => elvl >= 25 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 7,
+        level: 30,
+        label: "Parallel Universes",
+        formula: (elvl) => elvl >= 30 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 8,
+        level: 35,
+        label: "Reality Forging",
+        formula: (elvl) => elvl >= 35 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 9,
+        level: 40,
+        label: "Infinite Scaling",
+        formula: (elvl) => elvl >= 40 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 10,
+        level: 45,
+        label: "Cosmic Ascension",
+        formula: (elvl) => elvl >= 45 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 11,
+        level: 50,
+        label: "Omni-Presence",
+        formula: (elvl) => elvl >= 50 ? "✓ Unlocked" : "✗ Locked"
+      },
+      {
+        id: 12,
+        level: 100,
+        label: "MAX PRESTIGE",
+        formula: (elvl) => elvl >= 100 ? "⭐⭐⭐ MAXED ⭐⭐⭐" : "✗ Locked"
+      },
     ];
 
     const RESOURCE_TOKENS = [
@@ -3076,97 +3129,119 @@ function colorizeLabel(label){
     }
 
     /* ============================================================
-       ✅ NEW: Tab 2 Base Stats Renderer
+       ✅ NEW: Tab 1 Milestones Renderer (Original)
        ============================================================ */
-    function renderElvlBaseStats(){
-      const host = document.getElementById("elvlBaseStatsBody");
+    function renderElvlMilestoneList(){
+      const host = document.getElementById("elvlMilestoneList");
       if(!host) return;
 
-      const currentElvl = getCurrentElvl();
+      const lvl = getCurrentElvl();
+      const rows = getSortedElvlMilestones();
 
-      host.innerHTML = ELVL_BASE_STATS.map(stat => {
-        // Check if current ELvl is in this range
-        const [min, max] = stat.range.split("-").map(Number);
-        const isCurrentRange = currentElvl != null && 
-                              currentElvl >= min && 
-                              currentElvl <= max;
-        
-        const rowClass = isCurrentRange ? 'style="background: rgba(47,143,107,0.1);"' : '';
+      host.innerHTML = "";
 
-        return `
-          <tr ${rowClass}>
-            <td><span class="pill">${stat.range}</span></td>
-            <td><span data-num="${stat.damage}"></span></td>
-            <td><span data-num="${stat.health}"></span></td>
-            <td><span data-num="${stat.speed}"></span>x</td>
-            <td><span data-num="${stat.cap}"></span></td>
-            <td class="muted">${isCurrentRange ? 'Current bracket' : ''}</td>
-          </tr>
+      rows.fach(m => {
+        const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
+        const labelHTML = colorizeLabel(m.label);
+
+        const item = document.createElement("div");
+        item.className = "elvl-item";
+
+        item.innerHTML = `
+          ${value == null
+            ? `×— ${labelHTML}`
+            : `×<span data-num="${value}"></span> ${labelHTML}`
+          }
+          <small>Milestone Lv${m.level}</small>
         `;
-      }).join("");
+
+        host.appendChild(item);
+      });
 
       updateNumberDisplays(state.notation);
     }
 
     /* ============================================================
-       ✅ NEW: Tab 3 Unlocks Renderer
+       ✅ NEW: Tab 2 Base Stats Renderer (List View Style)
        ============================================================ */
-    function renderElvlUnlocks(){
-      const host = document.getElementById("elvlUnlocksBody");
+    function renderElvlBaseList(){
+      const host = document.getElementById("elvlBaseList");
       if(!host) return;
 
-      const currentElvl = getCurrentElvl();
+      const lvl = getCurrentElvl();
 
-      host.innerHTML = ELVL_UNLOCKS.map(unlock => {
-        const unlocked = currentElvl != null && currentElvl >= unlock.level;
-        const rowClass = unlocked ? 'style="background: rgba(47,143,107,0.1);"' : '';
-        const status = unlocked ? '<span class="pill">✓ Unlocked</span>' : '<span class="pill" style="opacity:0.6">Locked</span>';
+      host.innerHTML = "";
 
-        return `
-          <tr ${rowClass}>
-            <td><span class="pill">${unlock.level}</span></td>
-            <td><strong>${unlock.feature}</strong></td>
-            <td><span class="pill">${unlock.type}</span></td>
-            <td>${unlock.effect}</td>
-            <td>${unlock.requirement}</td>
-            <td class="muted">${status}</td>
-          </tr>
+      ELVL_BASE_STATS_LIST.forEach(m => {
+        const value = (lvl == null) ? null : m.formula(lvl);
+        const labelHTML = colorizeLabel(m.label);
+
+        const item = document.createElement("div");
+        item.className = "elvl-item";
+
+        // Check if current ELvl is in this range
+        const range = m.level.split("-").map(Number);
+        const inRange = lvl != null && lvl >= range[0] && (range[1] ? lvl <= range[1] : true);
+        const rangeClass = inRange ? 'style="background: rgba(47,143,107,0.15);"' : '';
+
+        item.innerHTML = `
+          <div ${rangeClass}>
+            ${value == null
+              ? `— ${labelHTML}`
+              : (typeof value === 'number' 
+                  ? `<span data-num="${value}"></span> ${labelHTML}`
+                  : `${value} ${labelHTML}`)
+            }
+            <small>ELvl ${m.level}</small>
+          </div>
         `;
-      }).join("");
+
+        host.appendChild(item);
+      });
+
+      updateNumberDisplays(state.notation);
     }
 
     /* ============================================================
-       ✅ UPDATED: Main ELvl Renderer (Tab 1)
+       ✅ NEW: Tab 3 Unlocks Renderer (List View Style)
        ============================================================ */
-    function renderElvlMilestoneList(){
-  const host = document.getElementById("elvlMilestoneList");
-  if(!host) return;
+    function renderElvlUnlockList(){
+      const host = document.getElementById("elvlUnlockList");
+      if(!host) return;
 
-  const lvl = getCurrentElvl();
-  const rows = getSortedElvlMilestones();
+      const lvl = getCurrentElvl();
 
-  host.innerHTML = "";
+      host.innerHTML = "";
 
-  rows.fach(m => {
-    const value = (lvl == null) ? null : computeMilestoneValue(m, lvl);
-    const labelHTML = colorizeLabel(m.label);
+      ELVL_UNLOCKS_LIST.forEach(m => {
+        const value = (lvl == null) ? null : m.formula(lvl);
+        const labelHTML = colorizeLabel(m.label);
+        
+        // Determine status styling
+        let statusClass = "";
+        let statusText = "";
+        
+        if(value && typeof value === 'string') {
+          if(value.includes("✓") || value.includes("MAXED")) {
+            statusClass = 'style="background: rgba(47,143,107,0.2);"';
+          }
+          statusText = value;
+        }
 
-    const item = document.createElement("div");
-    item.className = "elvl-item";
+        const item = document.createElement("div");
+        item.className = "elvl-item";
 
-    item.innerHTML = `
-      ${value == null
-        ? `×— ${labelHTML}`
-        : `×<span data-num="${value}"></span> ${labelHTML}`
-      }
-      <small>Milestone Lv${m.level}</small>
-    `;
+        item.innerHTML = `
+          <div ${statusClass}>
+            ${labelHTML}
+            <small>${statusText} • Unlocks at Lv${m.level}</small>
+          </div>
+        `;
 
-    host.appendChild(item);
-  });
+        host.appendChild(item);
+      });
+    }
 
-  updateNumberDisplays(state.notation);
-}
     // --- Pickaxe followups limiter ---
     function getAllowedPickaxeFollowups(){
       return state.prompts.pickaxeChoice === "normalp" ? 3 : 5;
@@ -3281,8 +3356,8 @@ function colorizeLabel(label){
 
       updatePickaxeFollowupsUI();
       renderElvlMilestoneList();
-      renderElvlBaseStats();
-      renderElvlUnlocks();
+      renderElvlBaseList();
+      renderElvlUnlockList();
       updateElvlSidebarMilestone();
     }
 
@@ -3314,8 +3389,8 @@ function colorizeLabel(label){
         syncPickaxeSelectedName();
         updatePickaxeFollowupsUI();
         renderElvlMilestoneList();
-        renderElvlBaseStats();
-        renderElvlUnlocks();
+        renderElvlBaseList();
+        renderElvlUnlockList();
         updateElvlSidebarMilestone();
       };
 
