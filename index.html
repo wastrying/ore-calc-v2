@@ -2800,6 +2800,18 @@ if(hardcore) hardcore.checked = !!state.hardcore;
       if(!Number.isFinite(n)) return null;
       return Math.max(0, Math.floor(n));
     }
+    function getCurrentAlvl(){
+      const raw = (AlvlPrompt1?.value ?? "").trim();
+      const n = Number(raw);
+      if(!Number.isFinite(n)) return null;
+      return Math.max(0, Math.floor(n));
+    }
+    function getCurrentMlvl(){
+      const raw = (MlvlPrompt1?.value ?? "").trim();
+      const n = Number(raw);
+      if(!Number.isFinite(n)) return null;
+      return Math.max(0, Math.floor(n));
+    }
 
     /* ============================================================
        ✅ TAB 1: Milestones Data (Original)
@@ -3168,7 +3180,7 @@ function colorizeLabel(label){
       const host = document.getElementById("elvlBaseList");
       if(!host) return;
 
-      const lvl = getCurrentElvl();
+      const lvl = getCurrentAlvl();
 
       host.innerHTML = "";
 
@@ -3337,6 +3349,8 @@ function colorizeLabel(label){
       const p = state.prompts;
 
       if(elvlPrompt1) elvlPrompt1.value = p.elvl1 ?? "";
+      if(AlvlPrompt1) AlvlPrompt1.value = p.elvl1 ?? "";
+      if(MlvlPrompt1) MlvlPrompt1.value = p.elvl1 ?? "";
 
       renderPickaxeChooser(p.pickaxeChoice ?? "");
       if(pickaxeDropdown1) pickaxeDropdown1.value = p.pickaxeDropdown1 ?? "";
@@ -3375,6 +3389,8 @@ function colorizeLabel(label){
     function wirePromptAutosave(){
       const inputs = [
         elvlPrompt1,
+        AlvlPrompt1,
+        MlvlPrompt1,
         pickaxeDropdown1,
         pickaxePrompt2,
         pickaxePrompt3,
