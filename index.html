@@ -2437,82 +2437,6 @@ function openOreDrawer({ name, src, side }){
   });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function closeOreDrawer(){
   const drawer = document.getElementById("oreDrawer");
   const backdrop = document.getElementById("oreDrawerBackdrop");
@@ -2937,10 +2861,10 @@ function getCurrentAlvl(){
 }
 
 function bestalvl(elvl) {
-  const base = Math.ceil(elvl * 0.605);
+  const base = Math.pow(1.3,Math.ceil(elvl * 0.605));
 
   for (let k = 1; k <= 5; k++) {
-    const next = Math.ceil((elvl + k) * 0.605);
+    const next = Math.pow(1.3,Math.ceil((elvl + k) * 0.605));
     if (next > base) return elvl + k;
   }
 
