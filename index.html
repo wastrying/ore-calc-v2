@@ -2922,75 +2922,45 @@ function getCurrentMlvl(){
     const ELVL_BASE_STATS_LIST = [
       {
         id: 1,
-        level: "1-5",
-        label: "Base Damage",
-        formula: (elvl) => Math.max(10, Math.floor(10 + (elvl - 1) * 3))
+        level: "0",
+        label: "XP",
+        display: "×",
+        formula: (elvl) => 3+elvl*1.21*2,
       },
       {
         id: 2,
-        level: "1-5",
-        label: "Health Bonus",
-        formula: (elvl) => Math.max(100, Math.floor(100 + (elvl - 1) * 30))
+        level: "1",
+        label: "XP requirement",
+        display: "÷",
+        formula: (elvl) => Math.pow(1.3,Math.ceil((elvl*1.21)/2)),
       },
       {
         id: 3,
-        level: "1-5",
-        label: "Speed Modifier",
-        formula: (elvl) => 1 + (elvl - 1) * 0.02
+        level: "3",
+        label: "#2x's cost scaling is reduced",
+        display: "÷",
+        formula: () => null,
       },
       {
         id: 4,
-        level: "6-10",
-        label: "Resource Capacity",
-        formula: (elvl) => Math.max(5000, Math.floor(1000 * Math.pow(1.5, elvl - 6)))
+        level: "5",
+        label: "☉",
+        display: "×",
+        formula: (elvl) => 1+elvl*1.21*0.5
       },
       {
         id: 5,
-        level: "6-10",
-        label: "Crit Chance",
-        formula: (elvl) => Math.min(15, (elvl - 6) * 0.5)
+        level: "7",
+        label: "Point Upgrade Cost",
+        display: "÷",
+        formula: (elvl) => elvl*1.21-5
       },
       {
         id: 6,
-        level: "11-15",
-        label: "Multi-target Damage",
-        formula: (elvl) => Math.max(1, 1 + (elvl - 11) * 0.05)
-      },
-      {
-        id: 7,
-        level: "11-15",
-        label: "Auto-collect Range",
-        formula: (elvl) => Math.max(1, 1 + (elvl - 11) * 0.1)
-      },
-      {
-        id: 8,
-        level: "16-20",
-        label: "Regeneration Rate",
-        formula: (elvl) => Math.max(1, Math.floor(1 + (elvl - 16) * 0.2))
-      },
-      {
-        id: 9,
-        level: "16-20",
-        label: "Damage Reduction",
-        formula: (elvl) => Math.min(25, (elvl - 16) * 1.5)
-      },
-      {
-        id: 10,
-        level: "21+",
-        label: "Passive Generation",
-        formula: (elvl) => Math.max(1, Math.floor(Math.pow(1.3, elvl - 21)))
-      },
-      {
-        id: 11,
-        level: "21+",
-        label: "Cooldown Reduction",
-        formula: (elvl) => Math.min(40, (elvl - 21) * 2)
-      },
-      {
-        id: 12,
-        level: "26+",
-        label: "Global Multiplier",
-        formula: (elvl) => Math.max(1, Math.pow(1.05, elvl - 26))
+        level: "15",
+        label: "Prestige Upgrade Cost",
+        display: "÷",
+        formula: (elvl) => 1+(elvl*1.21-14)/2
       },
     ];
 
