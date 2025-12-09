@@ -2554,24 +2554,24 @@ function initializeCardsSection() {
 
     // Create card HTML element
     function createCardElement(card, isInDeck = false) {
-      const rarityClass = `rarity-${card.rarity}`;
-      
-      return `
-        <div class="card-item" 
-             data-card-id="${card.id}"
-             draggable="true"
-             data-card-name="${card.name}"
-             data-card-rarity="${card.rarity}"
-          ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
-          <img class="card-img" 
-               src="${card.img}" 
-               alt="${card.name}"
-               onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkY4RjZCIiBzdG9wLW9wYWNpdHk9IjAuMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXJkPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4ke2NhcmQubmFtZX08L3RleHQ+Cjwvc3ZnPg=='; this.alt='Card placeholder'">
-          <div class="card-name">${card.name}</div>
-          <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
-        </div>
-      `;
-    }
+  const rarityClass = `rarity-${card.rarity}`;
+  
+  return `
+    <div class="card-item" 
+         data-card-id="${card.id}"
+         draggable="true"
+         data-card-name="${card.name}"
+         data-card-rarity="${card.rarity}">
+      ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
+      <img class="card-img" 
+           src="${card.img}" 
+           alt="${card.name}"
+           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkY4RjZCIiBzdG9wLW9wYWNpdHk9IjAuMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYGRpZW50Pgo8L2RlZnM+Cjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXJkPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4ke2NhcmQubmFtZX08L3RleHQ+Cjwvc3ZnPg=='; this.alt='Card placeholder'">
+      <div class="card-name">${card.name}</div>
+      <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
+    </div>
+  `;
+}
 function updateDropZone() {
       const dropZone = document.getElementById("cardsDropZone");
       const selectedCount = document.getElementById("selectedCount");
