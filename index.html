@@ -2719,16 +2719,17 @@ function initializeCardsSection() {
 
     // Load deck from localStorage
     function loadSavedDeck() {
-      try {
-        const saved = localStorage.getItem(DECK_STORAGE_KEY);
-        if (saved) {
-          selectedCards = JSON.parse(saved);
-          updateDropZone();
-        }
-      } catch (e) {
-        console.error("Failed to load deck:", e);
-      }
+  try {
+    const saved = localStorage.getItem(DECK_STORAGE_KEY);
+    if (saved) {
+      selectedCards = JSON.parse(saved);
+      updateDropZone();
+      updateTableFromDeck(); // Add this line to update table when loading
     }
+  } catch (e) {
+    console.error("Failed to load deck:", e);
+  }
+}
 
     // Setup drag and drop
     function setupDragAndDrop() {
