@@ -204,17 +204,6 @@
       color: var(--muted);
     }
 
-    .card-energy {
-      display: inline-flex;
-      align-items: center;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(47,143,107,0.1);
-      border: 1px solid rgba(47,143,107,0.2);
-      color: var(--accent-dark);
-      font-weight: 700;
-    }
-
     .remove-card {
       position: absolute;
       top: 6px;
@@ -2100,44 +2089,30 @@ html[data-theme="dark"] .ore-img{
     <!-- Original Table View (hidden by default) - SIMPLIFIED -->
     <div id="cards-table-view" class="table-wrap" style="display: none;">
       <table>
-        <!-- REMOVED Energy, Synergy, and Notes columns -->
+        <!-- SIMPLIFIED: Only Card Name, Rarity, and Ability -->
         <thead>
           <tr>
             <th>Card Name</th>
             <th>Rarity</th>
             <th>Ability</th>
-            <!-- Removed: <th>Energy</th> -->
-            <!-- Removed: <th>Synergy</th> -->
-            <!-- Removed: <th class="muted">Notes</th> -->
           </tr>
         </thead>
         <tbody>
-          <!-- REMOVED Energy, Synergy, and Notes columns from table rows -->
           <tr>
             <td>Gravity Seed</td>
             <td><span class="pill">Rare</span></td>
             <td>Pull enemies 1 tile</td>
-            <!-- Removed: <td><span data-num="2"></span></td> -->
-            <!-- Removed: <td>Blackhole set</td> -->
-            <!-- Removed: <td class="muted">Great for combos</td> -->
           </tr>
           <tr>
             <td>Ore Bloom</td>
             <td><span class="pill">Common</span></td>
             <td>Gain +<span data-num="100"></span> Ore</td>
-            <!-- Removed: <td><span data-num="1"></span></td> -->
-            <!-- Removed: <td>Mining builds</td> -->
-            <!-- Removed: <td class="muted">Fast economy spike</td> -->
           </tr>
           <tr>
             <td>Transcend Echo</td>
             <td><span class="pill">Epic</span></td>
             <td>Duplicate last effect</td>
-            <!-- Removed: <td><span data-num="4"></span></td> -->
-            <!-- Removed: <td>Combo decks</td> -->
-            <!-- Removed: <td class="muted">High skill ceiling</td> -->
           </tr>
-          <!-- Additional example cards with simplified format -->
           <tr>
             <td>Time Warp</td>
             <td><span class="pill">Epic</span></td>
@@ -2587,7 +2562,6 @@ function initializeCardsSection() {
              draggable="true"
              data-card-name="${card.name}"
              data-card-rarity="${card.rarity}"
-             data-card-energy="${card.energy}">
           ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
           <img class="card-img" 
                src="${card.img}" 
@@ -2595,11 +2569,6 @@ function initializeCardsSection() {
                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkY4RjZCIiBzdG9wLW9wYWNpdHk9IjAuMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXJkPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4ke2NhcmQubmFtZX08L3RleHQ+Cjwvc3ZnPg=='; this.alt='Card placeholder'">
           <div class="card-name">${card.name}</div>
           <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
-          ${isInDeck ? `
-            <div class="card-stats">
-              <span class="card-energy">${card.energy} ⚡</span>
-            </div>
-          ` : ''}
         </div>
       `;
     }
