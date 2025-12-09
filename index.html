@@ -2716,90 +2716,182 @@ const DECK_STORAGE_KEY = "remblyx_card_deck_v1";
     let dragSrcElement = null;
     let dragStartIndex = -1;
     
-function updateTableFromDeck() {
-  const tableBody = document.getElementById("deckTableBody");
-  const emptyRow = document.getElementById("emptyDeckRow");
-  
-  if (!tableBody) return;
-  
-  // Clear existing rows except empty row
-  const existingRows = tableBody.querySelectorAll("tr:not(#emptyDeckRow)");
-  existingRows.forEach(row => row.remove());
-  
-  if (selectedCards.length === 0) {
-    // Show empty message
-    if (emptyRow) {
-      emptyRow.style.display = "";
-    } else {
-      tableBody.innerHTML = `
-        <tr id="emptyDeckRow">
-          <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">
-            No cards in deck. Add cards using the drag & drop interface.
-          </td>
-        </tr>
+function createCardElement(card, isInDeck = false) {
+      const rarityClass = `rarity-${card.rarity}`;
+      const tooltipRarityClass = `tooltip-rarity ${rarityClass}`;
+      
+      return `
+        <div class="card-item" 
+             data-card-id="${card.id}"
+             draggable="true"
+             data-card-name="${card.name}"
+             data-card-rarity="${card.rarity}">
+          
+          ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
+          
+          <img class="card-img" 
+               src="${card.img}" 
+               alt="${card.name}"
+               onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25VzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMC4xIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIjJGOGY2QiIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPHRleHQgeD0iNTAiIHk9IjcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2YjcyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNhcmQ8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI4NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZpbGw9IiM2YjcyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiR7Y2FyZC5uYW1lfTwvdGV4dD4KPC9zdmc+'; this.alt='Card placeholder'">
+          
+          <div class="card-name">${card.name}</div>
+          <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
+          
+          <!-- Tooltip -->
+          <div class="card-tooltip">
+            <div class="tooltip-header">
+              <div class="tooltip-name">${card.name}</div>
+              <div class="${tooltipRarityClass}">${card.rarity.toUpperCase()}</div>
+            </div>
+            <div class="tooltip-ability">${card.ability}</div>
+          </div>
+        </div>
       `;
     }
-  } else {
-    // Hide empty row if it exists
-    if (emptyRow) {
-      emptyRow.style.display = "none";
-    }
-    
-    // Add rows for each card in deck
-    selectedCards.forEach(cardId => {
-      const card = CARD_DATA.find(c => c.id === cardId);
-      if (card) {
-        const row = document.createElement("tr");
-        
-        // Get pill class based on rarity
-        let pillClass = "pill";
-        switch(card.rarity) {
-          case "common": pillClass += " common"; break;
-          case "uncommon": pillClass += " uncommon"; break;
-          case "rare": pillClass += " rare"; break;
-          case "epic": pillClass += " epic"; break;
-          case "legendary": pillClass += " legendary"; break;
-          default: pillClass += " common";
+function updateTableFromDeck() {
+      const tableBody = document.getElementById("deckTableBody");
+      const emptyRow = document.getElementById("emptyDeckRow");
+      
+      if (!tableBody) return;
+      
+      // Clear existing rows except empty row
+      const existingRows = tableBody.querySelectorAll("tr:not(#emptyDeckRow)");
+      existingRows.forEach(row => row.remove());
+      
+      if (selectedCards.length === 0) {
+        // Show empty message
+        if (emptyRow) {
+          emptyRow.style.display = "";
+        } else {
+          tableBody.innerHTML = `
+            <tr id="emptyDeckRow">
+              <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">
+                No cards in deck. Add cards using the drag & drop interface.
+              </td>
+            </tr>
+          `;
+        }
+      } else {
+        // Hide empty row if it exists
+        if (emptyRow) {
+          emptyRow.style.display = "none";
         }
         
-        // Colorize the ability text
-        const colorizedAbility = colorizeAbilityText(card.ability);
-        
-        row.innerHTML = `
-          <td>${card.name}</td>
-          <td><span class="${pillClass}">${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)}</span></td>
-          <td>${colorizedAbility}</td>
-        `;
-        
-        // Add data attribute for identification
-        row.dataset.cardId = card.id;
-        
-        tableBody.appendChild(row);
+        // Add rows for each card in deck
+        selectedCards.forEach(cardId => {
+          const card = CARD_DATA.find(c => c.id === cardId);
+          if (card) {
+            const row = document.createElement("tr");
+            
+            // Get pill class based on rarity
+            let pillClass = "pill";
+            switch(card.rarity) {
+              case "common": pillClass += " common"; break;
+              case "uncommon": pillClass += " uncommon"; break;
+              case "rare": pillClass += " rare"; break;
+              case "epic": pillClass += " epic"; break;
+              case "legendary": pillClass += " legendary"; break;
+              default: pillClass += " common";
+            }
+            
+            row.innerHTML = `
+              <td>${card.name}</td>
+              <td><span class="${pillClass}">${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)}</span></td>
+              <td>${card.ability}</td>
+            `;
+            
+            // Add data attribute for identification
+            row.dataset.cardId = card.id;
+            
+            tableBody.appendChild(row);
+          }
+        });
       }
-    });
-  }
-  
-  // Update number displays for any numbers in ability text
-  updateNumberDisplays(state?.notation ?? "suffix");
-}
+      
+      // Update number displays for any numbers in ability text
+      updateNumberDisplays(state?.notation ?? "suffix");
+    }
+    function updateCardDisplays() {
+      updateDropZone();
+      renderCardLibrary(); // Re-render library to hide/show cards
+      updateTableFromDeck();
+    }
+
+    // Add card to deck (and hide from library)
+    function addCardToDeck(cardId) {
+      if (selectedCards.length >= 12) {
+        alert("Deck is full! Maximum 12 cards allowed.");
+        return false;
+      }
+      
+      if (!selectedCards.includes(cardId)) {
+        selectedCards.push(cardId);
+        updateCardDisplays(); // Use the new function
+        saveDeck();
+        return true;
+      }
+      return false;
+    }
+
+    // Remove card from deck (and show in library)
+    function removeCardFromDeck(cardId) {
+      const index = selectedCards.indexOf(cardId);
+      if (index > -1) {
+        selectedCards.splice(index, 1);
+        updateCardDisplays(); // Use the new function
+        saveDeck();
+      }
+    }
     // Initialize Cards section
 function initializeCardsSection() {
-      renderCardLibrary();
-      loadSavedDeck();
+      loadSavedDeck(); // Load first
+      renderCardLibrary(); // Then render library with filtered cards
       setupDragAndDrop();
       setupEventListeners();
       setupViewToggle();
-      updateTableFromDeck();
+      updateCardDisplays(); // Update everything
       setupDeckReordering();
-      updateNumberDisplays(state?.notation ?? "suffix");
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Check if we're on the cards page
+      const cardsRoute = document.getElementById("r-cards");
+      if (cardsRoute) {
+        cardsRoute.addEventListener("change", function() {
+          if (this.checked) {
+            initializeCardsSection();
+          }
+        });
+        
+        // Also initialize if cards page is already active
+        if (cardsRoute.checked) {
+          initializeCardsSection();
+        }
+      }
+      
+      // Alternatively, initialize when page loads if on cards section
+      if (window.location.hash === "#cards" || document.getElementById("page-cards").style.display !== "none") {
+        initializeCardsSection();
+      }
+    });
 
     // Render card library
     function renderCardLibrary() {
       const library = document.getElementById("cardsLibrary");
       if (!library) return;
 
-      library.innerHTML = CARD_DATA.map(card => createCardElement(card, false)).join("");
+      // Filter out cards that are already in the deck
+      const availableCards = CARD_DATA.filter(card => !selectedCards.includes(card.id));
+      
+      if (availableCards.length === 0) {
+        library.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--muted);">
+            All cards are in your deck!
+          </div>
+        `;
+      } else {
+        library.innerHTML = availableCards.map(card => createCardElement(card, false)).join("");
+      }
     }
 
     // Create card HTML element
@@ -2914,7 +3006,7 @@ function initializeCardsSection() {
               selectedCards.push(cardId);
             }
             
-            // Update UI
+            // Update UI (no need to update library since same cards)
             updateDropZone();
             updateTableFromDeck();
             saveDeck();
@@ -2985,7 +3077,7 @@ function initializeCardsSection() {
           });
         });
         
-        // Also allow clicking on the card itself to remove (alternative to X button)
+        // Also allow clicking on the card itself to remove
         dropZone.querySelectorAll(".card-item").forEach(cardItem => {
           cardItem.addEventListener("click", function(e) {
             // Only trigger if not clicking the X button
@@ -3035,17 +3127,16 @@ function initializeCardsSection() {
 
     // Load deck from localStorage
     function loadSavedDeck() {
-  try {
-    const saved = localStorage.getItem(DECK_STORAGE_KEY);
-    if (saved) {
-      selectedCards = JSON.parse(saved);
-      updateDropZone();
-      updateTableFromDeck(); // Add this line to update table when loading
+      try {
+        const saved = localStorage.getItem(DECK_STORAGE_KEY);
+        if (saved) {
+          selectedCards = JSON.parse(saved);
+          updateCardDisplays(); // Use the new function
+        }
+      } catch (e) {
+        console.error("Failed to load deck:", e);
+      }
     }
-  } catch (e) {
-    console.error("Failed to load deck:", e);
-  }
-}
 
     // Setup drag and drop
     function setupDragAndDrop() {
@@ -3120,9 +3211,9 @@ function initializeCardsSection() {
       const clearBtn = document.getElementById("clearDeckBtn");
       if (clearBtn) {
         clearBtn.addEventListener("click", function() {
-          if (selectedCards.length > 0 && confirm("Clear your entire deck?")) {
+          if (selectedCards.length > 0 && confirm("Clear your entire deck? All cards will return to the library.")) {
             selectedCards = [];
-            updateDropZone();
+            updateCardDisplays(); // Use the new function
             saveDeck();
           }
         });
@@ -3178,29 +3269,6 @@ function initializeCardsSection() {
         });
       });
     }
-
-    // Initialize when Cards section is active
-    document.addEventListener("DOMContentLoaded", function() {
-      // Check if we're on the cards page
-      const cardsRoute = document.getElementById("r-cards");
-      if (cardsRoute) {
-        cardsRoute.addEventListener("change", function() {
-          if (this.checked) {
-            initializeCardsSection();
-          }
-        });
-        
-        // Also initialize if cards page is already active
-        if (cardsRoute.checked) {
-          initializeCardsSection();
-        }
-      }
-      
-      // Alternatively, initialize when page loads if on cards section
-      if (window.location.hash === "#cards" || document.getElementById("page-cards").style.display !== "none") {
-        initializeCardsSection();
-      }
-    });
 /** Optional: override milestones per ore */
 const ORE_MILESTONES_OVERRIDE = {
   "Stone": [
