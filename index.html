@@ -28,6 +28,7 @@
 .res-L { color: var(--c-L); }
 .res-gamma { color: var(--c-gamma); }
 .res-psi { color: var(--c-psi); }
+.res-beta { color: var(--c-beta); }
      /* =========================
        Card Drag & Drop System
        ========================= */
@@ -368,7 +369,8 @@
   --c-tau: #03e6ff;      /* τ */
   --c-L: #62fcdb;        /* Λ */
   --c-gamma: #a414f7;    /* γ */
-  --c-psi: #2dfab6;      /* ψ */
+  --c-psi: #2dfab6;/* ψ */
+  --c-beta: #7de05e;
   --res-outline: rgba(0,0,0,0.22);
   --res-stroke-w: 0.6px;
 }
@@ -386,6 +388,7 @@ html[data-theme="dark"]{
   --c-L: #62fcdb;        /* Λ */
   --c-gamma: #a414f7;    /* γ */
   --c-psi: #2dfab6; 
+  --c-beta: #7de05e;
   --res-outline: rgba(0,0,0,0.22);
 }
 
@@ -413,6 +416,7 @@ html[data-theme="dark"]{
 .res-L{ color: var(--c-L); }
 .res-gamma{ color: var(--c-gamma); }
 .res-psi{ color: var(--c-psi); }
+.res-beta{ color: var(--c-beta); }
 
 /* =========================
    Ore Mastery Gallery
@@ -2544,6 +2548,27 @@ const CARD_DATA = [
         ability: "+0.25× XP gain for every Foodaholic Pack card you're equipping",
         img: "images/cards/Egg.png"
       },
+      {
+        id: "Egg",
+        name: "Egg",
+        rarity: "common",
+        ability: "+0.25× XP gain for every Foodaholic Pack card you're equipping",
+        img: "images/cards/Egg.png"
+      },
+      {
+        id: "Egg",
+        name: "Egg",
+        rarity: "common",
+        ability: "+0.25× XP gain for every Foodaholic Pack card you're equipping",
+        img: "images/cards/Egg.png"
+      },
+      {
+        id: "Egg",
+        name: "Egg",
+        rarity: "common",
+        ability: "+0.25× XP gain for every Foodaholic Pack card you're equipping",
+        img: "images/cards/Egg.png"
+      },
   ];
 const DECK_STORAGE_KEY = "remblyx_card_deck_v1";
 
@@ -3724,7 +3749,7 @@ function getCurrentMlvl(){
       {
         id: 4,
         level: 4,
-        label: "Ƀ gain",
+        label: "฿ gain",
         formula: (elvl) => Math.pow(1.2, (elvl - 3)),
       },
       {
@@ -3917,12 +3942,13 @@ function getCurrentMlvl(){
   { key: "₱", cls: "res-peso" },
   { key: "λ", cls: "res-lambda" },
   { key: "₹", cls: "res-rupee" },
-  { key: "Ƀ", cls: "res-bit" },
+  { key: "฿", cls: "res-bit" },
   { key: "☉", cls: "res-sun" },
   { key: "τ", cls: "res-tau" },
   { key: "Λ", cls: "res-L" },
   { key: "γ", cls: "res-gamma" },
-  { key: "ψ", cls: "res-psi" },
+  { key: "Ψ", cls: "res-psi" },
+  { key: "β", cls: "res-beta" },
 ];
 
 const TOKEN_MAP = Object.fromEntries(RESOURCE_TOKENS.map(t => [t.key, t.cls]));
@@ -3937,13 +3963,13 @@ function colorizeAbilityText(ability) {
     { key: "₱", cls: "res-peso" },
     { key: "λ", cls: "res-lambda" },
     { key: "₹", cls: "res-rupee" },
-    { key: "Ƀ", cls: "res-bit" },
+    { key: "฿", cls: "res-bit" },
     { key: "☉", cls: "res-sun" },
     { key: "τ", cls: "res-tau" },
     { key: "Λ", cls: "res-L" },
     { key: "γ", cls: "res-gamma" },
-    { key: "ψ", cls: "res-psi" },
-    { key: "β", cls: "res-bit" }, // Add β if it's not already there
+    { key: "Ψ", cls: "res-psi" },
+    { key: "β", cls: "res-beta" }, // Add β if it's not already there
   ];
   
   const TOKEN_MAP = Object.fromEntries(RESOURCE_TOKENS.map(t => [t.key, t.cls]));
