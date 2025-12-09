@@ -2594,7 +2594,7 @@ const CARD_DATA = [
         id: "Bad Apple",
         name: "Bad Apple",
         rarity: "rare",
-        ability: "Attempt to copy the card to the left of this card (has to be Rare or below) \nDisable the card to the right of this card (doesn't work if none is present)",
+        ability: "Attempt to copy the card to the left of this card (has to be Rare or below)Disable the card to the right of this card (doesn't work if none is present)",
         img: "images/cards/Bad_Apple.png"
       },
     ];
@@ -2604,6 +2604,8 @@ const DECK_STORAGE_KEY = "remblyx_card_deck_v1";
     let selectedCards = [];
     let isDragging = false;
     let dragSrcElement = null;
+    let dragStartIndex = -1;
+    
 function updateTableFromDeck() {
   const tableBody = document.getElementById("deckTableBody");
   const emptyRow = document.getElementById("emptyDeckRow");
@@ -2678,7 +2680,7 @@ function initializeCardsSection() {
       setupEventListeners();
       setupViewToggle();
       updateTableFromDeck();
-      // Update number displays for table view
+      setupDeckReordering();
       updateNumberDisplays(state?.notation ?? "suffix");
     }
 
@@ -2692,24 +2694,139 @@ function initializeCardsSection() {
 
     // Create card HTML element
     function createCardElement(card, isInDeck = false) {
-  const rarityClass = `rarity-${card.rarity}`;
-  
-  return `
-    <div class="card-item" 
-         data-card-id="${card.id}"
-         draggable="true"
-         data-card-name="${card.name}"
-         data-card-rarity="${card.rarity}">
-      ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
-      <img class="card-img" 
-           src="${card.img}" 
-           alt="${card.name}"
-           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkY4RjZCIiBzdG9wLW9wYWNpdHk9IjAuMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYGRpZW50Pgo8L2RlZnM+Cjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXJkPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4ke2NhcmQubmFtZX08L3RleHQ+Cjwvc3ZnPg=='; this.alt='Card placeholder'">
-      <div class="card-name">${card.name}</div>
-      <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
-    </div>
-  `;
-}
+      const rarityClass = `rarity-${card.rarity}`;
+      const tooltipRarityClass = `tooltip-rarity ${rarityClass}`;
+      
+      return `
+        <div class="card-item" 
+             data-card-id="${card.id}"
+             draggable="true"
+             data-card-name="${card.name}"
+             data-card-rarity="${card.rarity}">
+          
+          ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
+          
+          <img class="card-img" 
+               src="${card.img}" 
+               alt="${card.name}"
+               onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkY4RjZCIiBzdG9wLW9wYWNpdHk9IjAuMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXJkPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4ke2NhcmQubmFtZX08L3RleHQ+Cjwvc3ZnPg=='; this.alt='Card placeholder'">
+          
+          <div class="card-name">${card.name}</div>
+          <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
+          
+          <!-- Tooltip -->
+          <div class="card-tooltip">
+            <div class="tooltip-header">
+              <div class="tooltip-name">${card.name}</div>
+              <div class="${tooltipRarityClass}">${card.rarity.toUpperCase()}</div>
+            </div>
+            <div class="tooltip-ability">${card.ability}</div>
+          </div>
+        </div>
+      `;
+    }
+    function setupDeckReordering() {
+      const dropZone = document.getElementById("cardsDropZone");
+      if (!dropZone) return;
+
+      // Track which card is being dragged from deck
+      dropZone.addEventListener("dragstart", function(e) {
+        const cardItem = e.target.closest(".card-item");
+        if (cardItem && cardItem.closest("#cardsDropZone")) {
+          isDragging = true;
+          dragSrcElement = cardItem;
+          dragSrcElement.classList.add("dragging-within-deck");
+          
+          // Get the index of the dragged card in the deck
+          const cardId = dragSrcElement.dataset.cardId;
+          dragStartIndex = selectedCards.indexOf(cardId);
+          
+          e.dataTransfer.setData("text/plain", cardId);
+          e.dataTransfer.effectAllowed = "move";
+        }
+      });
+
+      // Handle drag over for reordering visual feedback
+      dropZone.addEventListener("dragover", function(e) {
+        e.preventDefault();
+        
+        // Only apply visual feedback if dragging from within the deck
+        if (dragSrcElement && dragSrcElement.closest("#cardsDropZone")) {
+          const cardItem = e.target.closest(".card-item");
+          if (cardItem && cardItem !== dragSrcElement) {
+            // Visual feedback for reordering
+            const rect = cardItem.getBoundingClientRect();
+            const mouseY = e.clientY;
+            const cardCenterY = rect.top + rect.height / 2;
+            
+            if (mouseY > cardCenterY) {
+              cardItem.style.transform = "translateY(10px)";
+            } else {
+              cardItem.style.transform = "translateY(-10px)";
+            }
+          }
+        }
+      });
+
+      // Reset transform when leaving
+      dropZone.addEventListener("dragleave", function(e) {
+        const cardItem = e.target.closest(".card-item");
+        if (cardItem && cardItem !== dragSrcElement) {
+          cardItem.style.transform = "";
+        }
+      });
+
+      // Handle drop for reordering
+      dropZone.addEventListener("drop", function(e) {
+        e.preventDefault();
+        
+        // Reset all transforms
+        dropZone.querySelectorAll(".card-item").forEach(item => {
+          item.style.transform = "";
+        });
+        
+        // Only handle reordering if dragging from within deck
+        if (dragSrcElement && dragSrcElement.closest("#cardsDropZone")) {
+          const cardId = e.dataTransfer.getData("text/plain");
+          const targetCard = e.target.closest(".card-item");
+          
+          if (targetCard && targetCard !== dragSrcElement) {
+            const targetCardId = targetCard.dataset.cardId;
+            const targetIndex = selectedCards.indexOf(targetCardId);
+            
+            // Remove from old position
+            selectedCards.splice(dragStartIndex, 1);
+            
+            // Insert at new position
+            if (targetIndex > -1) {
+              selectedCards.splice(targetIndex, 0, cardId);
+            } else {
+              selectedCards.push(cardId);
+            }
+            
+            // Update UI
+            updateDropZone();
+            updateTableFromDeck();
+            saveDeck();
+          }
+        }
+      });
+
+      // Clean up after drag
+      document.addEventListener("dragend", function(e) {
+        if (dragSrcElement && dragSrcElement.closest("#cardsDropZone")) {
+          dragSrcElement.classList.remove("dragging-within-deck");
+          
+          // Reset all transforms
+          dropZone.querySelectorAll(".card-item").forEach(item => {
+            item.style.transform = "";
+          });
+          
+          dragSrcElement = null;
+          dragStartIndex = -1;
+        }
+      });
+    }
     function updateDropZone() {
       const dropZone = document.getElementById("cardsDropZone");
       const selectedCount = document.getElementById("selectedCount");
@@ -2745,7 +2862,7 @@ function initializeCardsSection() {
           <div class="drop-zone-grid">
             ${cardsHTML}
           </div>
-          <div class="drop-zone-hint">Drag cards here to remove them, or click the X</div>
+          <div class="drop-zone-hint">Drag cards to reorder, or click X to remove</div>
         `;
         
         // Add event listeners to remove buttons
@@ -2757,9 +2874,22 @@ function initializeCardsSection() {
             removeCardFromDeck(cardId);
           });
         });
+        
+        // Also allow clicking on the card itself to remove (alternative to X button)
+        dropZone.querySelectorAll(".card-item").forEach(cardItem => {
+          cardItem.addEventListener("click", function(e) {
+            // Only trigger if not clicking the X button
+            if (!e.target.closest(".remove-card")) {
+              const cardId = this.dataset.cardId;
+              removeCardFromDeck(cardId);
+            }
+          });
+        });
       }
+      
+      // Re-setup deck reordering after updating the drop zone
+      setTimeout(setupDeckReordering, 0);
     }
-
     // Add card to deck
     function addCardToDeck(cardId) {
       if (selectedCards.length >= 12) {
@@ -2814,11 +2944,12 @@ function initializeCardsSection() {
       
       if (!dropZone || !library) return;
       
-      // Drag start
+      // Drag start for library cards
       document.addEventListener("dragstart", function(e) {
-        if (e.target.closest(".card-item")) {
+        const cardItem = e.target.closest(".card-item");
+        if (cardItem && !cardItem.closest("#cardsDropZone")) {
           isDragging = true;
-          dragSrcElement = e.target.closest(".card-item");
+          dragSrcElement = cardItem;
           dragSrcElement.classList.add("dragging");
           e.dataTransfer.setData("text/plain", dragSrcElement.dataset.cardId);
           e.dataTransfer.effectAllowed = "move";
@@ -2835,7 +2966,7 @@ function initializeCardsSection() {
         dropZone.classList.remove("drag-over");
       });
       
-      // Drag over drop zone
+      // Drag over drop zone (for adding from library)
       dropZone.addEventListener("dragover", function(e) {
         e.preventDefault();
         dropZone.classList.add("drag-over");
@@ -2849,7 +2980,7 @@ function initializeCardsSection() {
         }
       });
       
-      // Drop on drop zone
+      // Drop on drop zone (for adding from library)
       dropZone.addEventListener("drop", function(e) {
         e.preventDefault();
         dropZone.classList.remove("drag-over");
@@ -2860,17 +2991,6 @@ function initializeCardsSection() {
           if (dragSrcElement && !dragSrcElement.closest("#cardsDropZone")) {
             addCardToDeck(cardId);
           }
-          // If dropping within deck (reordering), handle that too
-        }
-      });
-      
-      // Also allow dropping from deck back to deck (for reordering)
-      dropZone.addEventListener("drop", function(e) {
-        e.preventDefault();
-        const cardId = e.dataTransfer.getData("text/plain");
-        if (cardId && dragSrcElement && dragSrcElement.closest("#cardsDropZone")) {
-          // This would be for reordering within deck
-          // For simplicity, we're not implementing reordering in this version
         }
       });
       
