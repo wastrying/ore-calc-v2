@@ -170,7 +170,11 @@
       color: #6b7280;
       border: 1px solid rgba(156,163,175,0.3);
     }
-
+    .rarity-uncommon {
+      background: rgba(156,163,175,0.15);
+      color: #6b7280;
+      border: 1px solid rgba(156,163,175,0.3);
+    }
     .rarity-rare {
       background: rgba(59,130,246,0.15);
       color: #3b82f6;
@@ -2044,7 +2048,7 @@ html[data-theme="dark"] .ore-img{
 </section>
 
           <!-- CARDS -->
-          <section class="page" id="page-cards">
+<section class="page" id="page-cards">
     <div class="section-head">
       <div>
         <div class="section-title">Cards Library</div>
@@ -2093,14 +2097,62 @@ html[data-theme="dark"] .ore-img{
       </div>
     </div>
 
-    <!-- Original Table View (hidden by default) -->
+    <!-- Original Table View (hidden by default) - SIMPLIFIED -->
     <div id="cards-table-view" class="table-wrap" style="display: none;">
       <table>
-        <thead><tr><th>Card Name</th><th>Rarity</th><th>Energy</th><th>Ability</th><th>Synergy</th><th class="muted">Notes</th></tr></thead>
+        <!-- REMOVED Energy, Synergy, and Notes columns -->
+        <thead>
+          <tr>
+            <th>Card Name</th>
+            <th>Rarity</th>
+            <th>Ability</th>
+            <!-- Removed: <th>Energy</th> -->
+            <!-- Removed: <th>Synergy</th> -->
+            <!-- Removed: <th class="muted">Notes</th> -->
+          </tr>
+        </thead>
         <tbody>
-          <tr><td>Gravity Seed</td><td><span class="pill">Rare</span></td><td><span data-num="2"></span></td><td>Pull enemies 1 tile</td><td>Blackhole set</td><td class="muted">Great for combos</td></tr>
-          <tr><td>Ore Bloom</td><td><span class="pill">Common</span></td><td><span data-num="1"></span></td><td>Gain +<span data-num="100"></span> Ore</td><td>Mining builds</td><td class="muted">Fast economy spike</td></tr>
-          <tr><td>Transcend Echo</td><td><span class="pill">Epic</span></td><td><span data-num="4"></span></td><td>Duplicate last effect</td><td>Combo decks</td><td class="muted">High skill ceiling</td></tr>
+          <!-- REMOVED Energy, Synergy, and Notes columns from table rows -->
+          <tr>
+            <td>Gravity Seed</td>
+            <td><span class="pill">Rare</span></td>
+            <td>Pull enemies 1 tile</td>
+            <!-- Removed: <td><span data-num="2"></span></td> -->
+            <!-- Removed: <td>Blackhole set</td> -->
+            <!-- Removed: <td class="muted">Great for combos</td> -->
+          </tr>
+          <tr>
+            <td>Ore Bloom</td>
+            <td><span class="pill">Common</span></td>
+            <td>Gain +<span data-num="100"></span> Ore</td>
+            <!-- Removed: <td><span data-num="1"></span></td> -->
+            <!-- Removed: <td>Mining builds</td> -->
+            <!-- Removed: <td class="muted">Fast economy spike</td> -->
+          </tr>
+          <tr>
+            <td>Transcend Echo</td>
+            <td><span class="pill">Epic</span></td>
+            <td>Duplicate last effect</td>
+            <!-- Removed: <td><span data-num="4"></span></td> -->
+            <!-- Removed: <td>Combo decks</td> -->
+            <!-- Removed: <td class="muted">High skill ceiling</td> -->
+          </tr>
+          <!-- Additional example cards with simplified format -->
+          <tr>
+            <td>Time Warp</td>
+            <td><span class="pill">Epic</span></td>
+            <td>Skip 60 seconds of time</td>
+          </tr>
+          <tr>
+            <td>Stellar Burst</td>
+            <td><span class="pill">Legendary</span></td>
+            <td>Massive AOE damage</td>
+          </tr>
+          <tr>
+            <td>Crystal Shield</td>
+            <td><span class="pill">Rare</span></td>
+            <td>+20% damage resistance</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -2512,8 +2564,13 @@ function initializeCardsSection() {
       setupDragAndDrop();
       setupEventListeners();
       setupViewToggle();
+      
+      // Update number displays for table view
+      updateNumberDisplays(state?.notation ?? "suffix");
     }
-function renderCardLibrary() {
+
+    // Render card library
+    function renderCardLibrary() {
       const library = document.getElementById("cardsLibrary");
       if (!library) return;
 
@@ -2657,6 +2714,8 @@ function updateDropZone() {
           e.dataTransfer.effectAllowed = "move";
         }
       });
+      
+      // Drag end
       document.addEventListener("dragend", function(e) {
         isDragging = false;
         if (dragSrcElement) {
@@ -2714,6 +2773,8 @@ function updateDropZone() {
         }
       });
     }
+
+    // Setup event listeners for buttons
     function setupEventListeners() {
       // Clear deck button
       const clearBtn = document.getElementById("clearDeckBtn");
@@ -2751,7 +2812,6 @@ function updateDropZone() {
         });
       }
     }
-
     // Setup view toggle
     function setupViewToggle() {
       const dragDropView = document.getElementById("cards-dragdrop-view");
