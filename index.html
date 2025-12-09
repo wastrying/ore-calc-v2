@@ -2717,37 +2717,41 @@ const DECK_STORAGE_KEY = "remblyx_card_deck_v1";
     let dragStartIndex = -1;
     
 function createCardElement(card, isInDeck = false) {
-      const rarityClass = `rarity-${card.rarity}`;
-      const tooltipRarityClass = `tooltip-rarity ${rarityClass}`;
+  const rarityClass = `rarity-${card.rarity}`;
+  const tooltipRarityClass = `tooltip-rarity ${rarityClass}`;
+  
+  // Add a class if card is in deck (for library cards that shouldn't be here)
+  const inDeckClass = selectedCards.includes(card.id) ? 'card-in-deck' : '';
+  
+  return `
+    <div class="card-item ${inDeckClass}" 
+         data-card-id="${card.id}"
+         draggable="${!selectedCards.includes(card.id)}"  // Make undraggable if in deck
+         data-card-name="${card.name}"
+         data-card-rarity="${card.rarity}"
+         style="${selectedCards.includes(card.id) ? 'display: none;' : ''}">
       
-      return `
-        <div class="card-item" 
-             data-card-id="${card.id}"
-             draggable="true"
-             data-card-name="${card.name}"
-             data-card-rarity="${card.rarity}">
-          
-          ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
-          
-          <img class="card-img" 
-               src="${card.img}" 
-               alt="${card.name}"
-               onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25VzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMC4xIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIjJGOGY2QiIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPHRleHQgeD0iNTAiIHk9IjcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2YjcyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNhcmQ8L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI4NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZpbGw9IiM2YjcyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiR7Y2FyZC5uYW1lfTwvdGV4dD4KPC9zdmc+'; this.alt='Card placeholder'">
-          
-          <div class="card-name">${card.name}</div>
-          <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
-          
-          <!-- Tooltip -->
-          <div class="card-tooltip">
-            <div class="tooltip-header">
-              <div class="tooltip-name">${card.name}</div>
-              <div class="${tooltipRarityClass}">${card.rarity.toUpperCase()}</div>
-            </div>
-            <div class="tooltip-ability">${card.ability}</div>
-          </div>
+      ${isInDeck ? '<span class="remove-card" title="Remove from deck">✕</span>' : ''}
+      
+      <img class="card-img" 
+           src="${card.img}" 
+           alt="${card.name}"
+           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDEwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTQwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzMxMjFfNDg0MykiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8zMTIxXzQ4NDMiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjE0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMkY4RjZCIiBzdG9wLW9wYWNpdHk9IjAuMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyRjhGNkIiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXJkPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iODUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjNmI3MjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4ke2NhcmQubmFtZX08L3RleHQ+Cjwvc3ZnPg=='; this.alt='Card placeholder'">
+      
+      <div class="card-name">${card.name}</div>
+      <div class="card-rarity ${rarityClass}">${card.rarity.toUpperCase()}</div>
+      
+      <!-- Tooltip -->
+      <div class="card-tooltip">
+        <div class="tooltip-header">
+          <div class="tooltip-name">${card.name}</div>
+          <div class="${tooltipRarityClass}">${card.rarity.toUpperCase()}</div>
         </div>
-      `;
-    }
+        <div class="tooltip-ability">${card.ability}</div>
+      </div>
+    </div>
+  `;
+}
 function updateTableFromDeck() {
       const tableBody = document.getElementById("deckTableBody");
       const emptyRow = document.getElementById("emptyDeckRow");
@@ -2891,6 +2895,17 @@ function initializeCardsSection() {
     `;
   } else {
     library.innerHTML = availableCards.map(card => createCardElement(card, false)).join("");
+    
+    // Add a visual indicator for any cards that shouldn't be here (just in case)
+    CARD_DATA.forEach(card => {
+      if (selectedCards.includes(card.id)) {
+        // This card should be in deck, hide it from library if it somehow appears
+        const cardElement = library.querySelector(`[data-card-id="${card.id}"]`);
+        if (cardElement) {
+          cardElement.style.display = 'none';
+        }
+      }
+    });
     
     // Re-attach click event listeners to the newly added cards
     attachLibraryCardEvents();
@@ -3159,10 +3174,18 @@ function attachLibraryCardEvents() {
   
   if (!dropZone) return;
   
-  // Drag start for library cards (attached to document to catch dynamically added cards)
+  // Drag start for library cards (only cards NOT in deck)
   document.addEventListener("dragstart", function(e) {
     const cardItem = e.target.closest(".card-item");
     if (cardItem && !cardItem.closest("#cardsDropZone")) {
+      // Check if this card is currently in the deck
+      const cardId = cardItem.dataset.cardId;
+      if (selectedCards.includes(cardId)) {
+        // Card is in deck, prevent dragging from library
+        e.preventDefault();
+        return;
+      }
+      
       isDragging = true;
       dragSrcElement = cardItem;
       dragSrcElement.classList.add("dragging");
@@ -3204,7 +3227,10 @@ function attachLibraryCardEvents() {
     if (cardId) {
       // Check if dropping from library to deck
       if (dragSrcElement && !dragSrcElement.closest("#cardsDropZone")) {
-        addCardToDeck(cardId);
+        // Double-check the card isn't already in deck (just in case)
+        if (!selectedCards.includes(cardId)) {
+          addCardToDeck(cardId);
+        }
       }
     }
   });
@@ -3212,7 +3238,6 @@ function attachLibraryCardEvents() {
   // Attach initial library card events
   attachLibraryCardEvents();
 }
-
     // Setup event listeners for buttons
     function setupEventListeners() {
       // Clear deck button
