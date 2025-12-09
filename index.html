@@ -5,6 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Upgrades Hub</title>
   <style>
+    /* Resource colors for table view */
+.res {
+  font-weight: 900;
+  -webkit-text-stroke: 0.6px var(--res-outline);
+  text-shadow:
+    -0.6px  0      0 var(--res-outline),
+     0.6px  0      0 var(--res-outline),
+     0     -0.6px  0 var(--res-outline),
+     0      0.6px  0 var(--res-outline);
+}
+
+.res-xp { color: var(--c-xp); }
+.res-axp { color: var(--c-axp); }
+.res-peso { color: var(--c-peso); }
+.res-px { color: var(--c-px); }
+.res-lambda { color: var(--c-lambda); }
+.res-rupee { color: var(--c-rupee); }
+.res-bit { color: var(--c-bit); }
+.res-sun { color: var(--c-sun); }
+.res-tau { color: var(--c-tau); }
+.res-L { color: var(--c-L); }
+.res-gamma { color: var(--c-gamma); }
+.res-psi { color: var(--c-psi); }
      /* =========================
        Card Drag & Drop System
        ========================= */
@@ -2601,7 +2624,7 @@ function initializeCardsSection() {
       setupDragAndDrop();
       setupEventListeners();
       setupViewToggle();
-      
+      updateTableFromDeck();
       // Update number displays for table view
       updateNumberDisplays(state?.notation ?? "suffix");
     }
