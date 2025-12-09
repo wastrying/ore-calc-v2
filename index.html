@@ -2041,7 +2041,7 @@ html[data-theme="dark"] .ore-img{
     <div class="section-head">
       <div>
         <div class="section-title">Cards Library</div>
-        <div class="section-sub">Drag & drop cards to build your deck. Original table view also available.</div>
+        <div class="section-sub">Drag & drop cards to build your deck. Table shows your current deck.</div>
       </div>
       <span class="pill">Cards</span>
     </div>
@@ -2049,7 +2049,7 @@ html[data-theme="dark"] .ore-img{
     <!-- View Toggle -->
     <div class="view-toggle">
       <button class="view-btn active" data-view="dragdrop">Drag & Drop</button>
-      <button class="view-btn" data-view="table">Table View</button>
+      <button class="view-btn" data-view="table">Deck Table</button>
     </div>
 
     <!-- Drag & Drop View (default) -->
@@ -2086,10 +2086,9 @@ html[data-theme="dark"] .ore-img{
       </div>
     </div>
 
-    <!-- Original Table View (hidden by default) - SIMPLIFIED -->
+    <!-- Table View (shows current deck) - DYNAMICALLY UPDATED -->
     <div id="cards-table-view" class="table-wrap" style="display: none;">
-      <table>
-        <!-- SIMPLIFIED: Only Card Name, Rarity, and Ability -->
+      <table id="deckTable">
         <thead>
           <tr>
             <th>Card Name</th>
@@ -2097,41 +2096,18 @@ html[data-theme="dark"] .ore-img{
             <th>Ability</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>Gravity Seed</td>
-            <td><span class="pill">Rare</span></td>
-            <td>Pull enemies 1 tile</td>
-          </tr>
-          <tr>
-            <td>Ore Bloom</td>
-            <td><span class="pill">Common</span></td>
-            <td>Gain +<span data-num="100"></span> Ore</td>
-          </tr>
-          <tr>
-            <td>Transcend Echo</td>
-            <td><span class="pill">Epic</span></td>
-            <td>Duplicate last effect</td>
-          </tr>
-          <tr>
-            <td>Time Warp</td>
-            <td><span class="pill">Epic</span></td>
-            <td>Skip 60 seconds of time</td>
-          </tr>
-          <tr>
-            <td>Stellar Burst</td>
-            <td><span class="pill">Legendary</span></td>
-            <td>Massive AOE damage</td>
-          </tr>
-          <tr>
-            <td>Crystal Shield</td>
-            <td><span class="pill">Rare</span></td>
-            <td>+20% damage resistance</td>
+        <tbody id="deckTableBody">
+          <!-- Table rows will be dynamically added/removed here -->
+          <tr id="emptyDeckRow">
+            <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">
+              No cards in deck. Add cards using the drag & drop interface.
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
+
 
           <!-- TIME WARP -->
           <section class="page" id="page-timewarp">
@@ -2531,7 +2507,69 @@ const DECK_STORAGE_KEY = "remblyx_card_deck_v1";
     let selectedCards = [];
     let isDragging = false;
     let dragSrcElement = null;
-
+function updateTableFromDeck() {
+      const tableBody = document.getElementById("deckTableBody");
+      const emptyRow = document.getElementById("emptyDeckRow");
+      
+      if (!tableBody) return;
+      
+      // Clear existing rows except empty row
+      const existingRows = tableBody.querySelectorAll("tr:not(#emptyDeckRow)");
+      existingRows.forEach(row => row.remove());
+      
+      if (selectedCards.length === 0) {
+        // Show empty message
+        if (emptyRow) {
+          emptyRow.style.display = "";
+        } else {
+          tableBody.innerHTML = `
+            <tr id="emptyDeckRow">
+              <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">
+                No cards in deck. Add cards using the drag & drop interface.
+              </td>
+            </tr>
+          `;
+        }
+      } else {
+        // Hide empty row if it exists
+        if (emptyRow) {
+          emptyRow.style.display = "none";
+        }
+        
+        // Add rows for each card in deck
+        selectedCards.forEach(cardId => {
+          const card = CARD_DATA.find(c => c.id === cardId);
+          if (card) {
+            const row = document.createElement("tr");
+            
+            // Get pill class based on rarity
+            let pillClass = "pill";
+            switch(card.rarity) {
+              case "common": pillClass += " common"; break;
+              case "uncommon": pillClass += " uncommon"; break;
+              case "rare": pillClass += " rare"; break;
+              case "epic": pillClass += " epic"; break;
+              case "legendary": pillClass += " legendary"; break;
+              default: pillClass += " common";
+            }
+            
+            row.innerHTML = `
+              <td>${card.name}</td>
+              <td><span class="${pillClass}">${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)}</span></td>
+              <td>${card.ability}</td>
+            `;
+            
+            // Add data attribute for identification
+            row.dataset.cardId = card.id;
+            
+            tableBody.appendChild(row);
+          }
+        });
+      }
+      
+      // Update number displays for any numbers in ability text
+      updateNumberDisplays(state?.notation ?? "suffix");
+    }
     // Initialize Cards section
 function initializeCardsSection() {
       renderCardLibrary();
@@ -2572,7 +2610,7 @@ function initializeCardsSection() {
     </div>
   `;
 }
-function updateDropZone() {
+    function updateDropZone() {
       const dropZone = document.getElementById("cardsDropZone");
       const selectedCount = document.getElementById("selectedCount");
       
@@ -2632,18 +2670,20 @@ function updateDropZone() {
       if (!selectedCards.includes(cardId)) {
         selectedCards.push(cardId);
         updateDropZone();
+        updateTableFromDeck(); // Update table view
         saveDeck();
         return true;
       }
       return false;
     }
 
-    // Remove card from deck
+    // Remove card from deck (and update table)
     function removeCardFromDeck(cardId) {
       const index = selectedCards.indexOf(cardId);
       if (index > -1) {
         selectedCards.splice(index, 1);
         updateDropZone();
+        updateTableFromDeck(); // Update table view
         saveDeck();
       }
     }
