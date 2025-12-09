@@ -2877,22 +2877,25 @@ function initializeCardsSection() {
 
     // Render card library
     function renderCardLibrary() {
-      const library = document.getElementById("cardsLibrary");
-      if (!library) return;
+  const library = document.getElementById("cardsLibrary");
+  if (!library) return;
 
-      // Filter out cards that are already in the deck
-      const availableCards = CARD_DATA.filter(card => !selectedCards.includes(card.id));
-      
-      if (availableCards.length === 0) {
-        library.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--muted);">
-            All cards are in your deck!
-          </div>
-        `;
-      } else {
-        library.innerHTML = availableCards.map(card => createCardElement(card, false)).join("");
-      }
-    }
+  // Filter out cards that are already in the deck
+  const availableCards = CARD_DATA.filter(card => !selectedCards.includes(card.id));
+  
+  if (availableCards.length === 0) {
+    library.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--muted);">
+        All cards are in your deck!
+      </div>
+    `;
+  } else {
+    library.innerHTML = availableCards.map(card => createCardElement(card, false)).join("");
+    
+    // Re-attach click event listeners to the newly added cards
+    attachLibraryCardEvents();
+  }
+}
 
     // Create card HTML element
     function createCardElement(card, isInDeck = false) {
@@ -3137,73 +3140,78 @@ function initializeCardsSection() {
         console.error("Failed to load deck:", e);
       }
     }
+function attachLibraryCardEvents() {
+  const library = document.getElementById("cardsLibrary");
+  if (!library) return;
 
+  // Click to add from library
+  library.addEventListener("click", function(e) {
+    const cardItem = e.target.closest(".card-item");
+    if (cardItem && !cardItem.closest("#cardsDropZone")) {
+      const cardId = cardItem.dataset.cardId;
+      addCardToDeck(cardId);
+    }
+  });
+}
     // Setup drag and drop
     function setupDragAndDrop() {
-      const dropZone = document.getElementById("cardsDropZone");
-      const library = document.getElementById("cardsLibrary");
-      
-      if (!dropZone || !library) return;
-      
-      // Drag start for library cards
-      document.addEventListener("dragstart", function(e) {
-        const cardItem = e.target.closest(".card-item");
-        if (cardItem && !cardItem.closest("#cardsDropZone")) {
-          isDragging = true;
-          dragSrcElement = cardItem;
-          dragSrcElement.classList.add("dragging");
-          e.dataTransfer.setData("text/plain", dragSrcElement.dataset.cardId);
-          e.dataTransfer.effectAllowed = "move";
-        }
-      });
-      
-      // Drag end
-      document.addEventListener("dragend", function(e) {
-        isDragging = false;
-        if (dragSrcElement) {
-          dragSrcElement.classList.remove("dragging");
-          dragSrcElement = null;
-        }
-        dropZone.classList.remove("drag-over");
-      });
-      
-      // Drag over drop zone (for adding from library)
-      dropZone.addEventListener("dragover", function(e) {
-        e.preventDefault();
-        dropZone.classList.add("drag-over");
-        e.dataTransfer.dropEffect = "move";
-      });
-      
-      // Drag leave drop zone
-      dropZone.addEventListener("dragleave", function(e) {
-        if (!dropZone.contains(e.relatedTarget)) {
-          dropZone.classList.remove("drag-over");
-        }
-      });
-      
-      // Drop on drop zone (for adding from library)
-      dropZone.addEventListener("drop", function(e) {
-        e.preventDefault();
-        dropZone.classList.remove("drag-over");
-        
-        const cardId = e.dataTransfer.getData("text/plain");
-        if (cardId) {
-          // Check if dropping from library to deck
-          if (dragSrcElement && !dragSrcElement.closest("#cardsDropZone")) {
-            addCardToDeck(cardId);
-          }
-        }
-      });
-      
-      // Click to add from library
-      library.addEventListener("click", function(e) {
-        const cardItem = e.target.closest(".card-item");
-        if (cardItem && !cardItem.closest("#cardsDropZone")) {
-          const cardId = cardItem.dataset.cardId;
-          addCardToDeck(cardId);
-        }
-      });
+  const dropZone = document.getElementById("cardsDropZone");
+  
+  if (!dropZone) return;
+  
+  // Drag start for library cards (attached to document to catch dynamically added cards)
+  document.addEventListener("dragstart", function(e) {
+    const cardItem = e.target.closest(".card-item");
+    if (cardItem && !cardItem.closest("#cardsDropZone")) {
+      isDragging = true;
+      dragSrcElement = cardItem;
+      dragSrcElement.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", dragSrcElement.dataset.cardId);
+      e.dataTransfer.effectAllowed = "move";
     }
+  });
+  
+  // Drag end
+  document.addEventListener("dragend", function(e) {
+    isDragging = false;
+    if (dragSrcElement) {
+      dragSrcElement.classList.remove("dragging");
+      dragSrcElement = null;
+    }
+    dropZone.classList.remove("drag-over");
+  });
+  
+  // Drag over drop zone (for adding from library)
+  dropZone.addEventListener("dragover", function(e) {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
+    e.dataTransfer.dropEffect = "move";
+  });
+  
+  // Drag leave drop zone
+  dropZone.addEventListener("dragleave", function(e) {
+    if (!dropZone.contains(e.relatedTarget)) {
+      dropZone.classList.remove("drag-over");
+    }
+  });
+  
+  // Drop on drop zone (for adding from library)
+  dropZone.addEventListener("drop", function(e) {
+    e.preventDefault();
+    dropZone.classList.remove("drag-over");
+    
+    const cardId = e.dataTransfer.getData("text/plain");
+    if (cardId) {
+      // Check if dropping from library to deck
+      if (dragSrcElement && !dragSrcElement.closest("#cardsDropZone")) {
+        addCardToDeck(cardId);
+      }
+    }
+  });
+  
+  // Attach initial library card events
+  attachLibraryCardEvents();
+}
 
     // Setup event listeners for buttons
     function setupEventListeners() {
